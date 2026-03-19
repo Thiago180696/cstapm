@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSTAPM — Cronograma de Estudos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:#080a10;color:#dde2ee;font-family:Georgia,'Times New Roman',serif;min-height:100vh;}
+
+#header{position:sticky;top:0;z-index:200;background:#050709;border-bottom:1px solid #1c2235;padding:13px 16px 11px;}
+.eyebrow{font-family:monospace;font-size:8px;letter-spacing:3px;color:#c8a84b;margin-bottom:4px;}
+h1{font-size:21px;font-weight:900;letter-spacing:2px;color:#dde2ee;line-height:1.1;text-transform:uppercase;}
+.hsub{font-size:10px;color:#7a8aaa;margin-top:2px;font-style:italic;}
+.stats{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.stat{background:#131825;border:1px solid #1c2235;border-radius:5px;padding:5px 10px;text-align:center;min-width:58px;}
+.sv{font-size:16px;font-weight:900;font-family:monospace;line-height:1;}
+.sl{font-size:8px;color:#4e5872;letter-spacing:.4px;margin-top:2px;}
+.bar-wrap{margin-top:10px;}
+.bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.gpct{font-size:26px;font-weight:900;color:#c8a84b;font-family:monospace;line-height:1;}
+.gfrac{font-size:9px;color:#7a8aaa;font-family:monospace;}
+.track{height:6px;border-radius:3px;background:#252e48;overflow:hidden;}
+.fill-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,#c8a84b,#f0d080);transition:width .4s ease;width:0%;}
+.filters{display:flex;gap:4px;flex-wrap:wrap;margin-top:9px;}
+.fb{font-family:monospace;font-size:8px;font-weight:700;padding:3px 7px;border-radius:3px;cursor:pointer;border:1px solid #252e48;background:transparent;color:#7a8aaa;transition:all .15s;white-space:nowrap;}
+.fb:hover,.fb.on{background:rgba(200,168,75,.12);border-color:#c8a84b;color:#c8a84b;}
+
+#body{padding:13px 12px 70px;max-width:1260px;margin:0 auto;}
+
+#today-box{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.28);border-radius:7px;padding:10px 12px;margin-bottom:14px;}
+.pulse{width:9px;height:9px;border-radius:50%;background:#c8a84b;flex-shrink:0;margin-top:4px;animation:pulse 1.8s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(200,168,75,.6)}70%{box-shadow:0 0 0 7px rgba(200,168,75,0)}100%{box-shadow:0 0 0 0 rgba(200,168,75,0)}}
+.today-lbl{font-family:monospace;font-size:8px;letter-spacing:3px;color:#c8a84b;margin-bottom:2px;}
+#today-title{font-size:13px;font-weight:700;color:#dde2ee;}
+#today-det{font-size:10px;color:#7a8aaa;font-style:italic;margin-top:2px;}
+.go-btn{margin-left:auto;font-family:monospace;font-size:9px;font-weight:700;padding:6px 11px;border-radius:4px;cursor:pointer;letter-spacing:1px;background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.3);color:#c8a84b;flex-shrink:0;align-self:center;}
+
+.mes-sep{font-family:monospace;font-size:9px;letter-spacing:3px;color:#c8a84b;text-transform:uppercase;padding:6px 0 3px;margin-top:8px;border-top:1px solid #1c2235;}
+
+.week-block{margin-bottom:10px;border:1px solid #1c2235;border-radius:8px;overflow:hidden;}
+.week-block.wdone{border-color:rgba(61,168,122,.28);}
+.week-head{display:flex;align-items:center;gap:10px;padding:10px 13px;background:#0e1118;cursor:pointer;user-select:none;}
+.week-head:active{background:#131825;}
+.wnum{font-size:12px;font-weight:900;font-family:monospace;width:30px;height:30px;border-radius:5px;background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.2);display:flex;align-items:center;justify-content:center;color:#c8a84b;flex-shrink:0;}
+.winfo{flex:1;min-width:0;}
+.wfoco{font-size:12px;font-weight:700;color:#dde2ee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wmeta{font-size:9px;color:#7a8aaa;margin-top:2px;font-style:italic;}
+.wright{display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.wpct{font-family:monospace;font-size:13px;font-weight:700;color:#c8a84b;min-width:32px;text-align:right;}
+.wbar-wrap{width:46px;height:4px;border-radius:2px;background:#252e48;overflow:hidden;}
+.wbar-fill{height:100%;border-radius:2px;background:#c8a84b;transition:width .3s;}
+.wtog{font-size:11px;color:#4e5872;}
+
+.days-grid{display:none;padding:5px 10px 10px;background:#080a10;border-top:1px solid #1c2235;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:5px;}
+.days-grid.visible{display:grid;}
+
+.day-card{border:1px solid #1c2235;border-left:3px solid #333;border-radius:6px;padding:8px 8px 7px;background:#0e1118;cursor:pointer;position:relative;transition:background .15s;}
+.day-card:active{background:#131825;}
+.day-card.done{background:rgba(61,168,122,.06);border-color:rgba(61,168,122,.22);}
+.day-card.done .dt{text-decoration:line-through;opacity:.48;}
+.day-card.is-today{outline:2px solid #c8a84b;outline-offset:1px;}
+.chk{position:absolute;top:7px;right:7px;width:15px;height:15px;border-radius:50%;border:1.5px solid #252e48;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:all .15s;}
+.day-card.done .chk{background:#3da87a;border-color:#3da87a;color:#fff;}
+.dtop{display:flex;align-items:center;gap:4px;margin-bottom:5px;flex-wrap:wrap;}
+.ddate{font-family:monospace;font-size:9px;font-weight:700;}
+.dbadge{font-family:monospace;font-size:7px;font-weight:700;letter-spacing:.3px;padding:1px 4px;border-radius:3px;}
+.dt{font-size:11px;font-weight:700;line-height:1.3;color:#dde2ee;padding-right:18px;margin-bottom:4px;}
+.dd{font-size:9px;color:#7a8aaa;line-height:1.4;font-style:italic;margin-bottom:3px;}
+.tempos{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:3px;}
+.ti{background:#0b0e18;border:1px solid #1c2235;border-radius:3px;padding:3px 4px;}
+.tl{font-family:monospace;font-size:6px;color:#4e5872;letter-spacing:.3px;}
+.tv{font-family:monospace;font-size:8px;font-weight:700;color:#dde2ee;margin-top:1px;}
+.total-line{margin-top:4px;font-family:monospace;font-size:8px;color:#c8a84b;font-weight:700;}
+.today-tag{display:inline-block;margin-top:3px;font-family:monospace;font-size:7px;font-weight:700;letter-spacing:1px;padding:1px 5px;border-radius:3px;background:rgba(200,168,75,.15);color:#c8a84b;border:1px solid rgba(200,168,75,.28);}
+
+#reset-btn{position:fixed;bottom:14px;right:14px;z-index:300;background:#131825;border:1px solid #252e48;color:#4e5872;font-family:monospace;font-size:9px;letter-spacing:1px;padding:7px 12px;border-radius:5px;cursor:pointer;}
+#reset-btn:active{border-color:#e05050;color:#e05050;}
+#toast{position:fixed;bottom:50px;left:50%;transform:translateX(-50%) translateY(14px);background:#181f30;border:1px solid #c8a84b;color:#c8a84b;font-family:monospace;font-size:10px;padding:7px 15px;border-radius:5px;z-index:400;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div id="header">
+  <div class="eyebrow">PMESP · CSTAPM / CHQAOPM · Bloco Profissional</div>
+  <h1>Cronograma de Estudos — 17 Semanas</h1>
+  <div class="hsub">Início: 19/03/2026 (Qui) · Término: 15/07/2026 · Domingo = descanso · Progresso salvo automaticamente</div>
+  <div class="stats">
+    <div class="stat"><div class="sv" id="s-done" style="color:#3da87a">0</div><div class="sl">Feitos</div></div>
+    <div class="stat"><div class="sv" id="s-total" style="color:#7a8aaa">0</div><div class="sl">Total</div></div>
+    <div class="stat"><div class="sv" id="s-streak" style="color:#c8a84b">0</div><div class="sl">Sequência</div></div>
+    <div class="stat"><div class="sv" id="s-remain" style="color:#e05050">0</div><div class="sl">Restantes</div></div>
+  </div>
+  <div class="bar-wrap">
+    <div class="bar-top"><span class="gpct" id="g-pct">0%</span><span class="gfrac" id="g-frac">0 / 0 dias</span></div>
+    <div class="track"><div class="fill-bar" id="g-bar"></div></div>
+  </div>
+  <div class="filters" id="fwrap"></div>
+</div>
+
+<div id="body">
+  <div id="today-box">
+    <div class="pulse"></div>
+    <div style="flex:1;min-width:0;">
+      <div class="today-lbl">DESAFIO DE HOJE</div>
+      <div id="today-title">—</div>
+      <div id="today-det">—</div>
+    </div>
+    <button class="go-btn" onclick="goToToday()">HOJE ↓</button>
+  </div>
+  <div id="weeks"></div>
+</div>
+<button id="reset-btn" onclick="confirmReset()">↺ RESETAR</button>
+<div id="toast"></div>
+
+<script>
+var SEMANAS = [{"semana": 1, "mes": 3, "mes_nome": "Março", "foco": "Normas PMESP + Leg. Interesse PM (início)", "wk_start": "19/03", "wk_end": "25/03", "gap": false, "dias": [{"materia": "Normas PMESP", "conteudo": "Estrutura organizacional PMESP · Lei 616/74 · Dec.-Lei 667/69 · hierarquia e competências", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Qui", "date": "Qui 19/03", "isodate": "2026-03-19"}, {"materia": "Normas PMESP", "conteudo": "I-40-PM: Atendimento de Ocorrência · abordagem · REDS · voz de prisão · cadeia de custódia", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Sex", "date": "Sex 20/03", "isodate": "2026-03-20"}, {"materia": "Normas PMESP", "conteudo": "I-16-PM: Sindicância · instauração, prazos, relatório, arquivamento · diferença PAD", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Sáb", "date": "Sáb 21/03", "isodate": "2026-03-21"}, {"materia": "Normas PMESP", "conteudo": "NORSOP · PM3-2/02/13 (Vizinhança Solidária) · PM3-002/02/14 (Ativ. Delegada)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Seg", "date": "Seg 23/03", "isodate": "2026-03-23"}, {"materia": "Normas PMESP", "conteudo": "CORREGPM + GESPOL · I-2-PM (Correspondência) · I-15-PM (Transportes) · R-05-PM (Uniformes)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Ter", "date": "Ter 24/03", "isodate": "2026-03-24"}, {"materia": "Leg. Interesse PM", "conteudo": "LC 1.224/13: ingresso, acesso e promoção nas carreiras PM · quadros e graduações", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#b86c10", "label": "LEG.PM", "dia": "Qua", "date": "Qua 25/03", "isodate": "2026-03-25"}]}, {"semana": 2, "mes": 3, "mes_nome": "Março", "foco": "Normas PMESP (ICCs + NIs) + Leg. Interesse PM", "wk_start": "26/03", "wk_end": "01/04", "gap": false, "dias": [{"materia": "Normas PMESP", "conteudo": "ICCs 189–220: auto de flagrante, TCO, ocorrência com arma, apreensão — lei seca", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Qui", "date": "Qui 26/03", "isodate": "2026-03-26"}, {"materia": "Normas PMESP", "conteudo": "ICCs 225–253: abordagem, uso da força, registro de ocorrência, escolta — lei seca", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Sex", "date": "Sex 27/03", "isodate": "2026-03-27"}, {"materia": "Normas PMESP", "conteudo": "ICCs 300–345 (NOVOS 2024): procedimentos operacionais atualizados — lei seca", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Sáb", "date": "Sáb 28/03", "isodate": "2026-03-28"}, {"materia": "Normas PMESP", "conteudo": "NIs: PM3-001/02/15 (REDS/SSP-57) · PM3-001/02/21 (VD) · DP-1/511/16 (Incid. Críticos)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Seg", "date": "Seg 30/03", "isodate": "2026-03-30"}, {"materia": "Normas PMESP", "conteudo": "NIs: PM3-002/03/20 (Armas Neuromusc.) · PM3-1/03/22 (NAPS) · COP (PM3-008/02/20)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Ter", "date": "Ter 31/03", "isodate": "2026-03-31"}, {"materia": "Leg. Interesse PM", "conteudo": "LC 893/01 — RDPM: transgressões disciplinares · conceito · classificação (gravíssima a leve)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#b86c10", "label": "LEG.PM", "dia": "Qua", "date": "Qua 01/04", "isodate": "2026-04-01"}]}, {"semana": 3, "mes": 4, "mes_nome": "Abril", "foco": "Normas PMESP (Portarias + Diretrizes) + Leg. Interesse PM (RDPM)", "wk_start": "02/04", "wk_end": "08/04", "gap": false, "dias": [{"materia": "Normas PMESP", "conteudo": "PM3-009/02/14 (Reintegração) · PM3-004/02/21 (DEJEM) · PM3-6/02/21 (Mídias Sociais)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Qui", "date": "Qui 02/04", "isodate": "2026-04-02"}, {"materia": "Normas PMESP", "conteudo": "Port. PM1-7/02/23 (Regime de Trabalho) · I-24-PM (Licenças) · I-21-PM (Pagamento)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Sex", "date": "Sex 03/04", "isodate": "2026-04-03"}, {"materia": "Normas PMESP", "conteudo": "OS PM3-002/02/18 (Busca Domiciliar) · PM4-001 (Mat. Bélico) · I-38-PM (Imóveis)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#e07530", "label": "NORMAS PM", "dia": "Sáb", "date": "Sáb 04/04", "isodate": "2026-04-04"}, {"materia": "Revisão", "conteudo": "Revisão: ICCs 189–345 · Instruções I-PM · Diretrizes PM3 — 30 questões", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Seg", "date": "Seg 06/04", "isodate": "2026-04-06"}, {"materia": "Leg. Interesse PM", "conteudo": "RDPM: sanções disciplinares · advertência, repreensão, detenção, prisão, exclusão · dosimetria", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#b86c10", "label": "LEG.PM", "dia": "Ter", "date": "Ter 07/04", "isodate": "2026-04-07"}, {"materia": "Leg. Interesse PM", "conteudo": "RDPM: processo regular · instauração, instrução, defesa, relatório, julgamento, recursos, prazos", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#b86c10", "label": "LEG.PM", "dia": "Qua", "date": "Qua 08/04", "isodate": "2026-04-08"}]}, {"semana": 4, "mes": 4, "mes_nome": "Abril", "foco": "Leis Especiais: Estatuto do Desarmamento + Leg. Interesse PM", "wk_start": "09/04", "wk_end": "15/04", "gap": false, "dias": [{"materia": "Leis Especiais", "conteudo": "Lei 10.826/03: registro e posse · requisitos · armas de uso permitido e restrito · SINARM", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Qui", "date": "Qui 09/04", "isodate": "2026-04-09"}, {"materia": "Leis Especiais", "conteudo": "Lei 10.826/03: porte de arma · crimes (posse ilegal, porte ilegal, tráfico, disparo) · penas", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Sex", "date": "Sex 10/04", "isodate": "2026-04-10"}, {"materia": "Leis Especiais", "conteudo": "Dec. 9.847/19 / Dec. 11.615/23: regulamentação do Estatuto · direitos dos PM · uso em serviço", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Sáb", "date": "Sáb 11/04", "isodate": "2026-04-11"}, {"materia": "Leg. Interesse PM", "conteudo": "Dec. 260/70 (Inatividade) · Lei 616/74 (Org. Básica) · Dec. 20.218/82 (Acidente em serviço)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#b86c10", "label": "LEG.PM", "dia": "Seg", "date": "Seg 13/04", "isodate": "2026-04-13"}, {"materia": "Leg. Interesse PM", "conteudo": "R-200 (Dec. 88.777/83): regulamento PM estadual · fiscalização federal · organização", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#b86c10", "label": "LEG.PM", "dia": "Ter", "date": "Ter 14/04", "isodate": "2026-04-14"}, {"materia": "Simulado", "conteudo": "Simulado 1 — Bloco Profissional (40–60 questões)", "teoria": "0min", "lei": "—", "questoes": "3h", "revisao": "—", "total": "3h", "total_min": 180, "cor": "#c8a84b", "label": "SIMULADO", "dia": "Qua", "date": "Qua 15/04", "isodate": "2026-04-15"}]}, {"semana": 5, "mes": 4, "mes_nome": "Abril", "foco": "Leis Especiais: Maria da Penha + Organizações Criminosas + ECA", "wk_start": "16/04", "wk_end": "22/04", "gap": false, "dias": [{"materia": "Leis Especiais", "conteudo": "Lei 11.340/06 (Maria da Penha): formas de violência · medidas protetivas · competência · PPP", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Qui", "date": "Qui 16/04", "isodate": "2026-04-16"}, {"materia": "Leis Especiais", "conteudo": "Lei 11.340/06: atendimento PM · prisão preventiva · DEAM · Lei 13.984/20 (novidades)", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Sex", "date": "Sex 17/04", "isodate": "2026-04-17"}, {"materia": "Leis Especiais", "conteudo": "Lei 12.850/13 (OrgCrim): conceito · infiltração policial · colaboração premiada · ação controlada", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Sáb", "date": "Sáb 18/04", "isodate": "2026-04-18"}, {"materia": "Leis Especiais", "conteudo": "ECA Lei 8.069/90: princípios · direitos fundamentais · ato infracional · medidas socioeducativas", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Seg", "date": "Seg 20/04", "isodate": "2026-04-20"}, {"materia": "Leis Especiais", "conteudo": "ECA: crimes contra criança e adolescente (Art. 228–244-B) · Lei 13.431/17 (escuta especializada)", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Ter", "date": "Ter 21/04", "isodate": "2026-04-21"}, {"materia": "Revisão", "conteudo": "Revisão: Estatuto do Desarmamento + Maria da Penha + OrgCrim + ECA — 35 questões", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Qua", "date": "Qua 22/04", "isodate": "2026-04-22"}]}, {"semana": 6, "mes": 4, "mes_nome": "Abril", "foco": "Leis Especiais: Drogas + Hediondos + Tortura + Penal Militar (início)", "wk_start": "23/04", "wk_end": "29/04", "gap": false, "dias": [{"materia": "Leis Especiais", "conteudo": "Lei 11.343/06 (Drogas): posse para uso pessoal (Art.28) × tráfico (Art.33) · diferenciação STF", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Qui", "date": "Qui 23/04", "isodate": "2026-04-23"}, {"materia": "Leis Especiais", "conteudo": "Lei 11.343/06: causas de aumento (Art.40) · associação · financiamento · SISNAD", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Sex", "date": "Sex 24/04", "isodate": "2026-04-24"}, {"materia": "Leis Especiais", "conteudo": "Lei 8.072/90 (Hediondos): rol atualizado · progressão · vedações · equiparados · inafiançável", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Sáb", "date": "Sáb 25/04", "isodate": "2026-04-25"}, {"materia": "Leis Especiais", "conteudo": "Lei 9.455/97 (Tortura) · Lei 7.716/89 (Racismo) · Lei 9.613/98 (Lavagem de dinheiro)", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Seg", "date": "Seg 27/04", "isodate": "2026-04-27"}, {"materia": "Penal Militar", "conteudo": "CPM Art. 1–28: aplicação da lei penal militar · legalidade · territorialidade · lei mais benigna", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Ter", "date": "Ter 28/04", "isodate": "2026-04-28"}, {"materia": "Simulado", "conteudo": "Simulado 2 — Bloco Profissional (40–60 questões)", "teoria": "0min", "lei": "—", "questoes": "3h", "revisao": "—", "total": "3h", "total_min": 180, "cor": "#c8a84b", "label": "SIMULADO", "dia": "Qua", "date": "Qua 29/04", "isodate": "2026-04-29"}]}, {"semana": 7, "mes": 4, "mes_nome": "Abril", "foco": "Leis Especiais: Abuso de Autoridade + Idoso + Ambiental + Penal Militar", "wk_start": "30/04", "wk_end": "06/05", "gap": false, "dias": [{"materia": "Leis Especiais", "conteudo": "Lei 13.869/19 (Abuso de Autoridade): elemento subjetivo · tipos penais Arts. 9–38 · penas", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Qui", "date": "Qui 30/04", "isodate": "2026-04-30"}, {"materia": "Leis Especiais", "conteudo": "Lei 10.741/03 (Estatuto do Idoso): crimes (Arts. 94–108) · majorantes · competência", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Sex", "date": "Sex 01/05", "isodate": "2026-05-01"}, {"materia": "Leis Especiais", "conteudo": "Lei 9.605/98 (Crimes Ambientais): fauna, flora, ordem urbanística, administração ambiental", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#d4872a", "label": "LEIS ESP.", "dia": "Sáb", "date": "Sáb 02/05", "isodate": "2026-05-02"}, {"materia": "Penal Militar", "conteudo": "CPM Art. 29–47: conceito de crime militar · tipicidade · ilicitude · culpabilidade · dolo e culpa", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Seg", "date": "Seg 04/05", "isodate": "2026-05-04"}, {"materia": "Penal Militar", "conteudo": "CPM Art. 48–100: penas militares · reclusão, detenção, suspensão, reforma · penas acessórias", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Ter", "date": "Ter 05/05", "isodate": "2026-05-05"}, {"materia": "Revisão", "conteudo": "Revisão: Drogas + Hediondos + Tortura + Racismo + Lavagem + Abuso Aut. + Idoso + Ambiental — 35 q.", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Qua", "date": "Qua 06/05", "isodate": "2026-05-06"}]}, {"semana": 8, "mes": 5, "mes_nome": "Maio", "foco": "Penal Militar: Parte Geral (conclusão) + Proc. Penal Militar (início)", "wk_start": "07/05", "wk_end": "13/05", "gap": false, "dias": [{"materia": "Penal Militar", "conteudo": "CPM Art. 101–144: extinção da punibilidade · prescrição militar × comum · anistia · sursis militar", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Qui", "date": "Qui 07/05", "isodate": "2026-05-07"}, {"materia": "Penal Militar", "conteudo": "CPM Art. 9º: crime militar em tempo de paz · incondicionalmente militar vs condicionalmente militar", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Sex", "date": "Sex 08/05", "isodate": "2026-05-08"}, {"materia": "Revisão", "conteudo": "Revisão: CPM Parte Geral completa: Art. 1–144 · 30 questões de prova anterior · caderno de erros", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Sáb", "date": "Sáb 09/05", "isodate": "2026-05-09"}, {"materia": "Proc. Penal Militar", "conteudo": "CPPM: Polícia Judiciária Militar · Art. 7–8 · atribuições · sindicância · auto de flagrante militar", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PP.MIL", "dia": "Seg", "date": "Seg 11/05", "isodate": "2026-05-11"}, {"materia": "Proc. Penal Militar", "conteudo": "IPM: Art. 9–28 · instauração · encarregado · prazo · relatório · distribuição ao TJM-SP", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PP.MIL", "dia": "Ter", "date": "Ter 12/05", "isodate": "2026-05-12"}, {"materia": "Simulado", "conteudo": "Simulado 3 — Bloco Profissional (40–60 questões)", "teoria": "0min", "lei": "—", "questoes": "3h", "revisao": "—", "total": "3h", "total_min": 180, "cor": "#c8a84b", "label": "SIMULADO", "dia": "Qua", "date": "Qua 13/05", "isodate": "2026-05-13"}]}, {"semana": 9, "mes": 5, "mes_nome": "Maio", "foco": "Penal Militar: Parte Especial — Crimes contra Disciplina + Proc. Penal Militar", "wk_start": "14/05", "wk_end": "20/05", "gap": false, "dias": [{"materia": "Penal Militar", "conteudo": "CPM Art. 149–182: motim, conspiração, insubordinação, desrespeito, resistência, fuga", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Qui", "date": "Qui 14/05", "isodate": "2026-05-14"}, {"materia": "Penal Militar", "conteudo": "CPM Art. 183–204: abandono de posto, dormir de serviço, violência contra sentinela, embriaguez", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Sex", "date": "Sex 15/05", "isodate": "2026-05-15"}, {"materia": "Penal Militar", "conteudo": "CPM Parte Especial: crimes propriamente militares (deserção, insubmissão) · efeitos na carreira", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Sáb", "date": "Sáb 16/05", "isodate": "2026-05-16"}, {"materia": "Penal Militar", "conteudo": "CPM Parte Especial: crimes impropriamente militares · Art.9 CPM · Lei 13.491/17 e suas 13 leis", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "P.MIL", "dia": "Seg", "date": "Seg 18/05", "isodate": "2026-05-18"}, {"materia": "Proc. Penal Militar", "conteudo": "CPPM: ação penal militar (Art.29–33) · medidas preventivas (Art.170–220) · assecuratórias", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PP.MIL", "dia": "Ter", "date": "Ter 19/05", "isodate": "2026-05-19"}, {"materia": "Revisão", "conteudo": "Revisão: CPM Parte Especial + Parte Geral integrada · 30 questões + caderno de erros", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Qua", "date": "Qua 20/05", "isodate": "2026-05-20"}]}, {"semana": 10, "mes": 5, "mes_nome": "Maio", "foco": "Proc. Penal Militar (conclusão) + Penal Geral (início)", "wk_start": "21/05", "wk_end": "27/05", "gap": false, "dias": [{"materia": "Proc. Penal Militar", "conteudo": "CPPM: Res.42/2016 TJM-SP · Prov.3-05 CGER · Res.009/2012 (Presídio Romão Gomes)", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PP.MIL", "dia": "Qui", "date": "Qui 21/05", "isodate": "2026-05-21"}, {"materia": "Proc. Penal Militar", "conteudo": "CORREGPM-1/310/16 · deserção: Portaria processual · sindicância correcional x PAD · prazos", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PP.MIL", "dia": "Sex", "date": "Sex 22/05", "isodate": "2026-05-22"}, {"materia": "Revisão", "conteudo": "Revisão: CPPM completo + normas TJM + CORREGPM · 30 questões de prova anterior", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Sáb", "date": "Sáb 23/05", "isodate": "2026-05-23"}, {"materia": "Penal", "conteudo": "Conceito analítico de crime · fato típico · conduta, resultado, nexo causal · tipo doloso e culposo", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Seg", "date": "Seg 25/05", "isodate": "2026-05-25"}, {"materia": "Penal", "conteudo": "Ilicitude e excludentes · legítima defesa, estado de necessidade, estrito cumprimento, consentimento", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Ter", "date": "Ter 26/05", "isodate": "2026-05-26"}, {"materia": "Simulado", "conteudo": "Simulado 4 — Bloco Profissional (40–60 questões)", "teoria": "0min", "lei": "—", "questoes": "3h", "revisao": "—", "total": "3h", "total_min": 180, "cor": "#c8a84b", "label": "SIMULADO", "dia": "Qua", "date": "Qua 27/05", "isodate": "2026-05-27"}]}, {"semana": 11, "mes": 5, "mes_nome": "Maio", "foco": "Penal Geral (continuação) + Proc. Penal (início)", "wk_start": "28/05", "wk_end": "03/06", "gap": false, "dias": [{"materia": "Penal", "conteudo": "Culpabilidade · imputabilidade · doença mental · embriaguez · actio libera in causa", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Qui", "date": "Qui 28/05", "isodate": "2026-05-28"}, {"materia": "Penal", "conteudo": "Concurso de pessoas · coautoria · participação · comunicabilidade · punibilidade", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Sex", "date": "Sex 29/05", "isodate": "2026-05-29"}, {"materia": "Penal", "conteudo": "Penas: espécies, dosimetria, agravantes, atenuantes, causas de aumento · sursis · livramento", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Sáb", "date": "Sáb 30/05", "isodate": "2026-05-30"}, {"materia": "Penal", "conteudo": "Ação penal · extinção da punibilidade · prescrição (regras geral + especial) · decadência", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Seg", "date": "Seg 01/06", "isodate": "2026-06-01"}, {"materia": "Proc. Penal", "conteudo": "Inquérito policial: instauração, prazo, relatório, arquivamento · ANPP · controle do MP", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#c04040", "label": "PROC.PEN", "dia": "Ter", "date": "Ter 02/06", "isodate": "2026-06-02"}, {"materia": "Revisão", "conteudo": "Revisão: Revisão integrada: Estatuto Armas + RDPM + OrgCrim + Abuso Aut. — 35 questões", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Qua", "date": "Qua 03/06", "isodate": "2026-06-03"}]}, {"semana": 12, "mes": 6, "mes_nome": "Junho", "foco": "Penal Especial (crimes contra pessoa e patrimônio) + Proc. Penal", "wk_start": "04/06", "wk_end": "10/06", "gap": false, "dias": [{"materia": "Penal", "conteudo": "Crimes contra a vida: homicídio simples, qualificado, privilegiado, feminicídio, infanticídio", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Qui", "date": "Qui 04/06", "isodate": "2026-06-04"}, {"materia": "Penal", "conteudo": "Lesão corporal · periclitação da vida · rixa · crimes contra a honra · crimes contra liberdade", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Sex", "date": "Sex 05/06", "isodate": "2026-06-05"}, {"materia": "Penal", "conteudo": "Crimes contra o patrimônio: furto, roubo, extorsão, extorsão med. sequestro, estelionato, dano", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Sáb", "date": "Sáb 06/06", "isodate": "2026-06-06"}, {"materia": "Proc. Penal", "conteudo": "Ação penal pública e privada · denúncia, queixa, prazo, rejeição · Lei 9.099/95 (JECRIM)", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#c04040", "label": "PROC.PEN", "dia": "Seg", "date": "Seg 08/06", "isodate": "2026-06-08"}, {"materia": "Proc. Penal", "conteudo": "Da Prova: ônus, provas ilícitas, confissão, testemunha, perícia, busca e apreensão, interceptação", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#c04040", "label": "PROC.PEN", "dia": "Ter", "date": "Ter 09/06", "isodate": "2026-06-09"}, {"materia": "Simulado", "conteudo": "Simulado 5 — Bloco Profissional (40–60 questões)", "teoria": "0min", "lei": "—", "questoes": "3h", "revisao": "—", "total": "3h", "total_min": 180, "cor": "#c8a84b", "label": "SIMULADO", "dia": "Qua", "date": "Qua 10/06", "isodate": "2026-06-10"}]}, {"semana": 13, "mes": 6, "mes_nome": "Junho", "foco": "Penal Especial (crimes sexuais + Adm. Pública) + Proc. Penal + Constitucional", "wk_start": "11/06", "wk_end": "17/06", "gap": false, "dias": [{"materia": "Penal", "conteudo": "Crimes contra dignidade sexual: estupro, importunação, assédio, violação de vulnerável, ação penal", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Qui", "date": "Qui 11/06", "isodate": "2026-06-11"}, {"materia": "Penal", "conteudo": "Crimes contra Adm. Pública: peculato, concussão, corrupção passiva/ativa, prevaricação, desacato", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Sex", "date": "Sex 12/06", "isodate": "2026-06-12"}, {"materia": "Penal", "conteudo": "CP Art. 359-I–359-T (NOVO): crimes contra o Estado Democrático de Direito · golpe · penas", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#e05050", "label": "PENAL", "dia": "Sáb", "date": "Sáb 13/06", "isodate": "2026-06-13"}, {"materia": "Proc. Penal", "conteudo": "Prisão em flagrante: espécies · lavratura · audiência de custódia · relaxamento · comunicação", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#c04040", "label": "PROC.PEN", "dia": "Seg", "date": "Seg 15/06", "isodate": "2026-06-15"}, {"materia": "Constitucional", "conteudo": "CF Art. 1–5: princípios fundamentais · direitos individuais (I–LXXVIII) · remédios constitucionais", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3b82c4", "label": "CONST", "dia": "Ter", "date": "Ter 16/06", "isodate": "2026-06-16"}, {"materia": "Revisão", "conteudo": "Revisão: Parte Geral + Crimes contra pessoa e patrimônio · 35 questões de prova anterior", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Qua", "date": "Qua 17/06", "isodate": "2026-06-17"}]}, {"semana": 14, "mes": 6, "mes_nome": "Junho", "foco": "Constitucional + Proc. Penal (prisões) + Administrativo (início)", "wk_start": "18/06", "wk_end": "24/06", "gap": false, "dias": [{"materia": "Constitucional", "conteudo": "CF Art. 6–11 (Direitos Sociais) · Art. 37–41 (Adm. Pública / LIMPE) · Art. 42 (Militares)", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3b82c4", "label": "CONST", "dia": "Qui", "date": "Qui 18/06", "isodate": "2026-06-18"}, {"materia": "Constitucional", "conteudo": "CF Art. 118–126 (Justiça Militar) · Art. 142–144 (FF.AA + Seg. Pública) · Art.144 completo", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3b82c4", "label": "CONST", "dia": "Sex", "date": "Sex 19/06", "isodate": "2026-06-19"}, {"materia": "Constitucional", "conteudo": "CE/SP Art. 1–4, 70-A–82 (TJM-SP), 111–116, 138, 139–143 (Seg. Pública SP)", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3b82c4", "label": "CONST", "dia": "Sáb", "date": "Sáb 20/06", "isodate": "2026-06-20"}, {"materia": "Proc. Penal", "conteudo": "Prisão preventiva e temporária · medidas cautelares diversas · liberdade provisória com/sem fiança", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#c04040", "label": "PROC.PEN", "dia": "Seg", "date": "Seg 22/06", "isodate": "2026-06-22"}, {"materia": "Administrativo", "conteudo": "Princípios adm.: LIMPE + implícitos (razoabilidade, proporcionalidade, motivação) · FIRM militar", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3da8b8", "label": "ADM", "dia": "Ter", "date": "Ter 23/06", "isodate": "2026-06-23"}, {"materia": "Simulado", "conteudo": "Simulado 6 — Bloco Profissional (40–60 questões)", "teoria": "0min", "lei": "—", "questoes": "3h", "revisao": "—", "total": "3h", "total_min": 180, "cor": "#c8a84b", "label": "SIMULADO", "dia": "Qua", "date": "Qua 24/06", "isodate": "2026-06-24"}]}, {"semana": 15, "mes": 6, "mes_nome": "Junho", "foco": "Administrativo (continuação) + Constitucional (revisão)", "wk_start": "25/06", "wk_end": "01/07", "gap": false, "dias": [{"materia": "Administrativo", "conteudo": "Poderes adm.: vinculado, discricionário, hierárquico, disciplinar, regulamentar · abuso de poder", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3da8b8", "label": "ADM", "dia": "Qui", "date": "Qui 25/06", "isodate": "2026-06-25"}, {"materia": "Administrativo", "conteudo": "Poder de Polícia: conceito, ciclo, atributos, limites · discricionariedade, autoexecutoriedade", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3da8b8", "label": "ADM", "dia": "Sex", "date": "Sex 26/06", "isodate": "2026-06-26"}, {"materia": "Administrativo", "conteudo": "Atos administrativos: elementos, atributos, extinção · revogação × anulação · convalidação", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3da8b8", "label": "ADM", "dia": "Sáb", "date": "Sáb 27/06", "isodate": "2026-06-27"}, {"materia": "Administrativo", "conteudo": "PAD: instauração, instrução, defesa, relatório, julgamento · responsabilidade tríplice do militar", "teoria": "1h20min", "lei": "0h20min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h40min", "total_min": 160, "cor": "#3da8b8", "label": "ADM", "dia": "Seg", "date": "Seg 29/06", "isodate": "2026-06-29"}, {"materia": "Revisão", "conteudo": "Revisão: CF Art. 1–144 + CE/SP · mapa mental + 30 questões de prova anterior", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Ter", "date": "Ter 30/06", "isodate": "2026-06-30"}, {"materia": "Revisão", "conteudo": "Revisão: Revisão cruzada: leis × CPM · competência, tipos, penas — 30 questões", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Qua", "date": "Qua 01/07", "isodate": "2026-07-01"}]}, {"semana": 16, "mes": 7, "mes_nome": "Julho", "foco": "Revisão Geral — Normas PM + Leg. Interesse + Leis Especiais + Penal Militar", "wk_start": "02/07", "wk_end": "08/07", "gap": false, "dias": [{"materia": "Revisão", "conteudo": "Revisão: Sprint Final: ICCs + Instruções + Diretrizes + NIs · 40 questões de alta incidência", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Qui", "date": "Qui 02/07", "isodate": "2026-07-02"}, {"materia": "Revisão", "conteudo": "Revisão: RDPM + Dec.260 + Lei 616 + R-200 + LC 1.150 + LC 1.224 · 35 questões", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Sex", "date": "Sex 03/07", "isodate": "2026-07-03"}, {"materia": "Revisão", "conteudo": "Revisão: Todas as 13 leis: quadro comparativo de penas e tipos · 40 questões", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Sáb", "date": "Sáb 04/07", "isodate": "2026-07-04"}, {"materia": "Revisão", "conteudo": "Revisão: CPM Geral + Especial + 13 leis especiais · 35 questões · caderno de erros", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Seg", "date": "Seg 06/07", "isodate": "2026-07-06"}, {"materia": "Revisão", "conteudo": "Revisão: CPPM + normas TJM + CORREGPM + Portaria Deserção · 30 questões", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Ter", "date": "Ter 07/07", "isodate": "2026-07-07"}, {"materia": "Simulado", "conteudo": "Simulado 7 — Bloco Profissional (40–60 questões)", "teoria": "0min", "lei": "—", "questoes": "3h", "revisao": "—", "total": "3h", "total_min": 180, "cor": "#c8a84b", "label": "SIMULADO", "dia": "Qua", "date": "Qua 08/07", "isodate": "2026-07-08"}]}, {"semana": 17, "mes": 7, "mes_nome": "Julho", "foco": "Revisão Geral — Proc. Penal + Penal + Constitucional + Administrativo", "wk_start": "09/07", "wk_end": "15/07", "gap": false, "dias": [{"materia": "Revisão", "conteudo": "Revisão: CPP completo + Lei 9.099 · 35 questões · pontos de confusão", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Qui", "date": "Qui 09/07", "isodate": "2026-07-09"}, {"materia": "Revisão", "conteudo": "Revisão: CP Geral + Especial · crimes mais cobrados · 40 questões de prova anterior", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Sex", "date": "Sex 10/07", "isodate": "2026-07-10"}, {"materia": "Revisão", "conteudo": "Revisão: CF + CE/SP + D.Adm. integrado · 35 questões · mapa mental final", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Sáb", "date": "Sáb 11/07", "isodate": "2026-07-11"}, {"materia": "Revisão", "conteudo": "Revisão: Competência criminal: crime comum × militar × federal · 30 questões integradas", "teoria": "0h30min", "lei": "—", "questoes": "1h", "revisao": "0h30min", "total": "2h", "total_min": 120, "cor": "#708090", "label": "REVISÃO", "dia": "Seg", "date": "Seg 13/07", "isodate": "2026-07-13"}, {"materia": "Revisão", "conteudo": "Tópicos NOVOS do edital 2024: Art.359-I–T CP · D.Adm. completo · ICCs novos · PM3-6/02/21", "teoria": "1h", "lei": "0h30min", "questoes": "0h45min", "revisao": "0h15min", "total": "2h30min", "total_min": 150, "cor": "#708090", "label": "REVISÃO", "dia": "Ter", "date": "Ter 14/07", "isodate": "2026-07-14"}, {"materia": "Simulado", "conteudo": "Simulado 8 — Bloco Profissional (40–60 questões)", "teoria": "0min", "lei": "—", "questoes": "3h", "revisao": "—", "total": "3h", "total_min": 180, "cor": "#c8a84b", "label": "SIMULADO", "dia": "Qua", "date": "Qua 15/07", "isodate": "2026-07-15"}]}];
+
+var STORE_KEY = 'cstapm_19mar_v1';
+function loadState(){ try{ var s=localStorage.getItem(STORE_KEY); return s?JSON.parse(s):{}; }catch(e){ return {}; } }
+function saveState(s){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(s)); }catch(e){} }
+var state = loadState();
+
+var TODAY_ISO = (function(){
+  var t=new Date();
+  return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+})();
+
+/* FILTROS */
+var activeF='todos';
+var allMats=['todos'];
+SEMANAS.forEach(function(s){ s.dias.forEach(function(d){ if(allMats.indexOf(d.materia)<0) allMats.push(d.materia); }); });
+var fwrap=document.getElementById('fwrap');
+allMats.forEach(function(f){
+  var b=document.createElement('button');
+  b.className='fb'+(f==='todos'?' on':'');
+  b.textContent=f==='todos'?'TODOS':f.toUpperCase();
+  b.onclick=function(){
+    activeF=f;
+    document.querySelectorAll('.fb').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on');
+    applyFilter();
+  };
+  fwrap.appendChild(b);
+});
+function applyFilter(){
+  document.querySelectorAll('.day-card').forEach(function(c){
+    c.style.display=(activeF==='todos'||c.getAttribute('data-mat')===activeF)?'':'none';
+  });
+}
+
+/* RENDER */
+var weeksEl=document.getElementById('weeks');
+var todayCardEl=null, todayData=null;
+var globalIdx=0, prevMes=0;
+
+SEMANAS.forEach(function(sem,si){
+  if(sem.mes!==prevMes){
+    var ml=document.createElement('div');
+    ml.className='mes-sep';
+    ml.textContent='── '+sem.mes_nome.toUpperCase()+' / 2026 ──────────────';
+    weeksEl.appendChild(ml);
+    prevMes=sem.mes;
+  }
+
+  var block=document.createElement('div');
+  block.className='week-block';
+  block.id='wk-'+si;
+
+  var head=document.createElement('div');
+  head.className='week-head';
+  head.innerHTML=
+    '<div class="wnum">'+sem.semana+'</div>'+
+    '<div class="winfo">'+
+      '<div class="wfoco">Sem.'+sem.semana+' &nbsp;·&nbsp; '+sem.foco+'</div>'+
+      '<div class="wmeta">'+sem.wk_start+' &rarr; '+sem.wk_end+' &nbsp;·&nbsp; '+sem.mes_nome+'</div>'+
+    '</div>'+
+    '<div class="wright">'+
+      '<div class="wpct" id="wpct-'+si+'">0%</div>'+
+      '<div class="wbar-wrap"><div class="wbar-fill" id="wbar-'+si+'" style="width:0%"></div></div>'+
+      '<div class="wtog" id="wtog-'+si+'">&#9660;</div>'+
+    '</div>';
+  head.onclick=(function(i){ return function(){ toggleWeek(i); }; })(si);
+  block.appendChild(head);
+
+  var grid=document.createElement('div');
+  grid.className='days-grid';
+  grid.id='dgrid-'+si;
+  block.appendChild(grid);
+
+  sem.dias.forEach(function(dia){
+    var idx=globalIdx;
+    var isDone=!!state['d'+idx];
+    var isToday=(dia.isodate===TODAY_ISO);
+
+    var card=document.createElement('div');
+    var cls=['day-card'];
+    if(isDone)  cls.push('done');
+    if(isToday) cls.push('is-today');
+    card.className=cls.join(' ');
+    card.id='day-'+idx;
+    card.setAttribute('data-mat',dia.materia);
+    card.setAttribute('data-week',si);
+    card.style.borderLeftColor=dia.cor;
+
+    var bg=dia.cor+'22', bdr=dia.cor+'44';
+    card.innerHTML=
+      '<div class="chk">'+(isDone?'&#10003;':'')+'</div>'+
+      '<div class="dtop">'+
+        '<span class="ddate" style="color:'+dia.cor+'">'+dia.date+'</span>'+
+        '<span class="dbadge" style="background:'+bg+';color:'+dia.cor+';border:1px solid '+bdr+'">'+dia.label+'</span>'+
+      '</div>'+
+      '<div class="dt">'+dia.conteudo+'</div>'+
+      '<div class="dd">'+dia.materia+'</div>'+
+      '<div class="tempos">'+
+        '<div class="ti"><div class="tl">TEORIA</div><div class="tv">'+dia.teoria+'</div></div>'+
+        '<div class="ti"><div class="tl">LEI SECA</div><div class="tv">'+dia.lei+'</div></div>'+
+        '<div class="ti"><div class="tl">QUEST&Otilde;ES</div><div class="tv">'+dia.questoes+'</div></div>'+
+        '<div class="ti"><div class="tl">REVIS&Atilde;O</div><div class="tv">'+dia.revisao+'</div></div>'+
+      '</div>'+
+      '<div class="total-line">&#9201; '+dia.total+'</div>'+
+      (isToday?'<div class="today-tag">&#9679; HOJE</div>':'');
+
+    card.onclick=(function(i,w){ return function(){ toggleDay(i,w); }; })(idx,si);
+    grid.appendChild(card);
+    if(isToday){ todayCardEl=card; todayData=dia; }
+    globalIdx++;
+  });
+
+  weeksEl.appendChild(block);
+  updateWeek(si);
+});
+
+/* Abre semana de hoje automaticamente */
+if(todayCardEl){
+  var tw=parseInt(todayCardEl.getAttribute('data-week'));
+  openWeek(tw);
+  document.getElementById('today-title').textContent=todayData.conteudo;
+  document.getElementById('today-det').textContent=todayData.materia+' · '+todayData.total;
+} else {
+  document.getElementById('today-title').textContent='Nenhuma aula agendada hoje';
+  document.getElementById('today-det').textContent='19/03/2026 → 15/07/2026';
+  document.querySelector('.go-btn').style.display='none';
+}
+updateGlobal();
+
+/* ─── FUNÇÕES ─── */
+function openWeek(wi){
+  var b=document.getElementById('wk-'+wi);
+  var g=document.getElementById('dgrid-'+wi);
+  var t=document.getElementById('wtog-'+wi);
+  if(!b.classList.contains('open')){
+    b.classList.add('open');
+    g.classList.add('visible');
+    t.innerHTML='&#9650;';
+  }
+}
+function toggleWeek(wi){
+  var b=document.getElementById('wk-'+wi);
+  var g=document.getElementById('dgrid-'+wi);
+  var t=document.getElementById('wtog-'+wi);
+  var open=b.classList.toggle('open');
+  if(open){ g.classList.add('visible'); t.innerHTML='&#9650;'; }
+  else     { g.classList.remove('visible'); t.innerHTML='&#9660;'; }
+}
+function toggleDay(idx,wi){
+  state['d'+idx]=!state['d'+idx];
+  saveState(state);
+  var c=document.getElementById('day-'+idx);
+  if(c){
+    c.classList.toggle('done',!!state['d'+idx]);
+    var k=c.querySelector('.chk');
+    if(k) k.innerHTML=state['d'+idx]?'&#10003;':'';
+  }
+  updateWeek(wi);
+  updateGlobal();
+  showToast(state['d'+idx]?'&#10003; Dia concluído!':'↩ Desmarcado');
+}
+function updateWeek(wi){
+  var base=0;
+  for(var i=0;i<wi;i++) base+=SEMANAS[i].dias.length;
+  var n=SEMANAS[wi].dias.length, done=0;
+  for(var j=0;j<n;j++){ if(state['d'+(base+j)]) done++; }
+  var pct=Math.round(done/n*100);
+  var pe=document.getElementById('wpct-'+wi);
+  var be=document.getElementById('wbar-'+wi);
+  var bl=document.getElementById('wk-'+wi);
+  if(pe) pe.textContent=pct+'%';
+  if(be) be.style.width=pct+'%';
+  if(bl) bl.classList.toggle('wdone',pct===100);
+}
+function updateGlobal(){
+  var total=0, done=0, streak=0, cur=0, idx=0;
+  SEMANAS.forEach(function(s){
+    s.dias.forEach(function(){
+      total++;
+      if(state['d'+idx]){ done++; cur++; if(cur>streak) streak=cur; } else cur=0;
+      idx++;
+    });
+  });
+  var pct=total?Math.round(done/total*100):0;
+  document.getElementById('g-pct').textContent=pct+'%';
+  document.getElementById('g-frac').textContent=done+' / '+total+' dias';
+  document.getElementById('g-bar').style.width=pct+'%';
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-streak').textContent=streak;
+  document.getElementById('s-remain').textContent=total-done;
+}
+function goToToday(){
+  if(!todayCardEl) return;
+  var wi=parseInt(todayCardEl.getAttribute('data-week'));
+  openWeek(wi);
+  setTimeout(function(){ todayCardEl.scrollIntoView({behavior:'smooth',block:'center'}); },150);
+}
+var toastTimer;
+function showToast(msg){
+  var el=document.getElementById('toast');
+  el.innerHTML=msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){ el.classList.remove('show'); },1800);
+}
+function confirmReset(){
+  if(!confirm('Zerar todo o progresso?')) return;
+  state={}; saveState(state);
+  document.querySelectorAll('.day-card').forEach(function(c){
+    c.classList.remove('done');
+    var k=c.querySelector('.chk'); if(k) k.innerHTML='';
+  });
+  SEMANAS.forEach(function(_,wi){ updateWeek(wi); });
+  updateGlobal();
+}
+</script>
+</body>
+</html>
