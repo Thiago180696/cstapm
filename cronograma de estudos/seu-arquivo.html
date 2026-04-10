@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronograma CSTAPM 2024 - COMPLETO 116 temas</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        line-height: 1.5;
+        padding-bottom: 50px;
+    }
+    
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 2px solid #334155;
+        padding: 16px 24px;
+    }
+    
+    .header h1 {
+        font-size: 1.4rem;
+        color: #f1f5f9;
+        margin-bottom: 8px;
+    }
+    
+    .header .subtitle {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        margin-bottom: 12px;
+    }
+    
+    .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    
+    .progress-bar {
+        flex: 1;
+        min-width: 300px;
+        height: 20px;
+        background: #1e293b;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #334155;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #06d6a0, #4cc9f0);
+        width: 0%;
+        transition: width 0.3s;
+    }
+    
+    .progress-text {
+        font-size: 0.9rem;
+        color: #cbd5e1;
+        font-weight: 600;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 24px auto;
+        padding: 0 24px;
+    }
+    
+    .week-block {
+        margin-bottom: 20px;
+        background: #1e293b;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #334155;
+    }
+    
+    .week-summary {
+        padding: 16px 20px;
+        cursor: pointer;
+        background: #1e293b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        user-select: none;
+    }
+    
+    .week-summary:hover {
+        background: #293548;
+    }
+    
+    .week-title {
+        font-size: 1.1rem;
+        color: #f1f5f9;
+    }
+    
+    .week-dates {
+        font-size: 0.85rem;
+        color: #94a3b8;
+    }
+    
+    .week-cards {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .day-card {
+        background: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .day-card:hover {
+        transform: translateY(-2px);
+        border-color: #4cc9f0;
+        box-shadow: 0 4px 12px rgba(76, 201, 240, 0.15);
+    }
+    
+    .day-card.completed {
+        opacity: 0.55;
+        background: #1a2f1e;
+    }
+    
+    .day-card.completed::before {
+        content: '✓';
+        display: inline-block;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        width: 20px;
+        height: 20px;
+        background: #06d6a0;
+        color: #0f172a;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 20px;
+    }
+    
+    .day-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #334155;
+    }
+    
+    .day-number {
+        font-weight: 700;
+        color: #f1f5f9;
+        background: #334155;
+        padding: 4px 10px;
+        border-radius: 4px;
+        min-width: 60px;
+    }
+    
+    .day-date {
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
+    
+    .day-materia {
+        font-weight: 600;
+        color: #4cc9f0;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+    
+    .day-temas {
+        margin-top: 8px;
+    }
+    
+    .tema-item {
+        padding: 6px 0;
+        font-size: 0.8rem;
+        color: #cbd5e1;
+        border-left: 3px solid #334155;
+        padding-left: 10px;
+        margin-bottom: 4px;
+        line-height: 1.3;
+    }
+    
+    .tema-item.critico {
+        border-left-color: #ff4d6d;
+    }
+    
+    .tema-item.importante {
+        border-left-color: #f9c74f;
+    }
+    
+    .tema-item.complementar {
+        border-left-color: #4cc9f0;
+    }
+    
+    .tema-nivel {
+        font-size: 0.85rem;
+        margin-right: 4px;
+    }
+    
+    .tema-titulo {
+        color: #e2e8f0;
+    }
+    
+    .tema-stats {
+        font-size: 0.7rem;
+        color: #94a3b8;
+        margin-left: 4px;
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>📚 Cronograma CSTAPM (CHQAOPM) 2024 - COMPLETO</h1>
+    <div class="subtitle">✓ Todos os 116 temas incluídos · Temas críticos com maior ênfase · 83 dias de estudo</div>
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">0 / 83 dias</div>
+    </div>
+</div>
+
+<div class="container">
+
+    <details class="week-block" open>
+        <summary class="week-summary">
+            <span class="week-title">Semana 1</span>
+            <span class="week-dates">10/04/2026 a 16/04/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="1">
+                <div class="day-header">
+                    <span class="day-number">Dia 1</span>
+                    <span class="day-date">10/04/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#4 2.1.1.4 - Militares Federais e dos Estados (Art. 42 e 142)</span>
+                <span class="tema-stats">[12/12 | 224]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="2">
+                <div class="day-header">
+                    <span class="day-number">Dia 2</span>
+                    <span class="day-date">11/04/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#6 2.1.1.6 - Segurança Pública CF (Art. 144)</span>
+                <span class="tema-stats">[12/12 | 103]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="3">
+                <div class="day-header">
+                    <span class="day-number">Dia 3</span>
+                    <span class="day-date">12/04/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#7 2.1.2.1 - Fundamentos do Estado SP</span>
+                <span class="tema-stats">[12/12 | 99]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="4">
+                <div class="day-header">
+                    <span class="day-number">Dia 4</span>
+                    <span class="day-date">13/04/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#3 2.1.1.3 - Administração Pública CF (Art. 37 ao 41)</span>
+                <span class="tema-stats">[12/12 | 76]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="5">
+                <div class="day-header">
+                    <span class="day-number">Dia 5</span>
+                    <span class="day-date">14/04/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#5 2.1.1.5 - Tribunais e Juízes dos Estados (Art. 124 ao 126)</span>
+                <span class="tema-stats">[12/12 | 71]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="6">
+                <div class="day-header">
+                    <span class="day-number">Dia 6</span>
+                    <span class="day-date">15/04/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#1 2.1.1.1 - Princípios Fundamentais CF (Art. 1º ao 4º)</span>
+                <span class="tema-stats">[12/12 | 41]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="7">
+                <div class="day-header">
+                    <span class="day-number">Dia 7</span>
+                    <span class="day-date">16/04/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#2 2.1.1.2 - Direitos e Deveres Individuais e Coletivos (Art. 5º ao 11)</span>
+                <span class="tema-stats">[10/12 | 32]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 2</span>
+            <span class="week-dates">17/04/2026 a 23/04/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="8">
+                <div class="day-header">
+                    <span class="day-number">Dia 8</span>
+                    <span class="day-date">17/04/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#8 2.1.2.2 - Justiça Militar do Estado (Art. 70-A ao 82)</span>
+                <span class="tema-stats">[7/12 | 15]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="9">
+                <div class="day-header">
+                    <span class="day-number">Dia 9</span>
+                    <span class="day-date">18/04/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#10 2.1.2.4 - Servidores Públicos Militares SP (Art. 138)</span>
+                <span class="tema-stats">[3/12 | 3]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="10">
+                <div class="day-header">
+                    <span class="day-number">Dia 10</span>
+                    <span class="day-date">19/04/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#11 2.1.2.5 - Segurança Pública SP (Art. 139 ao 143)</span>
+                <span class="tema-stats">[1/12 | 1]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="11">
+                <div class="day-header">
+                    <span class="day-number">Dia 11</span>
+                    <span class="day-date">20/04/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Direito Constitucional</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#9 2.1.2.3 - Administração Pública Estadual (Art. 111 ao 116)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="12">
+                <div class="day-header">
+                    <span class="day-number">Dia 12</span>
+                    <span class="day-date">21/04/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Direito Administrativo</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#61 2.4.8 - Atos Administrativos</span>
+                <span class="tema-stats">[11/12 | 29]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="13">
+                <div class="day-header">
+                    <span class="day-number">Dia 13</span>
+                    <span class="day-date">22/04/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Direito Administrativo</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#58 2.4.5 - Princípios Regenciais da Administração Pública</span>
+                <span class="tema-stats">[11/12 | 22]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="14">
+                <div class="day-header">
+                    <span class="day-number">Dia 14</span>
+                    <span class="day-date">23/04/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Direito Administrativo</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#62 2.4.9 - Processo Administrativo e Processo Administrativo Disciplinar</span>
+                <span class="tema-stats">[10/12 | 39]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 3</span>
+            <span class="week-dates">24/04/2026 a 30/04/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="15">
+                <div class="day-header">
+                    <span class="day-number">Dia 15</span>
+                    <span class="day-date">24/04/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Direito Administrativo</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#60 2.4.7 - Poder de Polícia</span>
+                <span class="tema-stats">[10/12 | 18]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="16">
+                <div class="day-header">
+                    <span class="day-number">Dia 16</span>
+                    <span class="day-date">25/04/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Direito Administrativo</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#59 2.4.6 - Poderes e Deveres da Administração</span>
+                <span class="tema-stats">[7/12 | 24]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="17">
+                <div class="day-header">
+                    <span class="day-number">Dia 17</span>
+                    <span class="day-date">26/04/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Direito Administrativo</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#57 2.4.4 - Administração Pública Direta e Indireta</span>
+                <span class="tema-stats">[6/12 | 18]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="18">
+                <div class="day-header">
+                    <span class="day-number">Dia 18</span>
+                    <span class="day-date">27/04/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Direito Administrativo</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#63 2.4.12 - Responsabilidade adm., penal e civil dos militares</span>
+                <span class="tema-stats">[3/12 | 7]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="19">
+                <div class="day-header">
+                    <span class="day-number">Dia 19</span>
+                    <span class="day-date">28/04/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Direito Administrativo</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#56 2.4.3 - Administração Pública: sentido amplo e estrito</span>
+                <span class="tema-stats">[1/12 | 3]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="20">
+                <div class="day-header">
+                    <span class="day-number">Dia 20</span>
+                    <span class="day-date">29/04/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#15 2.2.1.4 - Concurso de Pessoas (Art. 29 ao 31 CP)</span>
+                <span class="tema-stats">[12/12 | 348]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="21">
+                <div class="day-header">
+                    <span class="day-number">Dia 21</span>
+                    <span class="day-date">30/04/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#20 2.2.1.9 - Crimes contra o Patrimônio (Art. 155 ao 183 CP)</span>
+                <span class="tema-stats">[12/12 | 122]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 4</span>
+            <span class="week-dates">01/05/2026 a 07/05/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="22">
+                <div class="day-header">
+                    <span class="day-number">Dia 22</span>
+                    <span class="day-date">01/05/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#19 2.2.1.8 - Crimes contra a Pessoa (Art. 121 ao 154-B CP)</span>
+                <span class="tema-stats">[12/12 | 118]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="23">
+                <div class="day-header">
+                    <span class="day-number">Dia 23</span>
+                    <span class="day-date">02/05/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#16 2.2.1.5 - Espécies das Penas (Art. 32 ao 90 CP)</span>
+                <span class="tema-stats">[12/12 | 80]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="24">
+                <div class="day-header">
+                    <span class="day-number">Dia 24</span>
+                    <span class="day-date">03/05/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#13 2.2.1.2 - Do Crime (Art. 13 ao 25 CP)</span>
+                <span class="tema-stats">[11/12 | 101]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="25">
+                <div class="day-header">
+                    <span class="day-number">Dia 25</span>
+                    <span class="day-date">04/05/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#22 2.2.1.11 - Crimes contra a Administração Pública (Art. 312 ao 359-H CP)</span>
+                <span class="tema-stats">[11/12 | 58]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="26">
+                <div class="day-header">
+                    <span class="day-number">Dia 26</span>
+                    <span class="day-date">05/05/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#17 2.2.1.6 - Ação Penal (Art. 100 ao 106 CP)</span>
+                <span class="tema-stats">[9/12 | 39]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="27">
+                <div class="day-header">
+                    <span class="day-number">Dia 27</span>
+                    <span class="day-date">06/05/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#14 2.2.1.3 - Imputabilidade Penal (Art. 26 ao 28 CP)</span>
+                <span class="tema-stats">[9/12 | 13]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="28">
+                <div class="day-header">
+                    <span class="day-number">Dia 28</span>
+                    <span class="day-date">07/05/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#12 2.2.1.1 - Aplicação da Lei Penal (Art. 1º ao 12 CP)</span>
+                <span class="tema-stats">[6/12 | 22]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 5</span>
+            <span class="week-dates">08/05/2026 a 14/05/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="29">
+                <div class="day-header">
+                    <span class="day-number">Dia 29</span>
+                    <span class="day-date">08/05/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#18 2.2.1.7 - Extinção da Punibilidade (Art. 107 ao 120 CP)</span>
+                <span class="tema-stats">[6/12 | 19]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="30">
+                <div class="day-header">
+                    <span class="day-number">Dia 30</span>
+                    <span class="day-date">09/05/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#21 2.2.1.10 - Crimes contra a Dignidade Sexual (Art. 213 ao 234-B CP)</span>
+                <span class="tema-stats">[5/12 | 15]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="31">
+                <div class="day-header">
+                    <span class="day-number">Dia 31</span>
+                    <span class="day-date">10/05/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#23 2.2.1.12 - Crimes contra o Estado Democrático de Direito (Art. 359-I ao 359-T CP)</span>
+                <span class="tema-stats">[1/12 | 1]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="32">
+                <div class="day-header">
+                    <span class="day-number">Dia 32</span>
+                    <span class="day-date">11/05/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal</div>
+                <div class="day-temas">
+                    
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="33">
+                <div class="day-header">
+                    <span class="day-number">Dia 33</span>
+                    <span class="day-date">12/05/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Direito Processual Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#24 2.2.2.1 - Inquérito Policial (Art. 4º ao 23 CPP)</span>
+                <span class="tema-stats">[12/12 | 144]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="34">
+                <div class="day-header">
+                    <span class="day-number">Dia 34</span>
+                    <span class="day-date">13/05/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Direito Processual Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#26 2.2.2.3 - Da Prova no CPP (Art. 155 ao 250)</span>
+                <span class="tema-stats">[12/12 | 50]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="35">
+                <div class="day-header">
+                    <span class="day-number">Dia 35</span>
+                    <span class="day-date">14/05/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Direito Processual Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#27 2.2.2.4 - Prisão, Medidas Cautelares e Liberdade Provisória (Art. 282 ao 350 CPP)</span>
+                <span class="tema-stats">[12/12 | 43]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 6</span>
+            <span class="week-dates">15/05/2026 a 21/05/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="36">
+                <div class="day-header">
+                    <span class="day-number">Dia 36</span>
+                    <span class="day-date">15/05/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Direito Processual Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#25 2.2.2.2 - Ação Penal no CPP (Art. 24 ao 62)</span>
+                <span class="tema-stats">[11/12 | 51]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="37">
+                <div class="day-header">
+                    <span class="day-number">Dia 37</span>
+                    <span class="day-date">16/05/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Direito Processual Penal</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#28 2.2.2.5 - Juizados Especiais Cíveis e Criminais (Lei 9.099/95)</span>
+                <span class="tema-stats">[6/12 | 8]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="38">
+                <div class="day-header">
+                    <span class="day-number">Dia 38</span>
+                    <span class="day-date">17/05/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Direito Processual Penal</div>
+                <div class="day-temas">
+                    
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="39">
+                <div class="day-header">
+                    <span class="day-number">Dia 39</span>
+                    <span class="day-date">18/05/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#29 2.3.1.1 - Aplicação da Lei Penal Militar (Art. 1º ao 28 CPM)</span>
+                <span class="tema-stats">[12/12 | 77]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="40">
+                <div class="day-header">
+                    <span class="day-number">Dia 40</span>
+                    <span class="day-date">19/05/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#31 2.3.1.3 - Crimes contra Autoridade/Disciplina Militar (Art. 149 ao 182 CPM)</span>
+                <span class="tema-stats">[11/12 | 46]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="41">
+                <div class="day-header">
+                    <span class="day-number">Dia 41</span>
+                    <span class="day-date">20/05/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#32 2.3.1.4 - Crimes contra Serviço/Dever Militar (Art. 183 ao 204 CPM)</span>
+                <span class="tema-stats">[8/12 | 26]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="42">
+                <div class="day-header">
+                    <span class="day-number">Dia 42</span>
+                    <span class="day-date">21/05/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#30 2.3.1.2 - Do Crime no CPM (Art. 29 ao 47)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 7</span>
+            <span class="week-dates">22/05/2026 a 28/05/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="43">
+                <div class="day-header">
+                    <span class="day-number">Dia 43</span>
+                    <span class="day-date">22/05/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Direito Penal Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#33 2.3.1.5 - Crimes propriamente militares (Parte Especial CPM)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="44">
+                <div class="day-header">
+                    <span class="day-number">Dia 44</span>
+                    <span class="day-date">23/05/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Direito Processual Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#49 2.3.2.1 - Polícia Judiciária Militar (Art. 7º e 8º CPPM)</span>
+                <span class="tema-stats">[11/12 | 41]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="45">
+                <div class="day-header">
+                    <span class="day-number">Dia 45</span>
+                    <span class="day-date">24/05/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Direito Processual Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#50 2.3.2.2 - Inquérito Policial Militar (Art. 9º ao 28 CPPM)</span>
+                <span class="tema-stats">[9/12 | 34]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="46">
+                <div class="day-header">
+                    <span class="day-number">Dia 46</span>
+                    <span class="day-date">25/05/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Direito Processual Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#51 2.3.2.3 - Ação Penal Militar (Art. 29 ao 33 CPPM)</span>
+                <span class="tema-stats">[6/12 | 9]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="47">
+                <div class="day-header">
+                    <span class="day-number">Dia 47</span>
+                    <span class="day-date">26/05/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Direito Processual Militar</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#52 2.3.2.4 - Medidas Preventivas e Assecuratórias (Art. 170 ao 276 CPPM)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="48">
+                <div class="day-header">
+                    <span class="day-number">Dia 48</span>
+                    <span class="day-date">27/05/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Leis Especiais</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#38 2.3.1.8c - ECA - Criança e Adolescente (Lei 8.069/90 e 13.431/17)</span>
+                <span class="tema-stats">[9/12 | 14]</span>
+            </div>
+            
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#36 2.3.1.8a - Lei de Abuso de Autoridade (Lei 13.869/19)</span>
+                <span class="tema-stats">[8/12 | 16]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="49">
+                <div class="day-header">
+                    <span class="day-number">Dia 49</span>
+                    <span class="day-date">28/05/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Leis Especiais</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#40 2.3.1.8e - Lei de Drogas (Lei 11.343/06)</span>
+                <span class="tema-stats">[6/12 | 16]</span>
+            </div>
+            
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#48 2.3.1.8m - Violência Doméstica (Lei Maria da Penha - 11.340/06)</span>
+                <span class="tema-stats">[5/12 | 16]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 8</span>
+            <span class="week-dates">29/05/2026 a 04/06/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="50">
+                <div class="day-header">
+                    <span class="day-number">Dia 50</span>
+                    <span class="day-date">29/05/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Leis Especiais</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#43 2.3.1.8h - Crimes Ambientais (Lei 9.605/98)</span>
+                <span class="tema-stats">[5/12 | 6]</span>
+            </div>
+            
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#44 2.3.1.8i - Organizações Criminosas (Lei 12.694/12 e 12.850/13)</span>
+                <span class="tema-stats">[5/12 | 6]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="51">
+                <div class="day-header">
+                    <span class="day-number">Dia 51</span>
+                    <span class="day-date">30/05/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Leis Especiais</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#46 2.3.1.8k - Lei de Tortura (Lei 9.455/97)</span>
+                <span class="tema-stats">[4/12 | 10]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#45 2.3.1.8j - Preconceito de Raça ou Cor (Lei 7.716/89)</span>
+                <span class="tema-stats">[3/12 | 12]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="52">
+                <div class="day-header">
+                    <span class="day-number">Dia 52</span>
+                    <span class="day-date">31/05/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Leis Especiais</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#37 2.3.1.8b - Lei de Armas (Lei 10.826/03)</span>
+                <span class="tema-stats">[3/12 | 4]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#39 2.3.1.8d - Crimes Hediondos (Lei 8.072/90)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="53">
+                <div class="day-header">
+                    <span class="day-number">Dia 53</span>
+                    <span class="day-date">01/06/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Leis Especiais</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#41 2.3.1.8f - Estatuto do Idoso (Lei 10.741/03)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#42 2.3.1.8g - Lavagem de Dinheiro (Lei 9.613/98 e 12.683/12)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="54">
+                <div class="day-header">
+                    <span class="day-number">Dia 54</span>
+                    <span class="day-date">02/06/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Leis Especiais</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#47 2.3.1.8l - Lei de Trânsito (Lei 9.503/97)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="55">
+                <div class="day-header">
+                    <span class="day-number">Dia 55</span>
+                    <span class="day-date">03/06/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Leis Especiais</div>
+                <div class="day-temas">
+                    
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="56">
+                <div class="day-header">
+                    <span class="day-number">Dia 56</span>
+                    <span class="day-date">04/06/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#64 2.5.1 - ECA - Art. 1-4, 103-128, 228-244-B (Lei 8.069/90)</span>
+                <span class="tema-stats">[9/12 | 14]</span>
+            </div>
+            
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#65 2.5.2 - Improbidade Administrativa (Lei 8.429/92)</span>
+                <span class="tema-stats">[8/12 | 22]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 9</span>
+            <span class="week-dates">05/06/2026 a 11/06/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="57">
+                <div class="day-header">
+                    <span class="day-number">Dia 57</span>
+                    <span class="day-date">05/06/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#77 2.6.5 - Decreto 20.218/82 - Acidente em Serviço</span>
+                <span class="tema-stats">[8/12 | 21]</span>
+            </div>
+            
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#78 2.6.6 - Lei Complementar 893/01 - Regulamento Disciplinar PM</span>
+                <span class="tema-stats">[8/12 | 15]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="58">
+                <div class="day-header">
+                    <span class="day-number">Dia 58</span>
+                    <span class="day-date">06/06/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#79 2.6.7 - Decreto 55.588/10 - Tratamento Nominal Transexuais</span>
+                <span class="tema-stats">[5/12 | 13]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#66 2.5.3 - Lei de Tortura (Lei 9.455/97)</span>
+                <span class="tema-stats">[4/12 | 10]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="59">
+                <div class="day-header">
+                    <span class="day-number">Dia 59</span>
+                    <span class="day-date">07/06/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#70 2.5.7 - Declaração Universal dos Direitos Humanos, 1948</span>
+                <span class="tema-stats">[4/12 | 4]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#72 2.5.9 - Convenção Americana DH (Pacto São José da Costa Rica)</span>
+                <span class="tema-stats">[3/12 | 4]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="60">
+                <div class="day-header">
+                    <span class="day-number">Dia 60</span>
+                    <span class="day-date">08/06/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#74 2.6.2 - Decreto 88.777/83 - R-200</span>
+                <span class="tema-stats">[3/12 | 4]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#68 2.5.5 - Lei de Abuso de Autoridade (Lei 13.869/19)</span>
+                <span class="tema-stats">[2/12 | 2]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="61">
+                <div class="day-header">
+                    <span class="day-number">Dia 61</span>
+                    <span class="day-date">09/06/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#75 2.6.3 - Decreto-lei 260/70 - Inatividade PMESP</span>
+                <span class="tema-stats">[2/12 | 2]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#80 2.6.8 - LC 1.150/11 - Inatividade e Promoção PM</span>
+                <span class="tema-stats">[2/12 | 2]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="62">
+                <div class="day-header">
+                    <span class="day-number">Dia 62</span>
+                    <span class="day-date">10/06/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#82 2.6.10 - LC 1.224/13 - Efetivo PM</span>
+                <span class="tema-stats">[2/12 | 2]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#69 2.5.6 - Decreto 9.847/19 - Regulamenta Lei 10.826/03 (Armas)</span>
+                <span class="tema-stats">[1/12 | 3]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="63">
+                <div class="day-header">
+                    <span class="day-number">Dia 63</span>
+                    <span class="day-date">11/06/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#67 2.5.4 - Lei de Acesso à Informação (Lei 12.527/11)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#71 2.5.8 - Resolução ONU 34/169/79 - Código de Conduta</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 10</span>
+            <span class="week-dates">12/06/2026 a 18/06/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="64">
+                <div class="day-header">
+                    <span class="day-number">Dia 64</span>
+                    <span class="day-date">12/06/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#73 2.6.1 - Decreto-lei 667/69 - Reorganização PM</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#76 2.6.4 - Lei 616/74 - Organização Básica PMESP</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="65">
+                <div class="day-header">
+                    <span class="day-number">Dia 65</span>
+                    <span class="day-date">13/06/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#81 2.6.9 - Decreto 58.052/12 - Regulamenta Lei Acesso Informação SP</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="66">
+                <div class="day-header">
+                    <span class="day-number">Dia 66</span>
+                    <span class="day-date">14/06/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Legislação de Interesse</div>
+                <div class="day-temas">
+                    
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="67">
+                <div class="day-header">
+                    <span class="day-number">Dia 67</span>
+                    <span class="day-date">15/06/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#94 2.7.12 - Diretriz PM3-1/02/20 - NORSOP</span>
+                <span class="tema-stats">[9/12 | 13]</span>
+            </div>
+            
+            <div class="tema-item critico">
+                <span class="tema-nivel">🔴</span>
+                <span class="tema-titulo">#92 2.7.10 - OS PM3-2/02/18 - Busca Domiciliar / Manual Polícia Ostensiva</span>
+                <span class="tema-stats">[8/12 | 25]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="68">
+                <div class="day-header">
+                    <span class="day-number">Dia 68</span>
+                    <span class="day-date">16/06/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#113 2.7.31 - I-40-PM - Infração Penal por Policial Militar</span>
+                <span class="tema-stats">[6/12 | 17]</span>
+            </div>
+            
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#93 2.7.11 - NI PM3-1/03/20 - PAAPM</span>
+                <span class="tema-stats">[6/12 | 9]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="69">
+                <div class="day-header">
+                    <span class="day-number">Dia 69</span>
+                    <span class="day-date">17/06/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#106 2.7.24 - I-15-PM - Transportes Motorizados</span>
+                <span class="tema-stats">[5/12 | 10]</span>
+            </div>
+            
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#107 2.7.25 - I-16-PM - Processo Administrativo PM</span>
+                <span class="tema-stats">[5/12 | 10]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="70">
+                <div class="day-header">
+                    <span class="day-number">Dia 70</span>
+                    <span class="day-date">18/06/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#105 2.7.23 - I-2-PM - Movimentação de Policiais Militares</span>
+                <span class="tema-stats">[5/12 | 7]</span>
+            </div>
+            
+            <div class="tema-item importante">
+                <span class="tema-nivel">🟡</span>
+                <span class="tema-titulo">#109 2.7.27 - I-23-PM - Administração Logística e Patrimonial</span>
+                <span class="tema-stats">[5/12 | 6]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 11</span>
+            <span class="week-dates">19/06/2026 a 25/06/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="71">
+                <div class="day-header">
+                    <span class="day-number">Dia 71</span>
+                    <span class="day-date">19/06/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#83 2.7.1 - Diretriz PM3-2/02/13 - Vizinhança Solidária</span>
+                <span class="tema-stats">[4/12 | 8]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#112 2.7.30 - I-38-PM - Administração de Bens Imóveis</span>
+                <span class="tema-stats">[4/12 | 4]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="72">
+                <div class="day-header">
+                    <span class="day-number">Dia 72</span>
+                    <span class="day-date">20/06/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#111 2.7.29 - I-36-PM - Afastamentos na PM</span>
+                <span class="tema-stats">[3/12 | 5]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#86 2.7.4 - Diretriz PM3-9/02/14 - Reintegração de Posse</span>
+                <span class="tema-stats">[3/12 | 4]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="73">
+                <div class="day-header">
+                    <span class="day-number">Dia 73</span>
+                    <span class="day-date">21/06/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#97 2.7.15 - NI PM3-002/03/20 - AIN (Armas Incapacitação Neuromuscular)</span>
+                <span class="tema-stats">[3/12 | 3]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#98 2.7.16 - NI PM3-1/02/20 - Perturbação de Sossego</span>
+                <span class="tema-stats">[2/12 | 8]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="74">
+                <div class="day-header">
+                    <span class="day-number">Dia 74</span>
+                    <span class="day-date">22/06/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#100 2.7.18 - Diretriz PM3-4/02/21 - DEJEM</span>
+                <span class="tema-stats">[2/12 | 5]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#95 2.7.13 - Portaria CMT G PM4-001/1.2/20 - Registro/Porte Arma</span>
+                <span class="tema-stats">[2/12 | 3]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="75">
+                <div class="day-header">
+                    <span class="day-number">Dia 75</span>
+                    <span class="day-date">23/06/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#96 2.7.14 - Diretriz PM3-1/02/22 - Câmeras Operacionais Portáteis (COP)</span>
+                <span class="tema-stats">[2/12 | 3]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#91 2.7.9 - NI PM4-001/1.2/18 - Armas Portáteis</span>
+                <span class="tema-stats">[2/12 | 2]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="76">
+                <div class="day-header">
+                    <span class="day-number">Dia 76</span>
+                    <span class="day-date">24/06/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#104 2.7.22 - Portaria PM1-7/02/23 - Regime de Trabalho</span>
+                <span class="tema-stats">[2/12 | 2]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#115 2.7.33 - R-5-PM - Regulamento de Uniformes</span>
+                <span class="tema-stats">[2/12 | 2]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="77">
+                <div class="day-header">
+                    <span class="day-number">Dia 77</span>
+                    <span class="day-date">25/06/2026 · Quinta-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#108 2.7.26 - I-21-PM - Continências, Honras, Cerimonial</span>
+                <span class="tema-stats">[1/12 | 5]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#110 2.7.28 - I-24-PM - Avaliação de Desempenho</span>
+                <span class="tema-stats">[1/12 | 2]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+    <details class="week-block" >
+        <summary class="week-summary">
+            <span class="week-title">Semana 12</span>
+            <span class="week-dates">26/06/2026 a 01/07/2026</span>
+        </summary>
+        <div class="week-cards">
+
+            <div class="day-card" data-dia="78">
+                <div class="day-header">
+                    <span class="day-number">Dia 78</span>
+                    <span class="day-date">26/06/2026 · Sexta-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#114 2.7.32 - I-43-PM - Requisições de Apresentação</span>
+                <span class="tema-stats">[1/12 | 2]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#99 2.7.17 - NI PM3-1/02/21 - Violência Doméstica</span>
+                <span class="tema-stats">[1/12 | 1]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="79">
+                <div class="day-header">
+                    <span class="day-number">Dia 79</span>
+                    <span class="day-date">27/06/2026 · Sábado</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#84 2.7.2 - Substituição Temporária de Função de Oficiais</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#85 2.7.3 - Diretriz PM3-2/02/14 - Atividade Delegada</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="80">
+                <div class="day-header">
+                    <span class="day-number">Dia 80</span>
+                    <span class="day-date">28/06/2026 · Domingo</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#87 2.7.5 - NI PM3-1/02/15 - Atendimento e Registro de Ocorrências</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#88 2.7.6 - NI DP-1/511/16 - Intervenções Psicossociais</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="81">
+                <div class="day-header">
+                    <span class="day-number">Dia 81</span>
+                    <span class="day-date">29/06/2026 · Segunda-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#89 2.7.7 - NI PM3-002/02/17 - Prevenção de Acidentes de Trânsito</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#90 2.7.8 - NI PM4-001/1.2/17 - Disparo Arma de Fogo Colete</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="82">
+                <div class="day-header">
+                    <span class="day-number">Dia 82</span>
+                    <span class="day-date">30/06/2026 · Terça-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#101 2.7.19 - Diretriz PM3-6/02/21 - Mídias Sociais</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#102 2.7.20 - GESPOL - Sistema de Gestão da PM</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+            <div class="day-card" data-dia="83">
+                <div class="day-header">
+                    <span class="day-number">Dia 83</span>
+                    <span class="day-date">01/07/2026 · Quarta-feira</span>
+                </div>
+                <div class="day-materia">Normas Internas</div>
+                <div class="day-temas">
+                    
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#103 2.7.21 - NI PM3-1/03/22 - NAPS</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#116 2.7.34 - ICC - Instruções Continuadas de Comando</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#34 2.3.1.6 - Crimes impropriamente militares (Parte Especial CPM)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#35 2.3.1.7 - Crimes impropriamente militares (CP Brasileiro)</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#53 2.3.2.5 - Portaria CORREGPM-1/310/16 - Deserção</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#54 2.4.1 - Direito Administrativo: conceito, evolução, fontes</span>
+                <span class="tema-stats">[0/12 | 0]</span>
+            </div>
+            
+            <div class="tema-item complementar">
+                <span class="tema-nivel">🟢</span>
+                <span class="tema-titulo">#55 2.4.2 - Princípios do Direito Administrativo</span>
+                <span class="tema-stats">[1/12 | 1]</span>
+            </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    </details>
+    
+</div>
+
+<script>
+const STORAGE_KEY = 'cstapm_progress_v6';
+const TOTAL_DIAS = 83;
+
+function loadProgress() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+}
+
+function saveProgress(ids) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+}
+
+function updateUI() {
+    const completed = loadProgress();
+    document.querySelectorAll('.day-card').forEach(card => {
+        const dia = parseInt(card.dataset.dia);
+        if (completed.includes(dia)) {
+            card.classList.add('completed');
+        } else {
+            card.classList.remove('completed');
+        }
+    });
+    
+    const pct = (completed.length / TOTAL_DIAS * 100).toFixed(1);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${completed.length} / ${TOTAL_DIAS} dias (${pct}%)`;
+}
+
+function toggleDay(dia) {
+    let completed = loadProgress();
+    if (completed.includes(dia)) {
+        completed = completed.filter(d => d !== dia);
+    } else {
+        completed.push(dia);
+    }
+    saveProgress(completed);
+    updateUI();
+}
+
+document.querySelectorAll('.day-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const dia = parseInt(card.dataset.dia);
+        toggleDay(dia);
+    });
+});
+
+updateUI();
+</script>
+
+</body>
+</html>
