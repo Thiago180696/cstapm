@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f1419">
+<title>CSTAPM - Plano de Estudos</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0f1419; --surface: #1a1f2e; --surface-2: #232938; --border: #2d3548;
+  --text: #e4e6eb; --text-dim: #9ca3af; --accent: #3b82f6;
+  --alta: #ef4444; --media: #f59e0b; --baixa: #6b7280;
+  --success: #10b981; --warning: #f59e0b; --revisao: #8b5cf6;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 90px; }
+header { background: var(--surface); padding: 14px 16px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10; }
+header h1 { font-size: 17px; font-weight: 600; }
+header .sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.container { max-width: 800px; margin: 0 auto; padding: 14px; }
+.tabs { display: flex; gap: 3px; margin-bottom: 14px; background: var(--surface);
+  padding: 3px; border-radius: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tab { flex-shrink: 0; padding: 9px 11px; background: none;
+  color: var(--text-dim); border: none; border-radius: 6px; font-size: 12px;
+  font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
+.tab.active { background: var(--accent); color: white; }
+.tab .badge-count { background: var(--alta); color: white; font-size: 10px;
+  padding: 1px 5px; border-radius: 8px; margin-left: 4px; }
+.view { display: none; }
+.view.active { display: block; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 13px; margin-bottom: 10px; }
+.card-title { font-size: 11px; color: var(--text-dim); margin-bottom: 5px;
+  text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+.card-value { font-size: 22px; font-weight: 700; }
+.card-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.progress-bar { background: var(--surface-2); height: 7px; border-radius: 4px;
+  overflow: hidden; margin-top: 7px; }
+.progress-fill { background: var(--accent); height: 100%; transition: width 0.3s; }
+.progress-fill.success { background: var(--success); }
+.topic { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 11px; margin-bottom: 7px; position: relative; }
+.topic.concluido { opacity: 0.55; }
+.topic.em-andamento { border-left: 3px solid var(--accent); }
+.topic.revisao-pendente { border-left: 3px solid var(--revisao); }
+.topic-header { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+.badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 9px;
+  text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+.badge.alta { background: var(--alta); color: white; }
+.badge.media { background: var(--media); color: white; }
+.badge.baixa { background: var(--baixa); color: white; }
+.badge.disciplina { background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+.badge.tipo-revisao { background: var(--revisao); color: white; }
+.badge.tipo-novo { background: var(--success); color: white; }
+.badge.nivel-nucleo { background: #7c3aed; color: white; }
+.badge.nivel-padrao { background: #0891b2; color: white; }
+.badge.nivel-sobrevoo { background: #6b7280; color: white; }
+.topic-name { font-size: 13.5px; font-weight: 500; margin-bottom: 4px; line-height: 1.35; }
+.topic-meta { font-size: 11px; color: var(--text-dim); display: flex; gap: 9px; flex-wrap: wrap; }
+.topic-actions { display: flex; gap: 5px; margin-top: 9px; flex-wrap: wrap; }
+.btn { padding: 6px 11px; font-size: 12px; font-weight: 500; background: var(--surface-2);
+  color: var(--text); border: 1px solid var(--border); border-radius: 6px;
+  cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.btn:hover { background: var(--border); }
+.btn:active { transform: scale(0.97); }
+.btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+.btn.success { background: var(--success); color: white; border-color: var(--success); }
+.btn.danger { background: var(--alta); color: white; border-color: var(--alta); }
+.btn.revisao { background: var(--revisao); color: white; border-color: var(--revisao); }
+.btn.small { padding: 4px 8px; font-size: 11px; }
+.note { font-size: 11.5px; color: var(--text-dim); font-style: italic; margin-top: 7px;
+  padding: 6px 9px; background: var(--surface-2); border-radius: 4px; border-left: 2px solid var(--media); }
+.timer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface);
+  border-top: 1px solid var(--border); padding: 11px 14px; display: none;
+  align-items: center; gap: 10px; z-index: 20; box-shadow: 0 -4px 16px rgba(0,0,0,0.5); }
+.timer-bar.active { display: flex; }
+.timer-info { flex: 1; min-width: 0; }
+.timer-topic { font-size: 12.5px; font-weight: 500; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.timer-clock { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.filter-bar { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
+.filter-bar .btn { font-size: 11px; padding: 5px 9px; }
+.filter-bar .btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+.section-title { font-size: 15px; font-weight: 600; margin: 14px 0 9px; padding: 0 4px; }
+.section-title:first-child { margin-top: 0; }
+.empty { text-align: center; color: var(--text-dim); padding: 28px 18px; font-size: 12.5px; }
+.session-row { display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; gap: 8px; }
+.session-row:last-child { border: none; }
+.session-row .when { color: var(--text-dim); font-size: 10.5px; }
+.warning-box { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning);
+  border-radius: 8px; padding: 11px; margin-bottom: 11px; font-size: 12.5px; }
+.success-box { background: rgba(16, 185, 129, 0.08); border: 1px solid var(--success);
+  border-radius: 8px; padding: 11px; margin-bottom: 11px; font-size: 12.5px; line-height: 1.5; }
+.info-box { background: rgba(139, 92, 246, 0.1); border: 1px solid var(--revisao);
+  border-radius: 8px; padding: 11px; margin-bottom: 11px; font-size: 12.5px; line-height: 1.5; }
+.legend { display: flex; gap: 11px; flex-wrap: wrap; font-size: 10.5px;
+  color: var(--text-dim); margin-bottom: 11px; padding: 7px 9px;
+  background: var(--surface); border-radius: 6px; }
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+input[type="number"], input[type="text"], input[type="date"], select { background: var(--surface-2);
+  border: 1px solid var(--border); color: var(--text); padding: 6px 9px;
+  border-radius: 4px; font-size: 12.5px; font-family: inherit; }
+
+/* Incidência */
+.disc-incidencia { background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+.disc-header { display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
+.disc-name { font-size: 14px; font-weight: 600; }
+.disc-stats { font-size: 11px; color: var(--text-dim); }
+.tema-row { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex;
+  align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+.tema-row:last-child { border: none; }
+.tema-name { flex: 1; font-size: 12.5px; min-width: 200px; }
+.tema-meta { font-size: 11px; color: var(--text-dim); }
+
+/* Cronograma semanal */
+.semana-card { background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+.semana-header { padding: 11px 13px; background: var(--surface-2); cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.semana-header strong { font-size: 13.5px; }
+.semana-header .periodo { font-size: 11px; color: var(--text-dim); }
+.semana-body { padding: 11px 13px; display: none; }
+.semana-card.aberta .semana-body { display: block; }
+.semana-card.aberta .semana-header { background: var(--accent); color: white; }
+.semana-card.aberta .semana-header .periodo { color: rgba(255,255,255,0.85); }
+.dia-bloco { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.dia-bloco:last-child { border: none; }
+.dia-data { font-weight: 600; color: var(--accent); margin-bottom: 4px; font-size: 12px; }
+.dia-tarefa { color: var(--text-dim); padding-left: 12px; }
+
+@media (min-width: 640px) { .grid-2 { grid-template-columns: repeat(4, 1fr); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 CSTAPM - Plano de Estudos</h1>
+  <div class="sub" id="subheader">Carregando...</div>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" data-view="dashboard">📊</button>
+    <button class="tab" data-view="fila">🎯 Fila</button>
+    <button class="tab" data-view="cronograma">📅 Cronograma</button>
+    <button class="tab" data-view="revisao">🔁<span id="rev-count"></span></button>
+    <button class="tab" data-view="incidencia">📈 Incidência</button>
+    <button class="tab" data-view="topicos">📋 Tópicos</button>
+    <button class="tab" data-view="historico">🕐 Hist.</button>
+    <button class="tab" data-view="config">⚙️</button>
+  </div>
+
+  <div class="view active" id="view-dashboard">
+    <div id="dashboard-warning"></div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Tempo Total</div><div class="card-value" id="stat-tempo">0h</div><div class="card-sub" id="stat-tempo-sub">— sessões</div></div>
+      <div class="card"><div class="card-title">Concluídos</div><div class="card-value" id="stat-concluidos">0</div><div class="card-sub" id="stat-concluidos-sub">de 70</div></div>
+      <div class="card"><div class="card-title">% Acerto</div><div class="card-value" id="stat-acerto">—</div><div class="card-sub" id="stat-acerto-sub">questões</div></div>
+      <div class="card"><div class="card-title">Dias p/ prova</div><div class="card-value" id="stat-projecao">—</div><div class="card-sub" id="stat-projecao-sub">defina data</div></div>
+    </div>
+    <h2 class="section-title">Cobertura por Disciplina</h2>
+    <div id="dash-disciplinas"></div>
+    <h2 class="section-title">Cobertura por Incidência</h2>
+    <div id="dash-incidencia"></div>
+  </div>
+
+  <div class="view" id="view-fila">
+    <div class="success-box"><strong>🎯 Sua fila prioritária</strong><br>Ordem definida por você: primeiro <strong>Normas + Leis Especiais + Legislação de Interesse</strong>, depois <strong>revisão de Direito</strong>. Dentro de cada bloco, ALTA incidência primeiro. <em>Interleaving:</em> alterne disciplinas dentro da semana.</div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:var(--alta)"></span>Alta</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--media)"></span>Média</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--baixa)"></span>Baixa</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--success)"></span>Material novo</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--revisao)"></span>Revisão direito</div>
+    </div>
+    <div id="fila-list"></div>
+  </div>
+
+  <div class="view" id="view-cronograma">
+    <div class="info-box" id="cron-info">Defina a <strong>data de início</strong> em ⚙️ para gerar o cronograma com datas reais. Sem data, mostro estrutura genérica de semanas.</div>
+    <div id="cronograma-content"></div>
+  </div>
+
+  <div class="view" id="view-revisao">
+    <div class="info-box"><strong>🔁 Revisão Espaçada</strong><br>Tópicos concluídos voltam após <strong>1, 7 e 21 dias</strong> (Cepeda et al., 2008). Revise com <strong>questões</strong>, não releitura. 15-30 min por tópico.</div>
+    <h2 class="section-title">⚠️ Pendentes</h2>
+    <div id="revisao-pendente-list"></div>
+    <h2 class="section-title">📅 Próximas</h2>
+    <div id="revisao-proxima-list"></div>
+  </div>
+
+  <div class="view" id="view-incidencia">
+    <div class="info-box">📈 <strong>Incidência por tema</strong> de cada disciplina, com base na análise de 3 provas recentes (2016, 2022, 2023) e na lógica do edital. Use para priorizar dentro de cada matéria.</div>
+    <div id="incidencia-content"></div>
+  </div>
+
+  <div class="view" id="view-topicos">
+    <div class="filter-bar" id="filter-tipo">
+      <button class="btn active" data-filter="todos">Todos</button>
+      <button class="btn" data-filter="novo">Material novo</button>
+      <button class="btn" data-filter="revisao">Revisão direito</button>
+    </div>
+    <div class="filter-bar" id="filter-status">
+      <button class="btn active" data-filter="todos">Todos</button>
+      <button class="btn" data-filter="nao-iniciado">Pendente</button>
+      <button class="btn" data-filter="em-andamento">Em andamento</button>
+      <button class="btn" data-filter="concluido">Concluído</button>
+    </div>
+    <div id="topicos-list"></div>
+    <h2 class="section-title">🔮 Contingência</h2>
+    <div class="info-box" style="margin-bottom:10px;font-size:11.5px;">Se não passar nesta prova e quiser seguir, esses tópicos são a continuação natural.</div>
+    <div id="contingencia-list"></div>
+  </div>
+
+  <div class="view" id="view-historico">
+    <div class="card"><div class="card-title">Resumo</div><div id="historico-stats"></div></div>
+    <h2 class="section-title">Últimas 30 sessões</h2>
+    <div id="historico-list"></div>
+  </div>
+
+  <div class="view" id="view-config">
+    <div class="card">
+      <div class="card-title">📅 Data da prova</div>
+      <div style="margin-top:9px; display:flex; gap:7px; align-items:center;flex-wrap:wrap;">
+        <input type="date" id="data-prova">
+        <button class="btn primary small" onclick="salvarDataProva()">Salvar</button>
+      </div>
+      <div class="card-sub" style="margin-top:7px;" id="data-prova-info"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🚀 Data de início dos estudos</div>
+      <div style="margin-top:9px; display:flex; gap:7px; align-items:center;flex-wrap:wrap;">
+        <input type="date" id="data-inicio">
+        <button class="btn primary small" onclick="salvarDataInicio()">Salvar</button>
+      </div>
+      <div class="card-sub" style="margin-top:7px;" id="data-inicio-info"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">💾 Backup</div>
+      <div style="margin-top:9px; display:flex; gap:7px; flex-wrap:wrap;">
+        <button class="btn primary small" onclick="exportar()">📥 Exportar</button>
+        <button class="btn small" onclick="document.getElementById('import-file').click()">📤 Importar</button>
+        <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importar(event)">
+      </div>
+      <div class="card-sub" style="margin-top:7px;">Faça backup semanal. Os dados ficam só neste navegador.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🗑 Reset</div>
+      <div style="margin-top:9px;"><button class="btn danger small" onclick="resetarTudo()">Apagar tudo</button></div>
+      <div class="card-sub" style="margin-top:7px;">Use só para recomeçar do zero.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🧠 Metodologia</div>
+      <div class="card-sub" style="margin-top:9px; line-height:1.7;">
+        <strong>Princípios baseados em evidência:</strong><br>
+        • Active recall — testar memória &gt; reler<br>
+        • Spaced repetition — revisões em 1d/7d/21d<br>
+        • Interleaving — alternar disciplinas na semana<br>
+        • Testing effect — questões durante o estudo<br>
+        • Distributed practice — revisão contínua<br><br>
+        <strong>Ordem de estudo definida:</strong><br>
+        1) Normas Internas PM<br>
+        2) Leis Especiais<br>
+        3) Legislação de Interesse<br>
+        4) Revisão de Direito (Const, Adm, Penal, PP, Penal Militar, PPM)<br><br>
+        <strong>Distribuição semanal:</strong><br>
+        • Sem 1-9: material novo (80%) + revisão direito (20%)<br>
+        • Sem 10-12: 50% novo + 50% revisão consolidada<br>
+        • Sem 13: simulados completos
+      </div>
+    </div>
+  </div>
+</div>
+<div class="timer-bar" id="timer-bar">
+  <div class="timer-info">
+    <div class="timer-topic" id="timer-topic-name">—</div>
+    <div class="timer-clock" id="timer-clock">00:00:00</div>
+  </div>
+  <button class="btn success small" onclick="pararTimer()">⏸ Parar</button>
+</div>
+
+<script>
+const PLANO = {"concurso": "CSTAPM - PMSP", "duracao_dias": 90, "horas_total_estimadas": 286, "data_inicio": "DEFINIR_AO_COMECAR", "fases": [{"id": "A", "nome": "Material novo", "semanas": "1-9", "dias": "1-63", "descricao": "Cobertura completa de Normas Internas PM, Leis Especiais e Legislação de Interesse. Três níveis de profundidade conforme incidência."}, {"id": "B", "nome": "Revisão de direito + integração", "semanas": "10-11", "dias": "64-77", "descricao": "Revisão das áreas já estudadas (penal, admin, constitucional, processual) via resolução de questões + integração com normas PM."}, {"id": "C", "nome": "Reta final", "semanas": "12-13", "dias": "78-90", "descricao": "Simulados cronometrados, revisão de pontos fracos identificados, retorno a anotações."}], "niveis_profundidade": {"nucleo": {"nome": "Núcleo", "descricao": "Leitura atenta + anotações + questões + revisão por SR (7 e 21 dias)", "ritmo_pgs_hora": 12}, "padrao": {"nome": "Padrão", "descricao": "Leitura atenta + questões, sem revisão programada", "ritmo_pgs_hora": 18}, "sobrevoo": {"nome": "Sobrevoo", "descricao": "Leitura rápida procurando pontos-chave, mínimo de 5 questões por tópico", "ritmo_pgs_hora": 30}}, "topicos": [{"id": "i16pm", "disciplina": "Normas PM", "nome": "I-16-PM Processo Administrativo", "paginas": 344, "nivel": "padrao", "horas_estimadas": 18, "incidencia": "ALTA", "tipo": "novo"}, {"id": "rdpm", "disciplina": "Normas PM", "nome": "RDPM (LC 893/01)", "paginas": 170, "nivel": "nucleo", "horas_estimadas": 12, "incidencia": "ALTA", "tipo": "novo"}, {"id": "norsop", "disciplina": "Normas PM", "nome": "Diretriz NORSOP (PM3-10220)", "paginas": 157, "nivel": "nucleo", "horas_estimadas": 11, "incidencia": "ALTA", "tipo": "novo"}, {"id": "fundamentos", "disciplina": "Normas PM", "nome": "Manual de Fundamentos", "paginas": 220, "nivel": "padrao", "horas_estimadas": 11, "incidencia": "ALTA", "tipo": "novo"}, {"id": "uniforme", "disciplina": "Normas PM", "nome": "Regulamento de Uniforme 2024", "paginas": 192, "nivel": "padrao", "horas_estimadas": 10, "incidencia": "ALTA", "tipo": "novo"}, {"id": "iccs", "disciplina": "Normas PM", "nome": "ICCs principais (302, 304, 309, 312A, 316, 317, 320, 321, 329)", "paginas": 368, "nivel": "padrao", "horas_estimadas": 10, "nota_redução": "4 ICCs principais (304, 312A, 316, 320)", "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "gespol", "disciplina": "Normas PM", "nome": "GESPOL", "paginas": 269, "nivel": "padrao", "horas_estimadas": 7, "nota_redução": "Aulas 1-2 (151 pgs); Aulas 3-4 contingência", "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "ssp_57", "disciplina": "Normas PM", "nome": "Resolução SSP 57/2015 e NI PM3-010215", "paginas": 145, "nivel": "padrao", "horas_estimadas": 5, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "i21pm", "disciplina": "Normas PM", "nome": "I-21-PM Contabilidade / RCont", "paginas": 174, "nivel": "padrao", "horas_estimadas": 4, "nota_redução": "Aulas 1-3 (79 pgs)", "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "i24pm", "disciplina": "Normas PM", "nome": "I-24-PM Avaliação de Desempenho", "paginas": 86, "nivel": "padrao", "horas_estimadas": 4, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "i36pm", "disciplina": "Normas PM", "nome": "I-36-PM Afastamentos", "paginas": 118, "nivel": "padrao", "horas_estimadas": 4, "nota_redução": "Foco Aula 1 (51 pgs)", "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "dejem", "disciplina": "Normas PM", "nome": "Atividade DEJEM e Delegada", "paginas": 139, "nivel": "padrao", "horas_estimadas": 4, "nota_redução": "Aula 1 (60 pgs)", "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "portaria_belico", "disciplina": "Normas PM", "nome": "Portaria Material Bélico (PM4-0011.224)", "paginas": 106, "nivel": "padrao", "horas_estimadas": 4, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "i15pm", "disciplina": "Normas PM", "nome": "I-15-PM Transportes", "paginas": 93, "nivel": "padrao", "horas_estimadas": 3, "nota_redução": "Aula 1 + síntese das 2-3", "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "pap_subst", "disciplina": "Normas PM", "nome": "PAP Substituição + Decreto 65.096 Estrutura", "paginas": 95, "nivel": "padrao", "horas_estimadas": 3, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "diretriz_midias", "disciplina": "Normas PM", "nome": "Diretriz Mídias Sociais", "paginas": 51, "nivel": "padrao", "horas_estimadas": 2.5, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "i2pm", "disciplina": "Normas PM", "nome": "I-2-PM Movimentação", "paginas": 77, "nivel": "padrao", "horas_estimadas": 2, "nota_redução": "Aula 1 (69 pgs)", "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "diretriz_cop", "disciplina": "Normas PM", "nome": "Diretriz COP (PM3-0010225)", "paginas": 28, "nivel": "padrao", "horas_estimadas": 1.5, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "regime_trab", "disciplina": "Normas PM", "nome": "Regime de Trabalho 2023", "paginas": 31, "nivel": "padrao", "horas_estimadas": 1.5, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "ni_ain", "disciplina": "Normas PM", "nome": "NI AIN (PM3-0020320)", "paginas": 33, "nivel": "sobrevoo", "horas_estimadas": 1, "incidencia": "BAIXA", "tipo": "novo"}, {"id": "ni_disparo", "disciplina": "Normas PM", "nome": "NI Disparo Colete (PM4-0011.217)", "paginas": 33, "nivel": "sobrevoo", "horas_estimadas": 1, "incidencia": "BAIXA", "tipo": "novo"}, {"id": "ni_armas", "disciplina": "Normas PM", "nome": "NI Armas Portáteis (PM4-0011.218)", "paginas": 8, "nivel": "sobrevoo", "horas_estimadas": 0.5, "incidencia": "BAIXA", "tipo": "novo"}, {"id": "desarmamento", "disciplina": "Leis Especiais", "nome": "Estatuto do Desarmamento (10.826/03) + Decreto 11.615/23", "paginas": 192, "nivel": "nucleo", "horas_estimadas": 14, "incidencia": "ALTA", "tipo": "novo"}, {"id": "abuso", "disciplina": "Leis Especiais", "nome": "Abuso de Autoridade (13.869/19)", "paginas": 116, "nivel": "nucleo", "horas_estimadas": 8, "incidencia": "ALTA", "tipo": "novo"}, {"id": "drogas", "disciplina": "Leis Especiais", "nome": "Lei de Drogas (11.343/06) + STF", "paginas": 98, "nivel": "nucleo", "horas_estimadas": 7, "incidencia": "ALTA", "tipo": "novo"}, {"id": "eca", "disciplina": "Leis Especiais", "nome": "ECA", "paginas": 111, "nivel": "nucleo", "horas_estimadas": 7, "incidencia": "ALTA", "tipo": "novo"}, {"id": "maria_penha", "disciplina": "Leis Especiais", "nome": "Maria da Penha (11.340/06)", "paginas": 85, "nivel": "nucleo", "horas_estimadas": 6, "incidencia": "ALTA", "tipo": "novo"}, {"id": "improbidade", "disciplina": "Leis Especiais", "nome": "Improbidade (8.429/92)", "paginas": 111, "nivel": "nucleo", "horas_estimadas": 6, "incidencia": "ALTA", "tipo": "novo"}, {"id": "jecrim", "disciplina": "Leis Especiais", "nome": "Lei 9.099/95 (Juizados Especiais)", "paginas": 48, "nivel": "nucleo", "horas_estimadas": 4, "incidencia": "ALTA", "tipo": "novo"}, {"id": "tortura", "disciplina": "Leis Especiais", "nome": "Lei de Tortura (9.455/97)", "paginas": 63, "nivel": "nucleo", "horas_estimadas": 4, "incidencia": "ALTA", "tipo": "novo"}, {"id": "hediondos", "disciplina": "Leis Especiais", "nome": "Crimes Hediondos (8.072/90)", "paginas": 11, "nivel": "nucleo", "horas_estimadas": 1, "incidencia": "ALTA", "tipo": "novo"}, {"id": "fe_publica", "disciplina": "Leis Especiais", "nome": "CP - Crimes contra Fé Pública", "paginas": 55, "nivel": "nucleo", "horas_estimadas": 3, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "raciais", "disciplina": "Leis Especiais", "nome": "Crimes Raciais (7.716/89)", "paginas": 84, "nivel": "padrao", "horas_estimadas": 3, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "orgcrim", "disciplina": "Leis Especiais", "nome": "Organização Criminosa (12.694/12 + 12.850/13)", "paginas": 50, "nivel": "padrao", "horas_estimadas": 2.5, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "ctb", "disciplina": "Leis Especiais", "nome": "CTB - Crimes (9.503/97)", "paginas": 48, "nivel": "padrao", "horas_estimadas": 2, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "idoso", "disciplina": "Leis Especiais", "nome": "Estatuto do Idoso (10.741/03)", "paginas": 29, "nivel": "padrao", "horas_estimadas": 1.5, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "lavagem", "disciplina": "Leis Especiais", "nome": "Lavagem de Capitais (9.613/98 + 12.683/12)", "paginas": 47, "nivel": "padrao", "horas_estimadas": 2, "incidencia": "BAIXA", "tipo": "novo"}, {"id": "ambiental", "disciplina": "Leis Especiais", "nome": "Lei Ambiental (9.605/98)", "paginas": 53, "nivel": "padrao", "horas_estimadas": 2, "incidencia": "BAIXA", "tipo": "novo"}, {"id": "dl_667", "disciplina": "Legislação de Interesse", "nome": "Decreto-Lei 667/69 + Lei 6.167/74 (Org. Básica PMESP)", "paginas": 121, "nivel": "nucleo", "horas_estimadas": 8, "incidencia": "ALTA", "tipo": "novo"}, {"id": "dl_260", "disciplina": "Legislação de Interesse", "nome": "Decreto-Lei 260/70 (Inatividade) - atualizado", "paginas": 98, "nivel": "nucleo", "horas_estimadas": 7, "incidencia": "ALTA", "tipo": "novo"}, {"id": "lai", "disciplina": "Legislação de Interesse", "nome": "Lei de Acesso à Informação (12.527/11)", "paginas": 142, "nivel": "padrao", "horas_estimadas": 7, "incidencia": "ALTA", "tipo": "novo"}, {"id": "lc_1224", "disciplina": "Legislação de Interesse", "nome": "LC 1.224/13 (Critérios de Promoção)", "paginas": 25, "nivel": "nucleo", "horas_estimadas": 2, "incidencia": "ALTA", "tipo": "novo"}, {"id": "lc_1150", "disciplina": "Legislação de Interesse", "nome": "LC 1.150/11 (Reserva ex Officio)", "paginas": 16, "nivel": "padrao", "horas_estimadas": 1, "incidencia": "MÉDIA", "tipo": "novo"}, {"id": "decreto_69059", "disciplina": "Legislação de Interesse", "nome": "Decreto 69.059/24 (Designação PM Reserva)", "paginas": 5, "nivel": "padrao", "horas_estimadas": 0.5, "incidencia": "BAIXA", "tipo": "novo"}, {"id": "const_principios", "disciplina": "Direito Constitucional", "nome": "Princípios Fundamentais e Direitos/Garantias", "paginas": 0, "horas_estimadas": 3, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "const_org_estado", "disciplina": "Direito Constitucional", "nome": "Organização do Estado e dos Poderes", "paginas": 0, "horas_estimadas": 2.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "const_seg_publica", "disciplina": "Direito Constitucional", "nome": "Segurança Pública (art. 144) e Forças Armadas", "paginas": 0, "horas_estimadas": 2.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "const_servidores", "disciplina": "Direito Constitucional", "nome": "Servidores Públicos e Militares dos Estados", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "const_sp_estado", "disciplina": "Direito Constitucional", "nome": "Constituição do Estado de SP - dispositivos sobre PM", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "MÉDIA", "tipo": "revisao"}, {"id": "adm_atos", "disciplina": "Direito Administrativo", "nome": "Atos Administrativos", "paginas": 0, "horas_estimadas": 2.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "adm_servidores", "disciplina": "Direito Administrativo", "nome": "Agentes Públicos / Regime Jurídico", "paginas": 0, "horas_estimadas": 2.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "adm_principios", "disciplina": "Direito Administrativo", "nome": "Princípios da Administração Pública", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "adm_poderes", "disciplina": "Direito Administrativo", "nome": "Poderes Administrativos", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "MÉDIA", "tipo": "revisao"}, {"id": "adm_responsabilidade", "disciplina": "Direito Administrativo", "nome": "Responsabilidade Civil do Estado", "paginas": 0, "horas_estimadas": 1.5, "nivel": "padrao", "incidencia": "MÉDIA", "tipo": "revisao"}, {"id": "adm_controle", "disciplina": "Direito Administrativo", "nome": "Controle da Administração e Improbidade (cruzar com Lei 8.429)", "paginas": 0, "horas_estimadas": 1.5, "nivel": "padrao", "incidencia": "MÉDIA", "tipo": "revisao"}, {"id": "penal_crime", "disciplina": "Direito Penal", "nome": "Teoria do Crime (fato típico, ilicitude, culpabilidade)", "paginas": 0, "horas_estimadas": 2.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "penal_aplic_lei", "disciplina": "Direito Penal", "nome": "Aplicação da Lei Penal e Princípios", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "penal_pena", "disciplina": "Direito Penal", "nome": "Pena: aplicação, espécies, extinção da punibilidade", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "penal_patrim_adm", "disciplina": "Direito Penal", "nome": "Crimes contra Patrimônio e Administração Pública", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "penal_pessoa", "disciplina": "Direito Penal", "nome": "Crimes contra Pessoa (homicídio, lesão, ameaça)", "paginas": 0, "horas_estimadas": 1.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "pp_prisao", "disciplina": "Direito Processual Penal", "nome": "Prisão, medidas cautelares e liberdade", "paginas": 0, "horas_estimadas": 2.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "pp_inquerito", "disciplina": "Direito Processual Penal", "nome": "Inquérito Policial e Investigação", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "pp_provas", "disciplina": "Direito Processual Penal", "nome": "Provas e procedimentos", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "MÉDIA", "tipo": "revisao"}, {"id": "pp_acao", "disciplina": "Direito Processual Penal", "nome": "Ação Penal e Jurisdição/Competência", "paginas": 0, "horas_estimadas": 1.5, "nivel": "padrao", "incidencia": "MÉDIA", "tipo": "revisao"}, {"id": "pm_crimes_servico", "disciplina": "Direito Penal Militar", "nome": "Crimes contra Serviço, Dever Militar e Hierarquia", "paginas": 0, "horas_estimadas": 2.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "pm_aplic", "disciplina": "Direito Penal Militar", "nome": "Aplicação da Lei Penal Militar e Crime Militar", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "pm_crimes_pessoa", "disciplina": "Direito Penal Militar", "nome": "Crimes Militares contra Pessoa, Patrimônio, Adm Militar", "paginas": 0, "horas_estimadas": 2, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "pm_pena_militar", "disciplina": "Direito Penal Militar", "nome": "Pena Militar e Extinção da Punibilidade", "paginas": 0, "horas_estimadas": 1.5, "nivel": "padrao", "incidencia": "MÉDIA", "tipo": "revisao"}, {"id": "ppm_processo", "disciplina": "Direito Processual Penal Militar", "nome": "Inquérito Policial Militar (IPM) e Procedimento", "paginas": 0, "horas_estimadas": 2.5, "nivel": "padrao", "incidencia": "ALTA", "tipo": "revisao"}, {"id": "ppm_justica", "disciplina": "Direito Processual Penal Militar", "nome": "Justiça Militar Estadual: competência e procedimentos", "paginas": 0, "horas_estimadas": 1.5, "nivel": "padrao", "incidencia": "MÉDIA", "tipo": "revisao"}], "fila_contingencia": [{"id": "i43pm", "disciplina": "Normas PM", "nome": "I-43-PM Apresentação em Requisições", "paginas": 20, "nivel": "padrao", "horas_estimadas": 1.5, "fase": "contingencia", "tipo": "contingencia"}, {"id": "diretriz_vizinhanca", "disciplina": "Normas PM", "nome": "Diretriz Vizinhança Solidária", "paginas": 26, "nivel": "padrao", "horas_estimadas": 1.5, "fase": "contingencia", "tipo": "contingencia"}, {"id": "diretriz_reint", "disciplina": "Normas PM", "nome": "Diretriz Reintegração de Posse", "paginas": 80, "nivel": "padrao", "horas_estimadas": 5, "fase": "contingencia", "tipo": "contingencia"}, {"id": "i23pm", "disciplina": "Normas PM", "nome": "I-23-PM Logística e Patrimonial", "paginas": 54, "nivel": "sobrevoo", "horas_estimadas": 2, "fase": "contingencia", "tipo": "contingencia"}, {"id": "i38pm", "disciplina": "Normas PM", "nome": "I-38-PM Bens Imóveis", "paginas": 56, "nivel": "sobrevoo", "horas_estimadas": 2, "fase": "contingencia", "tipo": "contingencia"}, {"id": "icc218", "disciplina": "Normas PM", "nome": "ICC 218 Trans/Travestis", "paginas": 143, "nivel": "sobrevoo", "horas_estimadas": 5, "fase": "contingencia", "tipo": "contingencia"}, {"id": "ni_acidentes", "disciplina": "Normas PM", "nome": "NI Prevenção Acidentes (PM3-0020217)", "paginas": 77, "nivel": "sobrevoo", "horas_estimadas": 3, "fase": "contingencia", "tipo": "contingencia"}, {"id": "ni_dp", "disciplina": "Normas PM", "nome": "NI DP-151116 Incidentes Críticos", "paginas": 11, "nivel": "sobrevoo", "horas_estimadas": 0.5, "fase": "contingencia", "tipo": "contingencia"}, {"id": "ni_sossego", "disciplina": "Normas PM", "nome": "NI Perturbação de Sossego", "paginas": 24, "nivel": "sobrevoo", "horas_estimadas": 1, "fase": "contingencia", "tipo": "contingencia"}, {"id": "ni_paapm", "disciplina": "Normas PM", "nome": "NI PAAPM (PM3-10320)", "paginas": 79, "nivel": "sobrevoo", "horas_estimadas": 3, "fase": "contingencia", "tipo": "contingencia"}, {"id": "ni_naps", "disciplina": "Normas PM", "nome": "NI NAPS (PM3-0010322)", "paginas": 51, "nivel": "sobrevoo", "horas_estimadas": 2, "fase": "contingencia", "tipo": "contingencia"}, {"id": "decreto_20218", "disciplina": "Normas PM", "nome": "Decreto 20.218 Equiparação Ato de Serviço", "paginas": 36, "nivel": "sobrevoo", "horas_estimadas": 1.5, "fase": "contingencia", "tipo": "contingencia"}, {"id": "viol_dom_pm", "disciplina": "Normas PM", "nome": "Sistemática Violência Doméstica PM", "paginas": 45, "nivel": "sobrevoo", "horas_estimadas": 1.5, "fase": "contingencia", "tipo": "contingencia"}, {"id": "lei_13431", "disciplina": "Leis Especiais", "nome": "Lei 13.431/17 Escuta Especializada", "paginas": 16, "nivel": "padrao", "horas_estimadas": 1, "fase": "contingencia", "tipo": "contingencia"}, {"id": "assist_familiar", "disciplina": "Leis Especiais", "nome": "CP - Crimes contra Assistência Familiar e Paz Pública", "paginas": 41, "nivel": "padrao", "horas_estimadas": 2.5, "fase": "contingencia", "tipo": "contingencia"}, {"id": "decreto_9847", "disciplina": "Leis Especiais", "nome": "Decreto 9.847/19 (revogado)", "paginas": 23, "nivel": "sobrevoo", "horas_estimadas": 0.75, "fase": "contingencia", "tipo": "contingencia"}], "horas_fase_a_estimadas": 218.5, "horas_fase_a_disponiveis": 135, "data_geracao": "2026-05-03", "metodologia": {"principios": ["Active recall: testar memória > reler (Karpicke & Roediger, 2008)", "Spaced repetition: revisões em 1d, 7d, 21d (Cepeda et al., 2008)", "Interleaving: alternar disciplinas na semana (Rohrer & Taylor, 2007)", "Testing effect: questões durante estudo, não só depois (Roediger & Karpicke, 2006)", "Distributed practice: revisão contínua, não em fase isolada (Cepeda et al., 2006)"], "distribuicao": {"semanas_1_9": "80% material novo + 20% revisão de direito", "semanas_10_12": "50% material novo (concluindo) + 50% revisão consolidada via questões", "semana_13": "Simulados completos cronometrados + revisão de pontos fracos"}}, "incidencia_disciplinas": {"Língua Portuguesa": {"total_questoes_3_provas": 50, "percentual_prova": 18.5, "temas": [{"tema": "Interpretação e compreensão de textos", "incidencia": "ALTA", "freq": "Maior parte das questões"}, {"tema": "Concordância verbal e nominal", "incidencia": "ALTA", "freq": "Frequente em todas as provas"}, {"tema": "Regência verbal e nominal", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Crase", "incidencia": "ALTA", "freq": "Quase sempre cobrada"}, {"tema": "Pontuação", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Ortografia oficial", "incidencia": "MÉDIA", "freq": "Em parte das provas"}, {"tema": "Morfologia (classes de palavras)", "incidencia": "MÉDIA", "freq": "Frequente"}, {"tema": "Sintaxe (período composto)", "incidencia": "MÉDIA", "freq": "Em algumas provas"}, {"tema": "Semântica (sinônimos, antônimos, polissemia)", "incidencia": "MÉDIA", "freq": "Em parte das provas"}, {"tema": "Figuras de linguagem", "incidencia": "BAIXA", "freq": "Pontual"}]}, "Matemática e Raciocínio Lógico": {"total_questoes_3_provas": 40, "percentual_prova": 14.8, "temas": [{"tema": "Raciocínio lógico (sequências, proposições)", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Porcentagem e juros", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Razão e proporção / regra de três", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Análise combinatória e probabilidade", "incidencia": "MÉDIA", "freq": "Em parte das provas"}, {"tema": "Equações de 1º e 2º grau", "incidencia": "MÉDIA", "freq": "Recorrente"}, {"tema": "Sistemas de medidas / unidades", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Geometria plana", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Conjuntos numéricos", "incidencia": "BAIXA", "freq": "Raro"}, {"tema": "Funções", "incidencia": "BAIXA", "freq": "Pontual"}, {"tema": "Estatística básica", "incidencia": "BAIXA", "freq": "Pontual"}]}, "História do Brasil": {"total_questoes_3_provas": 13, "percentual_prova": 4.8, "temas": [{"tema": "Brasil República (Era Vargas, ditadura)", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Brasil Império", "incidencia": "MÉDIA", "freq": "Frequente"}, {"tema": "Brasil Colônia", "incidencia": "MÉDIA", "freq": "Em parte das provas"}, {"tema": "Independência e Primeiro Reinado", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Brasil contemporâneo (Nova República)", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Movimentos sociais e revoltas", "incidencia": "BAIXA", "freq": "Pontual"}]}, "História da Polícia Militar": {"total_questoes_3_provas": 16, "percentual_prova": 5.9, "temas": [{"tema": "Origem da PMESP e organização inicial", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Participação em conflitos (Paraguai, MMDC, etc.)", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Estrutura e brasões / patronos", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Datas comemorativas e marcos históricos", "incidencia": "MÉDIA", "freq": "Frequente"}, {"tema": "Personalidades históricas", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Símbolos e hinos", "incidencia": "MÉDIA", "freq": "Pontual"}]}, "Atualidades": {"total_questoes_3_provas": 16, "percentual_prova": 5.9, "temas": [{"tema": "Política nacional", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Segurança pública (notícias recentes)", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Economia e mercado", "incidencia": "MÉDIA", "freq": "Em parte das provas"}, {"tema": "Política internacional", "incidencia": "MÉDIA", "freq": "Em parte das provas"}, {"tema": "Ciência, tecnologia e meio ambiente", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Cultura, esporte, sociedade", "incidencia": "BAIXA", "freq": "Pontual"}]}, "Literatura": {"total_questoes_3_provas": 0, "percentual_prova": 0, "observacao": "NÃO consta no edital atual da CSTAPM. Manter no plano apenas se exigido em edital específico.", "temas": [{"tema": "Escolas literárias brasileiras", "incidencia": "BAIXA", "freq": "Não cobrado nas últimas provas"}, {"tema": "Autores principais (Machado, Drummond, etc.)", "incidencia": "BAIXA", "freq": "Não cobrado"}]}, "Normas Internas PM": {"total_questoes_3_provas": 32, "percentual_prova": 11.9, "temas": [{"tema": "RDPM (LC 893/01)", "incidencia": "ALTA", "freq": "Sempre cai pesado"}, {"tema": "I-16-PM Processo Administrativo", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Diretriz NORSOP", "incidencia": "ALTA", "freq": "Operacional, recorrente"}, {"tema": "Manual de Fundamentos", "incidencia": "ALTA", "freq": "Doutrinária — base de várias questões"}, {"tema": "Regulamento de Uniforme", "incidencia": "ALTA", "freq": "Alterações 2024 — alta probabilidade"}, {"tema": "GESPOL", "incidencia": "MÉDIA", "freq": "Em parte das provas"}, {"tema": "ICCs principais", "incidencia": "MÉDIA", "freq": "Recorrente"}, {"tema": "Instruções (I-2, I-15, I-21, I-24, I-36)", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Diretrizes (COP, Mídias)", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "NIs específicas (armas, AIN)", "incidencia": "BAIXA", "freq": "Raro"}]}, "Legislação de Interesse PM": {"total_questoes_3_provas": 19, "percentual_prova": 7.0, "temas": [{"tema": "Decreto-Lei 667/69 + Lei 6.167/74 (Org. PMESP)", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Decreto-Lei 260/70 (Inatividade)", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "LC 1.224/13 (Critérios de Promoção)", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Lei de Acesso à Informação (12.527/11)", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "LC 1.150/11 (Reserva ex Officio)", "incidencia": "MÉDIA", "freq": "Em parte das provas"}, {"tema": "Decreto 69.059/24 (Designação)", "incidencia": "BAIXA", "freq": "Recente"}]}, "Legislação Complementar / Leis Especiais": {"total_questoes_3_provas": 19, "percentual_prova": 7.0, "temas": [{"tema": "Lei de Drogas (11.343/06)", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Estatuto do Desarmamento (10.826/03)", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Maria da Penha (11.340/06)", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Abuso de Autoridade (13.869/19)", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Lei 9.099/95 (JECrim)", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Tortura (9.455/97)", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Improbidade (8.429/92)", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "ECA", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Crimes Hediondos", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "CP - Crimes contra Fé Pública", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "CTB - Crimes", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Crimes Raciais (7.716/89)", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Estatuto do Idoso", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Organização Criminosa", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Lavagem de Capitais", "incidencia": "BAIXA", "freq": "Raro"}, {"tema": "Lei Ambiental", "incidencia": "BAIXA", "freq": "Raro"}]}, "Direito Penal Militar e PPM": {"total_questoes_3_provas": 17, "percentual_prova": 6.3, "temas": [{"tema": "Aplicação da Lei Penal Militar / Crime Militar", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Crimes contra Serviço, Dever Militar e Hierarquia", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Crimes Militares contra Pessoa, Patrimônio, Adm Militar", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "IPM (Inquérito Policial Militar)", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Pena Militar e Extinção da Punibilidade", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Justiça Militar Estadual", "incidencia": "MÉDIA", "freq": "Pontual"}]}, "Direito Administrativo": {"total_questoes_3_provas": 17, "percentual_prova": 6.3, "temas": [{"tema": "Princípios da Administração Pública", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Atos Administrativos", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Agentes Públicos / Regime Jurídico", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Poderes Administrativos", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Responsabilidade Civil do Estado", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Controle da Administração / Improbidade", "incidencia": "MÉDIA", "freq": "Pontual"}]}, "Direito Penal e Processual Penal (comum)": {"total_questoes_3_provas": 16, "percentual_prova": 5.9, "temas": [{"tema": "Aplicação da Lei Penal e Princípios", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Teoria do Crime", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Pena: aplicação, espécies, extinção", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Crimes contra Pessoa", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Crimes contra Patrimônio e Adm Pública", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Inquérito Policial e Investigação", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Prisão e medidas cautelares", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Provas e procedimentos", "incidencia": "MÉDIA", "freq": "Pontual"}, {"tema": "Ação Penal e Competência", "incidencia": "MÉDIA", "freq": "Pontual"}]}, "Direito Constitucional": {"total_questoes_3_provas": 15, "percentual_prova": 5.6, "temas": [{"tema": "Princípios Fundamentais e Direitos/Garantias", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Organização do Estado e dos Poderes", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Segurança Pública (art. 144) e Forças Armadas", "incidencia": "ALTA", "freq": "Recorrente"}, {"tema": "Servidores Públicos e Militares dos Estados", "incidencia": "ALTA", "freq": "Frequente"}, {"tema": "Constituição do Estado de SP - PM", "incidencia": "MÉDIA", "freq": "Pontual"}]}}};
+
+let state = JSON.parse(localStorage.getItem('cstapm_state') || '{}');
+state.topicos = state.topicos || {};
+state.sessoes = state.sessoes || [];
+state.dataProva = state.dataProva || null;
+state.dataInicio = state.dataInicio || null;
+state.timerAtivo = state.timerAtivo || null;
+state.semanasAbertas = state.semanasAbertas || {};
+
+const SR_INTERVALS = [1, 7, 21];
+const MS_DAY = 86400000;
+
+function saveState() { localStorage.setItem('cstapm_state', JSON.stringify(state)); }
+
+let timerInterval = null;
+function iniciarTimer(topicoId) {
+  if (state.timerAtivo) {
+    if (!confirm('Timer ativo. Parar e iniciar novo?')) return;
+    pararTimer();
+  }
+  state.timerAtivo = { topicoId: topicoId, inicio: Date.now() };
+  if (!state.topicos[topicoId]) state.topicos[topicoId] = {};
+  if (state.topicos[topicoId].status !== 'concluido') state.topicos[topicoId].status = 'em-andamento';
+  saveState(); atualizarTimerUI(); render();
+}
+
+function pararTimer() {
+  if (!state.timerAtivo) return;
+  const fim = Date.now();
+  const duracaoMin = Math.round((fim - state.timerAtivo.inicio) / 60000);
+  if (duracaoMin < 1 && !confirm('Sessão menor que 1 min. Salvar?')) {
+    state.timerAtivo = null; saveState(); atualizarTimerUI(); return;
+  }
+  state.sessoes.push({
+    topicoId: state.timerAtivo.topicoId, inicio: state.timerAtivo.inicio,
+    fim: fim, duracaoMin: Math.max(1, duracaoMin)
+  });
+  state.timerAtivo = null;
+  saveState(); atualizarTimerUI(); render();
+  alert(`Sessão registrada: ${Math.max(1, duracaoMin)} min`);
+}
+
+function atualizarTimerUI() {
+  const bar = document.getElementById('timer-bar');
+  if (!state.timerAtivo) {
+    bar.classList.remove('active');
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    return;
+  }
+  const t = encontrarTopico(state.timerAtivo.topicoId);
+  document.getElementById('timer-topic-name').textContent = t ? t.nome : '—';
+  bar.classList.add('active');
+  if (!timerInterval) {
+    timerInterval = setInterval(() => {
+      if (!state.timerAtivo) return;
+      const ms = Date.now() - state.timerAtivo.inicio;
+      const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000), s = Math.floor((ms % 60000) / 1000);
+      document.getElementById('timer-clock').textContent =
+        String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }, 1000);
+  }
+}
+
+function encontrarTopico(id) {
+  return PLANO.topicos.find(t => t.id === id) || PLANO.fila_contingencia.find(t => t.id === id);
+}
+
+function marcarConcluido(id) {
+  if (!state.topicos[id]) state.topicos[id] = {};
+  state.topicos[id].status = 'concluido';
+  state.topicos[id].dataConclusao = Date.now();
+  state.topicos[id].srLevel = 0;
+  saveState(); render();
+}
+function reabrirTopico(id) {
+  if (!state.topicos[id]) state.topicos[id] = {};
+  state.topicos[id].status = 'em-andamento';
+  delete state.topicos[id].dataConclusao;
+  delete state.topicos[id].srLevel;
+  delete state.topicos[id].ultimaRevisao;
+  saveState(); render();
+}
+function marcarRevisado(id) {
+  const td = state.topicos[id]; if (!td) return;
+  td.ultimaRevisao = Date.now();
+  td.srLevel = (td.srLevel === undefined) ? 1 : td.srLevel + 1;
+  saveState(); render();
+}
+function registrarQuestoes(id) {
+  const total = parseInt(prompt('Quantas questões resolveu?'));
+  if (!total || total < 1) return;
+  const acertos = parseInt(prompt(`Quantas acertou (de ${total})?`));
+  if (acertos === null || isNaN(acertos) || acertos < 0 || acertos > total) { alert('Valor inválido.'); return; }
+  if (!state.topicos[id]) state.topicos[id] = {};
+  if (!state.topicos[id].questoes) state.topicos[id].questoes = { total: 0, acertos: 0 };
+  state.topicos[id].questoes.total += total;
+  state.topicos[id].questoes.acertos += acertos;
+  saveState(); render();
+}
+
+function getDataProximaRevisao(id) {
+  const td = state.topicos[id];
+  if (!td || td.status !== 'concluido') return null;
+  const srLevel = td.srLevel === undefined ? 0 : td.srLevel;
+  if (srLevel >= SR_INTERVALS.length) return null;
+  const ref = td.ultimaRevisao || td.dataConclusao;
+  if (!ref) return null;
+  return ref + SR_INTERVALS[srLevel] * MS_DAY;
+}
+function getRevisoesPendentes() {
+  const agora = Date.now();
+  return PLANO.topicos
+    .map(t => ({ topico: t, proxima: getDataProximaRevisao(t.id) }))
+    .filter(x => x.proxima !== null && x.proxima <= agora)
+    .sort((a, b) => a.proxima - b.proxima);
+}
+function getRevisoesProximas() {
+  const agora = Date.now();
+  return PLANO.topicos
+    .map(t => ({ topico: t, proxima: getDataProximaRevisao(t.id) }))
+    .filter(x => x.proxima !== null && x.proxima > agora)
+    .sort((a, b) => a.proxima - b.proxima)
+    .slice(0, 15);
+}
+
+function getTempoTopico(id) { return state.sessoes.filter(s => s.topicoId === id).reduce((sum, s) => sum + s.duracaoMin, 0); }
+function getTempoDisciplina(disc) {
+  const ids = [...PLANO.topicos, ...PLANO.fila_contingencia].filter(t => t.disciplina === disc).map(t => t.id);
+  return state.sessoes.filter(s => ids.includes(s.topicoId)).reduce((sum, s) => sum + s.duracaoMin, 0);
+}
+function getTempoTotal() { return state.sessoes.reduce((sum, s) => sum + s.duracaoMin, 0); }
+function getTopicosConcluidos() { return PLANO.topicos.filter(t => state.topicos[t.id] && state.topicos[t.id].status === 'concluido').length; }
+function getStatusTopico(id) { return (state.topicos[id] && state.topicos[id].status) || 'nao-iniciado'; }
+function getQuestoesGlobais() {
+  let total = 0, acertos = 0;
+  for (const id in state.topicos) {
+    const q = state.topicos[id].questoes;
+    if (q) { total += q.total; acertos += q.acertos; }
+  }
+  return { total, acertos };
+}
+
+function renderDashboard() {
+  document.getElementById('stat-tempo').textContent = (getTempoTotal() / 60).toFixed(1) + 'h';
+  document.getElementById('stat-tempo-sub').textContent = state.sessoes.length + ' sessões';
+  const concluidos = getTopicosConcluidos();
+  document.getElementById('stat-concluidos').textContent = concluidos;
+  document.getElementById('stat-concluidos-sub').textContent = 'de ' + PLANO.topicos.length;
+  const q = getQuestoesGlobais();
+  if (q.total > 0) {
+    document.getElementById('stat-acerto').textContent = Math.round(q.acertos / q.total * 100) + '%';
+    document.getElementById('stat-acerto-sub').textContent = q.acertos + '/' + q.total;
+  } else {
+    document.getElementById('stat-acerto').textContent = '—';
+    document.getElementById('stat-acerto-sub').textContent = 'sem registros';
+  }
+  if (state.dataProva) {
+    const dias = Math.max(0, Math.ceil((new Date(state.dataProva) - new Date()) / MS_DAY));
+    document.getElementById('stat-projecao').textContent = dias + 'd';
+    document.getElementById('stat-projecao-sub').textContent = 'até a prova';
+  } else {
+    document.getElementById('stat-projecao').textContent = '—';
+    document.getElementById('stat-projecao-sub').textContent = 'defina em ⚙️';
+  }
+  const warn = document.getElementById('dashboard-warning');
+  let warnHtml = '';
+  if (!state.dataProva) warnHtml += '<div class="warning-box">⚠️ Defina a data da prova em <strong>⚙️</strong>.</div>';
+  if (!state.dataInicio) warnHtml += '<div class="warning-box">⚠️ Defina a data de início em <strong>⚙️</strong> para gerar o cronograma com datas reais.</div>';
+  const pend = getRevisoesPendentes();
+  if (pend.length > 0) warnHtml += `<div class="info-box">🔁 <strong>${pend.length} revisão(ões) pendente(s)</strong>. Vá em 🔁.</div>`;
+  warn.innerHTML = warnHtml;
+
+  const discs = ['Normas PM', 'Leis Especiais', 'Legislação de Interesse',
+    'Direito Constitucional', 'Direito Administrativo', 'Direito Penal',
+    'Direito Processual Penal', 'Direito Penal Militar', 'Direito Processual Penal Militar'];
+  let discHtml = '';
+  for (const d of discs) {
+    const tops = PLANO.topicos.filter(t => t.disciplina === d);
+    if (tops.length === 0) continue;
+    const concl = tops.filter(t => getStatusTopico(t.id) === 'concluido').length;
+    const tempo = (getTempoDisciplina(d) / 60).toFixed(1);
+    const pct = tops.length ? Math.round(concl / tops.length * 100) : 0;
+    discHtml += `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <strong style="font-size:13px;">${d}</strong>
+        <span style="color:var(--text-dim);font-size:11px;white-space:nowrap;">${concl}/${tops.length} • ${tempo}h</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill ${pct === 100 ? 'success' : ''}" style="width:${pct}%"></div></div>
+    </div>`;
+  }
+  document.getElementById('dash-disciplinas').innerHTML = discHtml;
+
+  const incs = [['ALTA', 'alta'], ['MÉDIA', 'media'], ['BAIXA', 'baixa']];
+  let incHtml = '';
+  for (const [i, cls] of incs) {
+    const tops = PLANO.topicos.filter(t => t.incidencia === i);
+    if (tops.length === 0) continue;
+    const concl = tops.filter(t => getStatusTopico(t.id) === 'concluido').length;
+    const pct = tops.length ? Math.round(concl / tops.length * 100) : 0;
+    incHtml += `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span><span class="badge ${cls}">${i}</span> ${tops.length} tópicos</span>
+        <span style="color:var(--text-dim);font-size:11px;">${concl}/${tops.length}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill ${pct === 100 ? 'success' : ''}" style="width:${pct}%"></div></div>
+    </div>`;
+  }
+  document.getElementById('dash-incidencia').innerHTML = incHtml;
+}
+
+function renderFila() {
+  const pendentes = PLANO.topicos.filter(t => getStatusTopico(t.id) !== 'concluido');
+  if (pendentes.length === 0) {
+    document.getElementById('fila-list').innerHTML = '<div class="empty">🎉 Plano principal concluído!</div>';
+    return;
+  }
+  let html = '';
+  pendentes.forEach((t, idx) => { html += renderTopicCard(t, idx + 1); });
+  document.getElementById('fila-list').innerHTML = html;
+}
+
+function renderRevisao() {
+  const pend = getRevisoesPendentes();
+  const prox = getRevisoesProximas();
+  const revCount = document.getElementById('rev-count');
+  revCount.innerHTML = pend.length > 0 ? `<span class="badge-count">${pend.length}</span>` : '';
+  let pendHtml = pend.length === 0 ? '<div class="empty">Sem pendências. ✓</div>' : '';
+  pend.forEach(({ topico, proxima }) => {
+    const dias = Math.floor((Date.now() - proxima) / MS_DAY);
+    const atraso = dias === 0 ? 'hoje' : `${dias}d atraso`;
+    pendHtml += renderRevisaoCard(topico, atraso, true);
+  });
+  document.getElementById('revisao-pendente-list').innerHTML = pendHtml;
+  let proxHtml = prox.length === 0 ? '<div class="empty">Conclua tópicos para ver agendamento.</div>' : '';
+  prox.forEach(({ topico, proxima }) => {
+    const dias = Math.ceil((proxima - Date.now()) / MS_DAY);
+    const quando = dias === 1 ? 'amanhã' : `em ${dias}d`;
+    proxHtml += renderRevisaoCard(topico, quando, false);
+  });
+  document.getElementById('revisao-proxima-list').innerHTML = proxHtml;
+}
+
+function renderRevisaoCard(t, quando, pendente) {
+  const incClass = t.incidencia === 'ALTA' ? 'alta' : t.incidencia === 'MÉDIA' ? 'media' : 'baixa';
+  const td = state.topicos[t.id] || {};
+  const srLevel = td.srLevel === undefined ? 0 : td.srLevel;
+  const ciclo = SR_INTERVALS[srLevel] ? `${SR_INTERVALS[srLevel]}d` : 'final';
+  let actions = '';
+  if (pendente) {
+    actions = `<button class="btn revisao small" onclick="iniciarTimer('${t.id}')">▶ Revisar</button>
+      <button class="btn small" onclick="registrarQuestoes('${t.id}')">📝</button>
+      <button class="btn success small" onclick="marcarRevisado('${t.id}')">✓ Feito</button>`;
+  }
+  return `<div class="topic ${pendente ? 'revisao-pendente' : ''}">
+    <div class="topic-header">
+      <span class="badge ${incClass}">${t.incidencia}</span>
+      <span class="badge disciplina">${t.disciplina}</span>
+      <span style="font-size:11px;color:var(--text-dim);font-weight:600;">${quando} (ciclo ${ciclo})</span>
+    </div>
+    <div class="topic-name">${t.nome}</div>
+    ${actions ? `<div class="topic-actions">${actions}</div>` : ''}
+  </div>`;
+}
+
+let filtroTipo = 'todos';
+let filtroStatus = 'todos';
+
+function renderTopicos() {
+  let lista = PLANO.topicos.slice();
+  if (filtroTipo !== 'todos') lista = lista.filter(t => t.tipo === filtroTipo);
+  if (filtroStatus !== 'todos') lista = lista.filter(t => getStatusTopico(t.id) === filtroStatus);
+  let html = lista.length === 0 ? '<div class="empty">Nenhum tópico.</div>' : '';
+  lista.forEach(t => { html += renderTopicCard(t); });
+  document.getElementById('topicos-list').innerHTML = html;
+  let contHtml = '';
+  PLANO.fila_contingencia.forEach(t => { contHtml += renderTopicCard(t, null, true); });
+  document.getElementById('contingencia-list').innerHTML = contHtml;
+}
+
+function renderTopicCard(t, ordem, isContingencia) {
+  const status = getStatusTopico(t.id);
+  const tempoMin = getTempoTopico(t.id);
+  const tempoH = (tempoMin / 60).toFixed(1);
+  const stData = state.topicos[t.id] || {};
+  const questoes = stData.questoes;
+  const incClass = t.incidencia === 'ALTA' ? 'alta' : t.incidencia === 'MÉDIA' ? 'media' : 'baixa';
+  const nivelClass = 'nivel-' + t.nivel;
+  const statusClass = status === 'concluido' ? 'concluido' : status === 'em-andamento' ? 'em-andamento' : '';
+  let actions = '';
+  if (isContingencia) {
+    actions = `<button class="btn small" onclick="iniciarTimer('${t.id}')">▶ Timer</button>`;
+  } else if (status === 'concluido') {
+    actions = `<button class="btn small" onclick="reabrirTopico('${t.id}')">↩ Reabrir</button>
+      <button class="btn small" onclick="registrarQuestoes('${t.id}')">📝</button>`;
+  } else {
+    actions = `<button class="btn primary small" onclick="iniciarTimer('${t.id}')">▶ Timer</button>
+      <button class="btn success small" onclick="marcarConcluido('${t.id}')">✓ Concluir</button>
+      <button class="btn small" onclick="registrarQuestoes('${t.id}')">📝</button>`;
+  }
+  let questoesInfo = '';
+  if (questoes && questoes.total > 0) {
+    const pct = Math.round(questoes.acertos / questoes.total * 100);
+    questoesInfo = `<span>📝 ${questoes.acertos}/${questoes.total} (${pct}%)</span>`;
+  }
+  let nota = (t.nota_redução || t.nota_contingencia) ? `<div class="note">${t.nota_redução || t.nota_contingencia}</div>` : '';
+  const ordemBadge = ordem ? `<span style="font-size:10.5px;color:var(--text-dim);font-weight:700;">#${ordem}</span>` : '';
+  const tipoBadge = t.tipo === 'revisao' ? '<span class="badge tipo-revisao">REV</span>' : '';
+  let pgsInfo = t.paginas > 0 ? `<span>📄 ${t.paginas} pgs</span>` : '';
+  return `<div class="topic ${statusClass}">
+    <div class="topic-header">
+      ${ordemBadge}
+      <span class="badge ${incClass}">${t.incidencia}</span>
+      ${tipoBadge}
+      <span class="badge disciplina">${t.disciplina}</span>
+      <span class="badge ${nivelClass}">${t.nivel}</span>
+    </div>
+    <div class="topic-name">${t.nome}</div>
+    <div class="topic-meta">
+      ${pgsInfo}
+      <span>⏱ Est: ${t.horas_estimadas}h</span>
+      <span>🕒 Feito: ${tempoH}h</span>
+      ${questoesInfo}
+    </div>
+    ${nota}
+    <div class="topic-actions">${actions}</div>
+  </div>`;
+}
+
+function renderHistorico() {
+  const total = state.sessoes.length;
+  const tempoMin = getTempoTotal();
+  const mediaMin = total ? Math.round(tempoMin / total) : 0;
+  document.getElementById('historico-stats').innerHTML = `
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:6px;">
+      <div><strong>${total}</strong> sessões</div>
+      <div><strong>${(tempoMin / 60).toFixed(1)}h</strong> total</div>
+      <div><strong>${mediaMin}min</strong> média</div>
+    </div>`;
+  if (total === 0) {
+    document.getElementById('historico-list').innerHTML = '<div class="empty">Nenhuma sessão.</div>';
+    return;
+  }
+  const ultimas = state.sessoes.slice().reverse().slice(0, 30);
+  let html = '<div class="card" style="padding:0 13px;">';
+  ultimas.forEach(s => {
+    const t = encontrarTopico(s.topicoId);
+    const nome = t ? t.nome : s.topicoId;
+    const data = new Date(s.fim);
+    const dataStr = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    html += `<div class="session-row">
+      <div style="flex:1;min-width:0;">
+        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${nome}</div>
+        <div class="when">${dataStr}</div>
+      </div>
+      <div><strong>${s.duracaoMin}min</strong></div>
+    </div>`;
+  });
+  html += '</div>';
+  document.getElementById('historico-list').innerHTML = html;
+}
+
+// === INCIDÊNCIA POR TEMA ===
+function renderIncidencia() {
+  let html = '';
+  for (const disc in PLANO.incidencia_disciplinas) {
+    const d = PLANO.incidencia_disciplinas[disc];
+    let stats = '';
+    if (d.total_questoes_3_provas !== undefined && d.total_questoes_3_provas > 0) {
+      stats = `${d.total_questoes_3_provas} questões em 3 provas (${d.percentual_prova}% da prova)`;
+    } else if (d.observacao) {
+      stats = d.observacao;
+    }
+    let temasHtml = '';
+    d.temas.forEach(tema => {
+      const cls = tema.incidencia === 'ALTA' ? 'alta' : tema.incidencia === 'MÉDIA' ? 'media' : 'baixa';
+      temasHtml += `<div class="tema-row">
+        <span class="badge ${cls}">${tema.incidencia}</span>
+        <div class="tema-name">${tema.tema}</div>
+        <div class="tema-meta">${tema.freq}</div>
+      </div>`;
+    });
+    html += `<div class="disc-incidencia">
+      <div class="disc-header">
+        <div class="disc-name">${disc}</div>
+        <div class="disc-stats">${stats}</div>
+      </div>
+      ${temasHtml}
+    </div>`;
+  }
+  document.getElementById('incidencia-content').innerHTML = html;
+}
+
+// === CRONOGRAMA SEMANAL ===
+function formatarDataCurta(d) {
+  return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function gerarCronograma() {
+  const cont = document.getElementById('cronograma-content');
+  const info = document.getElementById('cron-info');
+  if (!state.dataInicio) {
+    cont.innerHTML = '';
+    info.innerHTML = 'Defina a <strong>data de início</strong> em ⚙️ para gerar o cronograma com datas reais.';
+    return;
+  }
+  info.innerHTML = `🚀 Início: <strong>${new Date(state.dataInicio + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>${state.dataProva ? ` — Prova: <strong>${new Date(state.dataProva + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>` : ''}<br><br>
+    <strong>Distribuição semanal:</strong> 3h seg-sex (1h revisão + 2h novo) + 4h sáb (1h hist/lit + 3h novo) + 3h dom (1h hist/lit + 2h novo). Total: 22h/semana.`;
+  
+  const inicio = new Date(state.dataInicio + 'T00:00:00');
+  // Ajustar para começar na segunda-feira da semana
+  const diaSemana = inicio.getDay(); // 0=dom, 1=seg, ...
+  const offsetSeg = diaSemana === 0 ? 1 : (diaSemana === 1 ? 0 : -(diaSemana - 1));
+  const segundaInicial = new Date(inicio);
+  segundaInicial.setDate(segundaInicial.getDate() + offsetSeg);
+
+  // Distribuir tópicos por semana
+  // Sem 1-9: material novo. Sem 10-12: material novo + revisão direito intercalada.
+  // Sem 13: simulados.
+  const novos = PLANO.topicos.filter(t => t.tipo === 'novo');
+  const revisao = PLANO.topicos.filter(t => t.tipo === 'revisao');
+  
+  const horasPorSemanaConteudo = 15;
+  const semanas = [];
+  let topicoIdxNovo = 0;
+  let topicoIdxRev = 0;
+  
+  for (let s = 1; s <= 13; s++) {
+    const segunda = new Date(segundaInicial);
+    segunda.setDate(segunda.getDate() + (s - 1) * 7);
+    const domingo = new Date(segunda);
+    domingo.setDate(domingo.getDate() + 6);
+    
+    const topicosSemana = [];
+    let horasAlocadas = 0;
+    
+    if (s <= 9) {
+      // 80% novo + 20% revisão
+      const horasNovo = 12;
+      const horasRev = 3;
+      while (horasAlocadas < horasNovo && topicoIdxNovo < novos.length) {
+        const t = novos[topicoIdxNovo];
+        topicosSemana.push({ topico: t, tipo: 'novo' });
+        horasAlocadas += t.horas_estimadas;
+        topicoIdxNovo++;
+      }
+      let horasRevAlocadas = 0;
+      while (horasRevAlocadas < horasRev && topicoIdxRev < revisao.length) {
+        const t = revisao[topicoIdxRev];
+        topicosSemana.push({ topico: t, tipo: 'revisao' });
+        horasRevAlocadas += t.horas_estimadas;
+        topicoIdxRev++;
+      }
+    } else if (s <= 12) {
+      // 50/50
+      const horasNovo = 7.5;
+      const horasRev = 7.5;
+      while (horasAlocadas < horasNovo && topicoIdxNovo < novos.length) {
+        const t = novos[topicoIdxNovo];
+        topicosSemana.push({ topico: t, tipo: 'novo' });
+        horasAlocadas += t.horas_estimadas;
+        topicoIdxNovo++;
+      }
+      let horasRevAlocadas = 0;
+      while (horasRevAlocadas < horasRev && topicoIdxRev < revisao.length) {
+        const t = revisao[topicoIdxRev];
+        topicosSemana.push({ topico: t, tipo: 'revisao' });
+        horasRevAlocadas += t.horas_estimadas;
+        topicoIdxRev++;
+      }
+    } else {
+      // Semana 13: simulados
+      topicosSemana.push({ topico: { nome: 'Simulado prova 2023 (cronometrado)', disciplina: 'SIMULADO', incidencia: 'ALTA' }, tipo: 'simulado' });
+      topicosSemana.push({ topico: { nome: 'Simulado prova 2022 (cronometrado)', disciplina: 'SIMULADO', incidencia: 'ALTA' }, tipo: 'simulado' });
+      topicosSemana.push({ topico: { nome: 'Revisão dos pontos onde mais errou', disciplina: 'SIMULADO', incidencia: 'ALTA' }, tipo: 'simulado' });
+    }
+    
+    semanas.push({ numero: s, segunda: segunda, domingo: domingo, topicos: topicosSemana });
+  }
+  
+  let html = '';
+  semanas.forEach(sem => {
+    const aberto = state.semanasAbertas[sem.numero] ? 'aberta' : '';
+    const segStr = formatarDataCurta(sem.segunda);
+    const domStr = formatarDataCurta(sem.domingo);
+    let topicosHtml = '';
+    if (sem.topicos.length === 0) {
+      topicosHtml = '<div class="empty">Folga ou planejamento livre.</div>';
+    } else {
+      // Distribuir tópicos por dia
+      const dias = [];
+      for (let d = 0; d < 7; d++) {
+        const dia = new Date(sem.segunda);
+        dia.setDate(dia.getDate() + d);
+        dias.push(dia);
+      }
+      // Distribuir simples: 1 tópico por dia, ciclando
+      const tarefasPorDia = [[], [], [], [], [], [], []];
+      sem.topicos.forEach((t, i) => {
+        tarefasPorDia[i % 7].push(t);
+      });
+      dias.forEach((dia, idx) => {
+        const tarefas = tarefasPorDia[idx];
+        if (tarefas.length === 0) return;
+        const dataStr = formatarDataCurta(dia);
+        const diaSem = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'][dia.getDay()];
+        let listaTarefas = '';
+        tarefas.forEach(t => {
+          const tipo = t.tipo === 'revisao' ? '🔁' : t.tipo === 'simulado' ? '📝' : '📖';
+          const inc = t.topico.incidencia === 'ALTA' ? '🔴' : t.topico.incidencia === 'MÉDIA' ? '🟡' : '⚪';
+          listaTarefas += `<div class="dia-tarefa">${tipo} ${inc} ${t.topico.nome}</div>`;
+        });
+        topicosHtml += `<div class="dia-bloco">
+          <div class="dia-data">${diaSem} ${dataStr}</div>
+          ${listaTarefas}
+        </div>`;
+      });
+    }
+    html += `<div class="semana-card ${aberto}" data-sem="${sem.numero}">
+      <div class="semana-header" onclick="toggleSemana(${sem.numero})">
+        <div>
+          <strong>Semana ${String(sem.numero).padStart(2, '0')}</strong>
+          <div class="periodo">${segStr} – ${domStr}</div>
+        </div>
+        <div style="font-size:18px;">${aberto ? '▼' : '▶'}</div>
+      </div>
+      <div class="semana-body">${topicosHtml}</div>
+    </div>`;
+  });
+  
+  cont.innerHTML = html;
+}
+
+function toggleSemana(num) {
+  state.semanasAbertas[num] = !state.semanasAbertas[num];
+  saveState();
+  gerarCronograma();
+}
+
+function salvarDataProva() {
+  const v = document.getElementById('data-prova').value;
+  if (!v) { alert('Selecione uma data'); return; }
+  state.dataProva = v; saveState(); atualizarDataProvaInfo(); render(); alert('Data salva!');
+}
+function salvarDataInicio() {
+  const v = document.getElementById('data-inicio').value;
+  if (!v) { alert('Selecione uma data'); return; }
+  state.dataInicio = v; saveState(); atualizarDataInicioInfo(); render(); alert('Data salva!');
+}
+function atualizarDataProvaInfo() {
+  const el = document.getElementById('data-prova-info');
+  if (state.dataProva) {
+    document.getElementById('data-prova').value = state.dataProva;
+    const dias = Math.max(0, Math.ceil((new Date(state.dataProva) - new Date()) / MS_DAY));
+    el.textContent = `Faltam ${dias} dias.`;
+  } else { el.textContent = 'Não definida.'; }
+}
+function atualizarDataInicioInfo() {
+  const el = document.getElementById('data-inicio-info');
+  if (state.dataInicio) {
+    document.getElementById('data-inicio').value = state.dataInicio;
+    el.textContent = `Início: ${new Date(state.dataInicio + 'T00:00:00').toLocaleDateString('pt-BR')}`;
+  } else { el.textContent = 'Não definida.'; }
+}
+
+function exportar() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `cstapm-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+function importar(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imp = JSON.parse(e.target.result);
+      if (!confirm('Substituir TODOS os dados pelos importados?')) return;
+      state = imp;
+      state.topicos = state.topicos || {}; state.sessoes = state.sessoes || [];
+      state.semanasAbertas = state.semanasAbertas || {};
+      saveState(); render(); alert('Importado!');
+    } catch (err) { alert('Inválido: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+function resetarTudo() {
+  if (!confirm('TEM CERTEZA? Apagar tudo?')) return;
+  if (!confirm('Última chance. Confirma?')) return;
+  state = { topicos: {}, sessoes: [], dataProva: null, dataInicio: null, timerAtivo: null, semanasAbertas: {} };
+  saveState(); render(); alert('Resetado.');
+}
+
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const view = btn.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    render();
+  });
+});
+document.querySelectorAll('#filter-tipo .btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#filter-tipo .btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); filtroTipo = btn.dataset.filter; renderTopicos();
+  });
+});
+document.querySelectorAll('#filter-status .btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#filter-status .btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); filtroStatus = btn.dataset.filter; renderTopicos();
+  });
+});
+
+function render() {
+  document.getElementById('subheader').textContent =
+    `${PLANO.topicos.length} tópicos no plano + ${PLANO.fila_contingencia.length} contingência`;
+  renderDashboard(); renderFila(); renderRevisao(); renderTopicos(); renderHistorico();
+  renderIncidencia(); gerarCronograma();
+  atualizarDataProvaInfo(); atualizarDataInicioInfo(); atualizarTimerUI();
+}
+
+document.addEventListener('DOMContentLoaded', () => { render(); });
+window.addEventListener('beforeunload', e => {
+  if (state.timerAtivo) { e.preventDefault(); e.returnValue = 'Timer ativo. Pare antes de sair.'; }
+});
+</script>
+</body>
+</html>
