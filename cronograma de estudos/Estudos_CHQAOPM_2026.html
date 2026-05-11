@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f1419">
+<title>CHQAOPM 2026 — Plano de Estudos</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0f1419; --surface: #1a1f2e; --surface-2: #232938; --border: #2d3548;
+  --text: #e4e6eb; --text-dim: #9ca3af; --accent: #3b82f6;
+  --essencial: #22c55e; --alta: #f59e0b; --media: #6b7280;
+  --novo: #ec4899; --success: #10b981; --danger: #ef4444; --revisao: #8b5cf6;
+  --prof: #7c3aed; --geral: #0284c7;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 90px; }
+header { background: var(--surface); padding: 14px 16px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10; }
+header h1 { font-size: 16px; font-weight: 700; }
+header .sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.container { max-width: 860px; margin: 0 auto; padding: 14px; }
+.tabs { display: flex; gap: 3px; margin-bottom: 14px; background: var(--surface);
+  padding: 3px; border-radius: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tab { flex-shrink: 0; padding: 9px 11px; background: none;
+  color: var(--text-dim); border: none; border-radius: 6px; font-size: 12px;
+  font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
+.tab.active { background: var(--accent); color: white; }
+.tab .badge-count { background: var(--danger); color: white; font-size: 10px;
+  padding: 1px 5px; border-radius: 8px; margin-left: 4px; }
+.view { display: none; }
+.view.active { display: block; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 13px; margin-bottom: 10px; }
+.card-title { font-size: 11px; color: var(--text-dim); margin-bottom: 5px;
+  text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+.card-value { font-size: 22px; font-weight: 700; }
+.card-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (max-width: 600px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+.progress-bar { background: var(--surface-2); height: 7px; border-radius: 4px; overflow: hidden; margin-top: 7px; }
+.progress-fill { height: 100%; transition: width 0.4s; border-radius: 4px; }
+.topic { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 11px; margin-bottom: 7px; position: relative; }
+.topic.concluido { opacity: 0.55; }
+.topic.em-andamento { border-left: 3px solid var(--accent); }
+.topic.revisao-pendente { border-left: 3px solid var(--revisao); }
+.topic-header { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+.badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 9px;
+  text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; display: inline-block; }
+.badge.essencial { background: rgba(34,197,94,0.2); color: var(--essencial); border: 1px solid rgba(34,197,94,0.3); }
+.badge.alta      { background: rgba(245,158,11,0.2); color: var(--alta); border: 1px solid rgba(245,158,11,0.3); }
+.badge.media     { background: rgba(107,114,128,0.2); color: #9ca3af; border: 1px solid rgba(107,114,128,0.3); }
+.badge.novo      { background: rgba(236,72,153,0.2); color: var(--novo); border: 1px solid rgba(236,72,153,0.3); }
+.badge.prof      { background: rgba(124,58,237,0.2); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+.badge.geral     { background: rgba(2,132,199,0.2); color: #38bdf8; border: 1px solid rgba(2,132,199,0.3); }
+.badge.concluido { background: rgba(16,185,129,0.2); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+.badge.andamento { background: rgba(59,130,246,0.2); color: var(--accent); border: 1px solid rgba(59,130,246,0.3); }
+.topic-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; line-height: 1.35; flex: 1; min-width: 0; }
+.topic-meta { font-size: 11px; color: var(--text-dim); display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 8px; }
+.topic-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+.btn { padding: 6px 11px; font-size: 12px; font-weight: 500; background: var(--surface-2);
+  color: var(--text); border: 1px solid var(--border); border-radius: 6px;
+  cursor: pointer; transition: all 0.15s; font-family: inherit; white-space: nowrap; }
+.btn:hover { background: var(--border); }
+.btn:active { transform: scale(0.97); }
+.btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+.btn.success { background: var(--success); color: white; border-color: var(--success); }
+.btn.danger  { background: var(--danger); color: white; border-color: var(--danger); }
+.btn.revisao { background: var(--revisao); color: white; border-color: var(--revisao); }
+.btn.novo-btn{ background: var(--novo); color: white; border-color: var(--novo); }
+.btn.small   { padding: 4px 8px; font-size: 11px; }
+.note { font-size: 11.5px; color: var(--text-dim); font-style: italic; margin-top: 7px;
+  padding: 6px 9px; background: var(--surface-2); border-radius: 4px; border-left: 2px solid var(--alta); }
+.timer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface);
+  border-top: 2px solid var(--accent); padding: 11px 14px; display: none;
+  align-items: center; gap: 10px; z-index: 20; box-shadow: 0 -4px 20px rgba(0,0,0,0.6); }
+.timer-bar.active { display: flex; }
+.timer-info { flex: 1; min-width: 0; }
+.timer-topic { font-size: 12.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.timer-clock { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent); }
+.filter-bar { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
+.filter-bar .btn { font-size: 11px; padding: 5px 9px; }
+.filter-bar .btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+.section-title { font-size: 15px; font-weight: 600; margin: 14px 0 9px; padding: 0 2px; color: var(--text); }
+.section-title:first-child { margin-top: 0; }
+.empty { text-align: center; color: var(--text-dim); padding: 28px 18px; font-size: 12.5px; }
+.session-row { display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; gap: 8px; }
+.session-row:last-child { border: none; }
+.session-row .when { color: var(--text-dim); font-size: 10.5px; }
+.warning-box { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--alta);
+  border-radius: 8px; padding: 11px; margin-bottom: 11px; font-size: 12.5px; line-height: 1.5; }
+.success-box { background: rgba(16,185,129,0.08); border: 1px solid var(--success);
+  border-radius: 8px; padding: 11px; margin-bottom: 11px; font-size: 12.5px; line-height: 1.5; }
+.info-box { background: rgba(59,130,246,0.08); border: 1px solid var(--accent);
+  border-radius: 8px; padding: 11px; margin-bottom: 11px; font-size: 12.5px; line-height: 1.5; }
+.novo-box { background: rgba(236,72,153,0.08); border: 1px solid var(--novo);
+  border-radius: 8px; padding: 11px; margin-bottom: 11px; font-size: 12.5px; line-height: 1.5; }
+.legend { display: flex; gap: 11px; flex-wrap: wrap; font-size: 10.5px;
+  color: var(--text-dim); margin-bottom: 11px; padding: 7px 9px;
+  background: var(--surface); border-radius: 6px; }
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+input[type="number"], input[type="text"], input[type="date"], select {
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+  padding: 7px 10px; border-radius: 6px; font-size: 12.5px; font-family: inherit; }
+.disc-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+.disc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
+.disc-name { font-size: 14px; font-weight: 600; }
+.disc-stats { font-size: 11px; color: var(--text-dim); }
+.tema-row { padding: 7px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 8px; }
+.tema-row:last-child { border: none; }
+.tema-name { flex: 1; font-size: 12.5px; line-height: 1.4; }
+.tema-meta { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+.semana-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+.semana-header { padding: 12px 14px; background: var(--surface-2); cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; user-select: none; }
+.semana-header strong { font-size: 13.5px; }
+.semana-header .periodo { font-size: 11px; color: var(--text-dim); }
+.semana-header .fase-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px; }
+.semana-body { padding: 11px 14px; display: none; }
+.semana-card.aberta .semana-body { display: block; }
+.semana-card.aberta .semana-header { background: rgba(59,130,246,0.15); border-bottom: 1px solid var(--border); }
+.dia-bloco { padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.dia-bloco:last-child { border: none; }
+.dia-data { font-weight: 600; color: var(--accent); margin-bottom: 3px; font-size: 11.5px; }
+.dia-tarefa { color: var(--text-dim); padding-left: 10px; line-height: 1.5; }
+.hora-log { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hora-display { font-size: 18px; font-weight: 700; color: var(--success); min-width: 60px; }
+
+/* ═══ RESPONSIVO MOBILE ═══ */
+@media (max-width: 480px) {
+  header { padding: 11px 13px; }
+  header h1 { font-size: 14.5px; }
+  .container { padding: 10px; }
+  .tab { padding: 8px 9px; font-size: 11.5px; }
+  .btn { padding: 8px 12px; font-size: 12px; min-height: 36px; }
+  .btn.small { padding: 6px 9px; font-size: 11px; min-height: 30px; }
+  .card { padding: 11px; }
+  .card-value { font-size: 19px; }
+  .topic { padding: 10px; }
+  .topic-name { font-size: 12.5px; }
+  .section-title { font-size: 14px; }
+  .timer-bar { padding: 9px 12px; }
+  .timer-clock { font-size: 18px; }
+  .filter-bar .btn { padding: 6px 8px; font-size: 10.5px; }
+  .warning-box, .success-box, .info-box, .novo-box { padding: 9px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 CHQAOPM 2026 — Plano de Estudos</h1>
+  <div class="sub" id="subheader">Carregando...</div>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" data-view="dashboard">📊 Dashboard</button>
+    <button class="tab" data-view="fila">🎯 Fila<span class="badge-count" id="fila-count" style="display:none"></span></button>
+    <button class="tab" data-view="cronograma">📅 Cronograma</button>
+    <button class="tab" data-view="revisao">🔁 Revisão<span class="badge-count" id="rev-count" style="display:none"></span></button>
+    <button class="tab" data-view="incidencia">📈 Incidência</button>
+    <button class="tab" data-view="topicos">📋 Tópicos</button>
+    <button class="tab" data-view="ranking">🏆 Ranking</button>
+    <button class="tab" data-view="historico">🕐 Histórico</button>
+    <button class="tab" data-view="config">⚙️ Config</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dashboard">
+    <div id="hoje-card"></div>
+    <div id="dashboard-warning"></div>
+    <div class="grid-4">
+      <div class="card"><div class="card-title">Dias p/ Prova</div><div class="card-value" id="stat-dias">—</div><div class="card-sub">23 ago 2026</div></div>
+      <div class="card"><div class="card-title">Tópicos Concluídos</div><div class="card-value" id="stat-concluidos">0</div><div class="card-sub" id="stat-concluidos-sub">de 41</div></div>
+      <div class="card"><div class="card-title">Horas Estudadas</div><div class="card-value" id="stat-horas">0h</div><div class="card-sub" id="stat-horas-sub">meta: 318h</div></div>
+      <div class="card"><div class="card-title">% Concluído</div><div class="card-value" id="stat-pct">0%</div><div class="card-sub" id="stat-pct-sub">do plano</div></div>
+    </div>
+    <h2 class="section-title">Cobertura por Disciplina</h2>
+    <div id="dash-disciplinas"></div>
+    <h2 class="section-title">Próximas Revisões</h2>
+    <div id="dash-revisoes"></div>
+  </div>
+
+  <!-- FILA -->
+  <div class="view" id="view-fila">
+    <div class="success-box">
+      <strong>🎯 Fila de prioridade estratégica</strong><br>
+      Ordem: <strong>Profissional ESSENCIAL → Profissional ALTA → Geral ESSENCIAL → Geral ALTA → Novo 2026</strong>.
+      Questões profissionais valem 3× mais. Marque como <em>Em Andamento</em> ao iniciar e <em>Concluído</em> ao terminar. Use o timer para registrar o tempo.
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:var(--essencial)"></span>Essencial</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--alta)"></span>Alta</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--novo)"></span>Novo 2026</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--prof)"></span>Profissional (1,5pt)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--geral)"></span>Geral (0,5pt)</div>
+    </div>
+    <div class="filter-bar" id="filter-prio">
+      <button class="btn active" data-filter="todos">Todos</button>
+      <button class="btn" data-filter="essencial">🔴 Essencial</button>
+      <button class="btn" data-filter="alta">🟠 Alta</button>
+      <button class="btn" data-filter="novo">⭐ Novo 2026</button>
+      <button class="btn" data-filter="pendente">Pendentes</button>
+    </div>
+    <div id="fila-list"></div>
+  </div>
+
+  <!-- CRONOGRAMA -->
+  <div class="view" id="view-cronograma">
+    <div class="info-box">📅 <strong>Cronograma 15 semanas</strong> — 11/mai a 23/ago/2026. Clique em cada semana para expandir. Semana atual destacada automaticamente.</div>
+    <div id="cronograma-content"></div>
+  </div>
+
+  <!-- REVISÃO -->
+  <div class="view" id="view-revisao">
+    <div class="info-box"><strong>🔁 Revisão Espaçada</strong><br>Após concluir um tópico, ele volta para revisão em <strong>1 dia, 7 dias e 21 dias</strong>. Revise com questões — não releitura. 20–30 min por tópico.</div>
+    <h2 class="section-title">⚠️ Atrasadas / Hoje</h2>
+    <div id="revisao-hoje"></div>
+    <h2 class="section-title">📅 Próximos 7 dias</h2>
+    <div id="revisao-proximas"></div>
+  </div>
+
+  <!-- INCIDÊNCIA -->
+  <div class="view" id="view-incidencia">
+    <div class="info-box">📈 Frequência histórica por disciplina nas <strong>17 provas (2008–2023)</strong>. Use para priorizar sub-temas dentro de cada matéria.</div>
+    <div id="incidencia-content"></div>
+  </div>
+
+  <!-- TÓPICOS -->
+  <div class="view" id="view-topicos">
+    <div class="filter-bar" id="filter-tipo">
+      <button class="btn active" data-filter="todos">Todos</button>
+      <button class="btn" data-filter="profissional">Profissional</button>
+      <button class="btn" data-filter="geral">Geral</button>
+      <button class="btn" data-filter="novo">Novo 2026</button>
+    </div>
+    <div class="filter-bar" id="filter-status">
+      <button class="btn active" data-filter="todos">Todos</button>
+      <button class="btn" data-filter="nao-iniciado">Pendente</button>
+      <button class="btn" data-filter="em-andamento">Em andamento</button>
+      <button class="btn" data-filter="concluido">Concluído</button>
+    </div>
+    <div id="topicos-list"></div>
+  </div>
+
+  <!-- RANKING -->
+  <div class="view" id="view-ranking">
+    <div class="info-box">🏆 <strong>Ranking de Prioridades — Edital CH 2026</strong><br>Todos os temas do edital ordenados por frequência histórica nas <strong>17 provas (2008–2023)</strong>. 🔴 Vermelho ≥12/17 &nbsp;|&nbsp; 🟠 Laranja 9–11 &nbsp;|&nbsp; 🟡 Amarelo 6–8 &nbsp;|&nbsp; 🟢 Verde 2–5 &nbsp;|&nbsp; ⚫ Cinza/Novo 0–1</div>
+    <div class="warning-box">⚠️ <strong>Matemática:</strong> <strong>Juros NÃO está no edital CH 2026</strong> (item 1.4.1 = apenas Porcentagem). Lógica (1.4.6-1.4.9) É cobrada — tabelas-verdade, De Morgan, diagramas lógicos.</div>
+    <div id="ranking-content"></div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div class="view" id="view-historico">
+    <div class="card">
+      <div class="card-title">Resumo Geral</div>
+      <div id="historico-stats" style="font-size:13px;margin-top:8px;line-height:2;"></div>
+    </div>
+    <h2 class="section-title">Últimas 50 sessões</h2>
+    <div id="historico-list"></div>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="view" id="view-config">
+    <div class="card">
+      <div class="card-title">⏱ Registrar Horas Manualmente</div>
+      <p style="font-size:12px;color:var(--text-dim);margin:8px 0;">Se você estudou sem usar o timer, registre aqui.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center;">
+        <select id="manual-topico" style="flex:1;min-width:200px;"></select>
+        <input type="number" id="manual-minutos" placeholder="Minutos" min="1" max="999" style="width:100px;">
+        <button class="btn primary small" onclick="registrarManual()">Registrar</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💾 Backup dos dados</div>
+      <div style="margin-top:9px;display:flex;gap:7px;flex-wrap:wrap;">
+        <button class="btn primary small" onclick="exportar()">📥 Exportar JSON</button>
+        <button class="btn small" onclick="document.getElementById('import-file').click()">📤 Importar JSON</button>
+        <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importar(event)">
+      </div>
+      <div class="card-sub" style="margin-top:7px;">Faça backup semanal. Dados salvos neste navegador (localStorage).</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🗑 Resetar tudo</div>
+      <div style="margin-top:9px;"><button class="btn danger small" onclick="resetarTudo()">Apagar todo progresso</button></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🧠 Metodologia</div>
+      <div class="card-sub" style="margin-top:9px;line-height:1.8;">
+        <strong>Ordem estratégica:</strong><br>
+        Profissional ESSENCIAL (1–10) → Profissional ALTA (11–22) → Geral ESSENCIAL (23–30) → Geral ALTA (31–35) → Novo 2026 (36–41)<br><br>
+        <strong>Revisão espaçada:</strong> 1d / 7d / 21d após conclusão<br>
+        <strong>Meta diária:</strong> 2h conteúdo novo + 1h revisão<br>
+        <strong>Prova:</strong> 23/ago/2026 — 80 questões (40 prof × 1,5pt + 40 geral × 0,5pt)<br>
+        <strong>Mínimo:</strong> 22 acertos em cada bloco
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="timer-bar" id="timer-bar">
+  <div class="timer-info">
+    <div class="timer-topic" id="timer-topic-name">—</div>
+    <div class="timer-clock" id="timer-clock">00:00:00</div>
+  </div>
+  <button class="btn success small" onclick="pararTimer()">⏸ Parar e Salvar</button>
+  <button class="btn danger small" onclick="cancelarTimer()">✕ Cancelar</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DADOS DO PLANO
+// ═══════════════════════════════════════════════════════════
+const PLANO = {
+  data_prova: '2026-08-23',
+  data_inicio: '2026-05-11',
+  topicos: [
+    // PROFISSIONAL - ESSENCIAL (1,5pt)
+    {id:'penal_patrimonio',  disciplina:'Dir. Penal Comum',        nome:'Crimes contra o Patrimônio — Art. 155-183 CP',                    prio:'essencial', tipo:'profissional', freq:12, horas:14, novo:false},
+    {id:'penal_mil_teoria',  disciplina:'Dir. Penal Militar',      nome:'Teoria + Aplicação da Lei Penal Militar — Art. 1-47 CPM',         prio:'essencial', tipo:'profissional', freq:12, horas:12, novo:false},
+    {id:'ppm_ipm',           disciplina:'Dir. Proc. Pen. Militar', nome:'Polícia Judiciária Militar e IPM — Art. 7-28 CPPM',               prio:'essencial', tipo:'profissional', freq:12, horas:10, novo:false},
+    {id:'penal_admin',       disciplina:'Dir. Penal Comum',        nome:'Crimes contra Admin. Pública — Art. 312-359H CP',                  prio:'essencial', tipo:'profissional', freq:11, horas:10, novo:false},
+    {id:'penal_teoria',      disciplina:'Dir. Penal Comum',        nome:'Teoria do Crime: Tipicidade, Antijuridicidade, Tentativa — Art. 13-25', prio:'essencial', tipo:'profissional', freq:10, horas:10, novo:false},
+    {id:'penal_penas',       disciplina:'Dir. Penal Comum',        nome:'Das Penas: aplicação, espécies, extinção — Art. 32-90 CP',        prio:'essencial', tipo:'profissional', freq:10, horas: 8, novo:false},
+    {id:'penal_pessoa',      disciplina:'Dir. Penal Comum',        nome:'Crimes contra a Pessoa — Art. 121-154B CP',                       prio:'essencial', tipo:'profissional', freq:10, horas: 8, novo:false},
+    {id:'adm_agentes',       disciplina:'Dir. Administrativo',     nome:'Agentes Públicos, Regime Jurídico e Responsabilidade Civil',      prio:'essencial', tipo:'profissional', freq: 9, horas: 8, novo:false},
+    {id:'pp_prisao',         disciplina:'Dir. Proc. Penal Comum',  nome:'Prisão, Medidas Cautelares e Liberdade — Art. 282-350 CPP',       prio:'essencial', tipo:'profissional', freq: 8, horas: 8, novo:false},
+    {id:'const_tribunais',   disciplina:'Dir. Constitucional',     nome:'Tribunais Militares Estaduais (Art. 124-126) + Art. 144 CF',      prio:'essencial', tipo:'profissional', freq: 8, horas: 7, novo:false},
+    // PROFISSIONAL - ALTA (1,5pt)
+    {id:'desarmamento',      disciplina:'Leg. Complementar',       nome:'Estatuto do Desarmamento — Lei 10.826/03 + Dec. 11.615/23',       prio:'alta', tipo:'profissional', freq: 9, horas:10, novo:false},
+    {id:'norsop_gespol',     disciplina:'Normas PM',               nome:'NORSOP (PM3-10220) e GESPOL',                                     prio:'alta', tipo:'profissional', freq: 9, horas: 9, novo:false},
+    {id:'rdpm',              disciplina:'Normas PM',               nome:'RDPM — LC 893/01 (Regulamento Disciplinar PMESP)',                prio:'alta', tipo:'profissional', freq: 9, horas: 9, novo:false},
+    {id:'pp_inquerito',      disciplina:'Dir. Proc. Penal Comum',  nome:'Inquérito Policial e Investigação Criminal — Art. 4-23 CPP',      prio:'alta', tipo:'profissional', freq: 8, horas: 6, novo:false},
+    {id:'drogas',            disciplina:'Leg. Complementar',       nome:'Lei de Drogas — 11.343/06 + posições STF',                        prio:'alta', tipo:'profissional', freq: 8, horas: 8, novo:false},
+    {id:'maria_penha',       disciplina:'Leg. Complementar',       nome:'Maria da Penha — Lei 11.340/06',                                  prio:'alta', tipo:'profissional', freq: 8, horas: 7, novo:false},
+    {id:'eca',               disciplina:'Leg. Complementar',       nome:'ECA — Lei 8.069/90 (estatuto, infrações, medidas)',               prio:'alta', tipo:'profissional', freq: 7, horas: 7, novo:false},
+    {id:'abuso',             disciplina:'Leg. Complementar',       nome:'Abuso de Autoridade — Lei 13.869/19',                             prio:'alta', tipo:'profissional', freq: 7, horas: 6, novo:false},
+    {id:'jecrim_hediondos',  disciplina:'Leg. Complementar',       nome:'JECrim 9.099/95 + Tortura 9.455/97 + Hediondos 8.072/90',        prio:'alta', tipo:'profissional', freq: 7, horas: 6, novo:false},
+    {id:'improbidade',       disciplina:'Leg. Complementar',       nome:'Improbidade Administrativa — Lei 8.429/92',                       prio:'alta', tipo:'profissional', freq: 7, horas: 6, novo:false},
+    {id:'dl_667',            disciplina:'Leg. de Interesse PM',    nome:'DL 667/69 + Lei 6.167/74 — Organização Básica PMESP',             prio:'alta', tipo:'profissional', freq: 7, horas: 7, novo:false},
+    {id:'adm_atos',          disciplina:'Dir. Administrativo',     nome:'Atos Administrativos + Poderes Administrativos (princípios)',     prio:'alta', tipo:'profissional', freq: 7, horas: 6, novo:false},
+    // GERAL - ESSENCIAL (0,5pt)
+    {id:'lp_ortografia',     disciplina:'Língua Portuguesa',       nome:'Fonologia e Ortografia Oficial',                                  prio:'essencial', tipo:'geral', freq:15, horas: 8, novo:false},
+    {id:'hist_vargas',       disciplina:'Hist. do Brasil',         nome:'Era Vargas (1930-1945): Rev. 30, Estado Novo, Consolidação',      prio:'essencial', tipo:'geral', freq:14, horas: 6, novo:false},
+    {id:'lp_morfologia',     disciplina:'Língua Portuguesa',       nome:'Morfologia e Formação de Palavras (classes gramaticais)',         prio:'essencial', tipo:'geral', freq:13, horas: 7, novo:false},
+    {id:'lp_literatura',     disciplina:'Língua Portuguesa',       nome:'Literatura Brasileira e Portuguesa — escolas e obras do edital ⚠️', prio:'essencial', tipo:'geral', freq:13, horas:10, novo:false},
+    {id:'mat_estatistica',   disciplina:'Matemática',              nome:'Estatística: média, moda, mediana, variância, desvio padrão',     prio:'essencial', tipo:'geral', freq:13, horas: 6, novo:false},
+    {id:'atualidades',       disciplina:'Atualidades',             nome:'Segurança Pública: panorama, políticas e fatos 2025/2026',        prio:'essencial', tipo:'geral', freq:13, horas: 5, novo:false},
+    {id:'lp_interpretacao',  disciplina:'Língua Portuguesa',       nome:'Interpretação e Tipologia Textual (coesão, coerência, gêneros)',  prio:'essencial', tipo:'geral', freq:13, horas: 7, novo:false},
+    {id:'mat_geometria',     disciplina:'Matemática',              nome:'Geometria Plana (áreas, perímetros, Pitágoras, semelhança) — 1.4.10',  prio:'essencial', tipo:'geral', freq:12, horas: 5, novo:false},
+    // GERAL - ALTA (0,5pt)
+    {id:'hist_redemocrat',   disciplina:'Hist. do Brasil',         nome:'Redemocratização (1985–): Nova República, Planos econômicos, CF/88', prio:'alta', tipo:'geral', freq:10, horas: 5, novo:false},
+    {id:'mat_combinatoria',  disciplina:'Matemática',              nome:'Análise Combinatória e Probabilidade (1.4.3-1.4.4)',              prio:'alta', tipo:'geral', freq:10, horas: 5, novo:false},
+    {id:'mat_logica',        disciplina:'Matemática',              nome:'Lógica Proposicional: proposições, tabelas-verdade, De Morgan, lógica de 1ª ordem, diagramas (1.4.6-1.4.9)', prio:'alta', tipo:'geral', freq: 8, horas: 7, novo:false},
+    {id:'mat_porcentagem',   disciplina:'Matemática',              nome:'Porcentagem, razão e proporção (1.4.1) — ⚠️ juros NÃO consta no edital', prio:'alta', tipo:'geral', freq: 8, horas: 4, novo:false},
+    {id:'mat_equacoes',      disciplina:'Matemática',              nome:'Equações do 1º e 2º graus, sistemas lineares (1.4.2)',            prio:'alta', tipo:'geral', freq: 7, horas: 4, novo:false},
+    {id:'hist_republica',    disciplina:'Hist. do Brasil',         nome:'1ª República (1889-1930) + Regime Militar (1964-1985)',           prio:'alta', tipo:'geral', freq: 8, horas: 5, novo:false},
+    {id:'lp_gramatica',      disciplina:'Língua Portuguesa',       nome:'Concordância, Regência, Crase e Sintaxe (período composto)',      prio:'alta', tipo:'geral', freq: 8, horas: 6, novo:false},
+    {id:'lp_figuras',        disciplina:'Língua Portuguesa',       nome:'Figuras de Linguagem, Estilística e Semântica',                   prio:'alta', tipo:'geral', freq: 8, horas: 5, novo:false},
+    {id:'mat_progressoes',   disciplina:'Matemática',              nome:'Progressões Aritméticas e Geométricas — PA e PG (1.4.11)',        prio:'media', tipo:'geral', freq: 4, horas: 3, novo:false},
+    {id:'mat_conjuntos',     disciplina:'Matemática',              nome:'Teoria dos Conjuntos — operações, cardinalidade (1.4.12)',        prio:'media', tipo:'geral', freq: 3, horas: 3, novo:false},
+    // NOVO EDITAL 2026 (genuinamente novos — comparação CH2023 vs CH2026)
+    // Literatura: JÁ estava no edital CH2023 → coberta por lp_literatura (ESSENCIAL GERAL)
+    // COP PM: JÁ estava no CH2023 (PM3-1/02/22); 2026 atualizou para PM3-001/02/25 → reclassificado como ALTA PROF
+    {id:'novo_dppm',         disciplina:'Dir. Proc. Pen. Mil.',    nome:'DPPM expandido — CH2026 inseriu: prisão, provas, nulidades, leg. especial (itens 2.3.2.5-10)', prio:'novo', tipo:'novo', freq: 0, horas: 6, novo:true},
+    {id:'novo_lei14751',     disciplina:'Normas PM',               nome:'Lei 14.751/2023 — atualização RDPMM (Dec.-Lei 1.002/69) — ausente CH2023',                     prio:'novo', tipo:'novo', freq: 0, horas: 5, novo:true},
+    {id:'novo_cop',          disciplina:'Normas PM',               nome:'COP PM — Diretriz PM3-001/02/25 (atualização; PM3-1/02/22 já era cobrada em CH2023)',           prio:'alta', tipo:'profissional', freq: 0, horas: 3, novo:false},
+    {id:'novo_scipm',        disciplina:'Normas PM',               nome:'SCIPM — Sistema de Controle Interno da PMESP (item 2.7.22 CH2026, ausente CH2023)',            prio:'novo', tipo:'novo', freq: 0, horas: 3, novo:true},
+    {id:'novo_scc',          disciplina:'Normas PM',               nome:'SCC — Sistema de Comando e Controle PM-001/02/23 (item 2.7.21 CH2026, ausente CH2023)',        prio:'novo', tipo:'novo', freq: 0, horas: 3, novo:true},
+    {id:'novo_lei18442',     disciplina:'Normas PM',               nome:'Lei 18.442/2026 — nova legislação PMESP (sancionada em 2026, item novo CH2026)',               prio:'novo', tipo:'novo', freq: 0, horas: 3, novo:true},
+    {id:'novo_informatica',  disciplina:'Informática — Novo 2026', nome:'Informática: Windows 10, Office 2016, Google Workspace, Teams, internet, segurança digital',   prio:'novo', tipo:'novo', freq: 0, horas: 6, novo:true},
+  ],
+  semanas: [
+    {n:1,  periodo:'11 a 17/mai', fase:'Dir. Penal', faseColor:'#7c3aed', novo:false, dias:[
+      {d:'Seg 11/mai', novo:'Dir. Penal — Crimes Patrimônio (Art. 155-172)', rev:'Revisão livre'},
+      {d:'Ter 12/mai', novo:'Dir. Penal — Crimes Patrimônio (Art. 173-183) + receptação', rev:'Revisão Dir. Patrimônio'},
+      {d:'Qua 13/mai', novo:'Dir. Penal — Teoria do Crime: tipicidade, antijuridicidade (Art. 13-20)', rev:'Revisão Teoria do Crime'},
+      {d:'Qui 14/mai', novo:'Dir. Penal — Teoria do Crime: tentativa, concurso, iter criminis (Art. 21-31)', rev:'Revisão Art. 13-20'},
+      {d:'Sex 15/mai', novo:'Dir. Penal — Das Penas: espécies, aplicação (Art. 32-59)', rev:'Revisão Art. 21-31'},
+      {d:'Sáb 16/mai', novo:'Dir. Penal — Penas: substituição, sursis, livramento (Art. 60-90)', rev:'Revisão Art. 32-59'},
+      {d:'Dom 17/mai', novo:'Revisão semanal + 20 questões Dir. Penal Parte Geral', rev:'Revisão geral semana 1'},
+    ]},
+    {n:2,  periodo:'18 a 24/mai', fase:'Dir. Penal', faseColor:'#7c3aed', novo:false, dias:[
+      {d:'Seg 18/mai', novo:'Dir. Penal — Crimes contra Pessoa: homicídio, lesão (Art. 121-130)', rev:'Revisão Art. 60-90'},
+      {d:'Ter 19/mai', novo:'Dir. Penal — Crimes Pessoa: ameaça, sequestro, constrangimento (Art. 131-154B)', rev:'Revisão Art. 121-130'},
+      {d:'Qua 20/mai', novo:'Dir. Penal — Crimes contra Admin. Pública: peculato, corrupção (Art. 312-330)', rev:'Revisão Crimes Pessoa'},
+      {d:'Qui 21/mai', novo:'Dir. Penal — Crimes contra Admin.: concussão, prevaricação (Art. 331-359H)', rev:'Revisão Art. 312-330'},
+      {d:'Sex 22/mai', novo:'Dir. Proc. Penal — Inquérito Policial (Art. 4-23 CPP)', rev:'Revisão Crimes Admin. Pública'},
+      {d:'Sáb 23/mai', novo:'Dir. Proc. Penal — Ação penal, competência (Art. 24-86 CPP)', rev:'Revisão IP'},
+      {d:'Dom 24/mai', novo:'20 questões mistas Dir. Penal Especial', rev:'Revisão semana 2'},
+    ]},
+    {n:3,  periodo:'25 a 31/mai', fase:'Dir. Penal', faseColor:'#7c3aed', novo:false, dias:[
+      {d:'Seg 25/mai', novo:'Dir. Proc. Penal — Prisão em flagrante e preventiva (Art. 282-316)', rev:'Revisão ação penal'},
+      {d:'Ter 26/mai', novo:'Dir. Proc. Penal — Prisão temporária, medidas cautelares (Art. 317-350)', rev:'Revisão prisão flagrante'},
+      {d:'Qua 27/mai', novo:'Dir. Proc. Penal — Provas: conceito, proibições (Art. 155-196)', rev:'Revisão prisão preventiva'},
+      {d:'Qui 28/mai', novo:'Dir. Proc. Penal — Procedimentos (ordinário, sumário, especial)', rev:'Revisão provas'},
+      {d:'Sex 29/mai', novo:'Dir. Proc. Penal — Nulidades, recursos, execução penal', rev:'Revisão procedimentos'},
+      {d:'Sáb 30/mai', novo:'Revisão intensiva Dir. Proc. Penal + 20 questões', rev:'Revisão semanal DPP'},
+      {d:'Dom 31/mai', novo:'Simulado Dir. Penal Comum (20 questões profissional)', rev:'Revisão erros simulado'},
+    ]},
+    {n:4,  periodo:'01 a 07/jun', fase:'Dir. Penal', faseColor:'#7c3aed', novo:false, dias:[
+      {d:'Seg 01/jun', novo:'Dir. Penal Militar — Teoria + Aplicação da Lei (Art. 1-47 CPM)', rev:'Revisão Dir. Penal Comum'},
+      {d:'Ter 02/jun', novo:'Dir. Penal Militar — Crimes contra Serviço e Dever Militar (Art. 187-212)', rev:'Revisão Art. 1-47 CPM'},
+      {d:'Qua 03/jun', novo:'Dir. Penal Militar — Crimes contra Hierarquia, Autoridade (Art. 150-186)', rev:'Revisão Crimes Serviço'},
+      {d:'Qui 04/jun', novo:'Dir. Penal Militar — Crimes contra Pessoa e Patrimônio no CPM', rev:'Revisão Hierarquia'},
+      {d:'Sex 05/jun', novo:'Dir. Penal Militar — Pena militar, extinção da punibilidade', rev:'Revisão Crimes Pessoa CPM'},
+      {d:'Sáb 06/jun', novo:'Dir. Proc. Pen. Militar — Polícia Judiciária Militar (Art. 7-28 CPPM)', rev:'Revisão Pena militar'},
+      {d:'Dom 07/jun', novo:'20 questões Dir. Penal Militar', rev:'Revisão semana 4'},
+    ]},
+    {n:5,  periodo:'08 a 14/jun', fase:'Dir. Penal', faseColor:'#7c3aed', novo:false, dias:[
+      {d:'Seg 08/jun', novo:'Dir. Proc. Pen. Militar — IPM: instauração, condução, relatório', rev:'Revisão PJM'},
+      {d:'Ter 09/jun', novo:'Dir. Proc. Pen. Militar — Ação penal militar, competência JME', rev:'Revisão IPM'},
+      {d:'Qua 10/jun', novo:'Lei 14.751/2023 — RDPMM atualizado ★ NOVO', rev:'Revisão DPP Militar'},
+      {d:'Qui 11/jun', novo:'Novos procedimentos DPPM — Edital CH 2026 ★ NOVO', rev:'Revisão Lei 14.751'},
+      {d:'Sex 12/jun', novo:'Revisão intensiva todo Dir. Penal Militar + Proc.', rev:'Revisão novos procedimentos'},
+      {d:'Sáb 13/jun', novo:'Simulado 20 questões Dir. Penal Militar', rev:'Revisão erros simulado'},
+      {d:'Dom 14/jun', novo:'Revisão acumulada semanas 1-5 (Penal Comum + Militar)', rev:'Revisão acumulada'},
+    ]},
+    {n:6,  periodo:'15 a 21/jun', fase:'Dir. Const. + Adm.', faseColor:'#1d4ed8', novo:false, dias:[
+      {d:'Seg 15/jun', novo:'Dir. Constitucional — Princípios Fundamentais + Direitos e Garantias (Art. 1-17 CF)', rev:'Revisão Dir. Penal Militar'},
+      {d:'Ter 16/jun', novo:'Dir. Constitucional — Art. 5º aprofundado (remédios constitucionais, inviolabilidades)', rev:'Revisão Art. 1-17'},
+      {d:'Qua 17/jun', novo:'Dir. Constitucional — Organização do Estado e dos Poderes (Art. 18-135)', rev:'Revisão remédios const.'},
+      {d:'Qui 18/jun', novo:'Dir. Constitucional — Art. 144 (Segurança Pública) + Art. 124-126 (Justiça Militar)', rev:'Revisão Art. 18-135'},
+      {d:'Sex 19/jun', novo:'Dir. Constitucional — Servidores Públicos + Constituição SP (dispositivos PM)', rev:'Revisão Art. 144'},
+      {d:'Sáb 20/jun', novo:'Dir. Administrativo — Princípios, Atos Adm. e Poderes Adm.', rev:'Revisão Const. Estadual'},
+      {d:'Dom 21/jun', novo:'20 questões Dir. Constitucional', rev:'Revisão semana 6'},
+    ]},
+    {n:7,  periodo:'22 a 28/jun', fase:'Dir. Const. + Adm.', faseColor:'#1d4ed8', novo:false, dias:[
+      {d:'Seg 22/jun', novo:'Dir. Administrativo — Agentes Públicos e Regime Jurídico', rev:'Revisão Atos Adm.'},
+      {d:'Ter 23/jun', novo:'Dir. Administrativo — Responsabilidade Civil do Estado', rev:'Revisão Agentes Públicos'},
+      {d:'Qua 24/jun', novo:'Dir. Administrativo — Controle da Administração + Improbidade', rev:'Revisão Responsabilidade Civil'},
+      {d:'Qui 25/jun', novo:'Dir. Administrativo — Licitações (básico) + Serviços Públicos', rev:'Revisão Controle Adm.'},
+      {d:'Sex 26/jun', novo:'Revisão intensiva Dir. Constitucional + Administrativo', rev:'Revisão Licitações'},
+      {d:'Sáb 27/jun', novo:'Simulado 20 questões Dir. Const. + Adm.', rev:'Revisão erros simulado'},
+      {d:'Dom 28/jun', novo:'Revisão acumulada semanas 1-7', rev:'Revisão acumulada'},
+    ]},
+    {n:8,  periodo:'29/jun a 05/jul', fase:'Normas PM + Leg.', faseColor:'#065f46', novo:false, dias:[
+      {d:'Seg 29/jun', novo:'RDPM — LC 893/01: hierarquia, disciplina, deveres e proibições', rev:'Revisão Dir. Adm.'},
+      {d:'Ter 30/jun', novo:'RDPM — Transgressões, penalidades, processo administrativo', rev:'Revisão RDPM parte 1'},
+      {d:'Qua 01/jul', novo:'NORSOP (PM3-10220) — doutrina, planejamento, ordens de operações', rev:'Revisão RDPM parte 2'},
+      {d:'Qui 02/jul', novo:'GESPOL — gestão, indicadores, sistema de controle', rev:'Revisão NORSOP'},
+      {d:'Sex 03/jul', novo:'COP PM — Diretriz PM3-001/02/25 🔄 ATUALIZADO (já no CH2023, versão nova)', rev:'Revisão GESPOL'},
+      {d:'Sáb 04/jul', novo:'SCIPM + SCC — controle interno + comando e controle PMESP ★ NOVO', rev:'Revisão COP PM'},
+      {d:'Dom 05/jul', novo:'20 questões Normas PM', rev:'Revisão semana 8'},
+    ]},
+    {n:9,  periodo:'06 a 12/jul', fase:'Normas PM + Leg.', faseColor:'#065f46', novo:false, dias:[
+      {d:'Seg 06/jul', novo:'DL 667/69 + Lei 6.167/74 — Organização Básica PMESP', rev:'Revisão Normas PM'},
+      {d:'Ter 07/jul', novo:'DL 260/70 — Inatividade + LC 1.224/13 Critérios de Promoção', rev:'Revisão DL 667'},
+      {d:'Qua 08/jul', novo:'Estatuto do Desarmamento — Lei 10.826/03 + Dec. 11.615/23', rev:'Revisão Inatividade'},
+      {d:'Qui 09/jul', novo:'Lei de Drogas — 11.343/06: posse, tráfico, STF descriminalização', rev:'Revisão Desarmamento'},
+      {d:'Sex 10/jul', novo:'Maria da Penha — Lei 11.340/06: proteção, medidas, procedimentos', rev:'Revisão Lei Drogas'},
+      {d:'Sáb 11/jul', novo:'ECA — Lei 8.069/90: direitos, infrações, medidas socioeducativas', rev:'Revisão Maria da Penha'},
+      {d:'Dom 12/jul', novo:'20 questões Leg. Complementar', rev:'Revisão semana 9'},
+    ]},
+    {n:10, periodo:'13 a 19/jul', fase:'Leg. Complementar', faseColor:'#065f46', novo:false, dias:[
+      {d:'Seg 13/jul', novo:'Abuso de Autoridade — Lei 13.869/19: crimes, penas, procedimento', rev:'Revisão ECA'},
+      {d:'Ter 14/jul', novo:'JECrim 9.099/95 + Tortura 9.455/97 + Crimes Hediondos 8.072/90', rev:'Revisão Abuso Autoridade'},
+      {d:'Qua 15/jul', novo:'Improbidade Administrativa — Lei 8.429/92: atos, sanções, processo', rev:'Revisão JECrim'},
+      {d:'Qui 16/jul', novo:'Organização Criminosa 12.850/13 + Lavagem de Capitais 9.613/98 (básico)', rev:'Revisão Improbidade'},
+      {d:'Sex 17/jul', novo:'Revisão intensiva todo Leg. Complementar + Normas PM', rev:'Revisão Org. Criminosa'},
+      {d:'Sáb 18/jul', novo:'Simulado 20 questões profissional (Leg. Comp. + Normas)', rev:'Revisão erros'},
+      {d:'Dom 19/jul', novo:'Revisão acumulada semanas 1-10', rev:'Revisão acumulada'},
+    ]},
+    {n:11, periodo:'20 a 26/jul', fase:'Língua Portuguesa', faseColor:'#9d174d', novo:false, dias:[
+      {d:'Seg 20/jul', novo:'Língua Portuguesa — Fonologia, Ortografia Oficial + Novo Acordo', rev:'Revisão Leg. Comp.'},
+      {d:'Ter 21/jul', novo:'LP — Morfologia: classes de palavras, formação de palavras', rev:'Revisão LP Ortografia'},
+      {d:'Qua 22/jul', novo:'LP — Sintaxe: período composto, coordenação, subordinação', rev:'Revisão Morfologia'},
+      {d:'Qui 23/jul', novo:'LP — Concordância verbal e nominal + Regência verbal e nominal', rev:'Revisão Sintaxe'},
+      {d:'Sex 24/jul', novo:'LP — Crase, Pontuação, Figuras de Linguagem, Estilística', rev:'Revisão Concordância'},
+      {d:'Sáb 25/jul', novo:'LP — Interpretação Textual: coesão, coerência, tipos, gêneros', rev:'Revisão Crase/Pontuação'},
+      {d:'Dom 26/jul', novo:'20 questões LP', rev:'Revisão semana 11'},
+    ]},
+    {n:12, periodo:'27/jul a 02/ago', fase:'Literatura + Mat.', faseColor:'#9d174d', novo:true, dias:[
+      {d:'Seg 27/jul', novo:'Literatura — Escolas literárias: Romantismo, Realismo, Naturalismo, Parnasianismo', rev:'Revisão LP Gramática'},
+      {d:'Ter 28/jul', novo:'Literatura — Modernismo brasileiro + Machado de Assis (Dom Casmurro, obras) ★', rev:'Revisão Escolas Literárias'},
+      {d:'Qua 29/jul', novo:'Literatura — Clarice Lispector (A Hora da Estrela) + Guimarães Rosa ★', rev:'Revisão Modernismo'},
+      {d:'Qui 30/jul', novo:'Literatura — Portugal: Camões, Eça de Queirós, Fernando Pessoa ★', rev:'Revisão Clarice'},
+      {d:'Sex 31/jul', novo:'Matemática — Estatística: média, moda, mediana, variância, desvio padrão', rev:'Revisão Literatura Port.'},
+      {d:'Sáb 01/ago', novo:'Matemática — Geometria Plana + Lógica Proposicional (tabelas-verdade, De Morgan)', rev:'Revisão Estatística'},
+      {d:'Dom 02/ago', novo:'20 questões Literatura + LP', rev:'Revisão semana 12'},
+    ]},
+    {n:13, periodo:'03 a 09/ago', fase:'Mat. + Hist. + Info', faseColor:'#9d174d', novo:true, dias:[
+      {d:'Seg 03/ago', novo:'Matemática — Combinatória, Probabilidade + Porcentagem/razão (sem juros)', rev:'Revisão Geometria + Lógica'},
+      {d:'Ter 04/ago', novo:'Matemática — Equações, Sistemas, PA/PG, Conjuntos', rev:'Revisão Combinatória'},
+      {d:'Qua 05/ago', novo:'Hist. do Brasil — Era Vargas (1930-1945): fases, política, economia', rev:'Revisão Matemática'},
+      {d:'Qui 06/ago', novo:'Hist. Brasil — 1ª República + Regime Militar + Redemocratização', rev:'Revisão Era Vargas'},
+      {d:'Sex 07/ago', novo:'Informática — Windows, Word, Excel, PowerPoint, Google Workspace ★ NOVO', rev:'Revisão Hist. República'},
+      {d:'Sáb 08/ago', novo:'Informática — Teams, internet, segurança digital, redes ★ NOVO', rev:'Revisão Informática 1'},
+      {d:'Dom 09/ago', novo:'20 questões Matemática + Hist. + Informática', rev:'Revisão semana 13'},
+    ]},
+    {n:14, periodo:'10 a 16/ago', fase:'Atualidades + Rev.', faseColor:'#c2410c', novo:false, dias:[
+      {d:'Seg 10/ago', novo:'Atualidades — Segurança Pública: panorama nacional e SP 2025/2026', rev:'Revisão Informática'},
+      {d:'Ter 11/ago', novo:'Atualidades — Política, economia, ciência e tecnologia 2025/2026', rev:'Revisão Atualidades 1'},
+      {d:'Qua 12/ago', novo:'Revisão intensiva Dir. Penal Comum (questões)', rev:'Revisão Atualidades 2'},
+      {d:'Qui 13/ago', novo:'Revisão intensiva Dir. Penal Militar + DPPM (questões)', rev:'Revisão Dir. Penal'},
+      {d:'Sex 14/ago', novo:'Revisão intensiva Leg. Complementar + Normas PM (questões)', rev:'Revisão Penal Militar'},
+      {d:'Sáb 15/ago', novo:'Revisão intensiva Dir. Const. + Adm. + LP (questões)', rev:'Revisão Leg. Comp.'},
+      {d:'Dom 16/ago', novo:'Simulado completo 80 questões (cronometrado 3h)', rev:'Revisão erros simulado'},
+    ]},
+    {n:15, periodo:'17 a 23/ago', fase:'Revisão Final', faseColor:'#991b1b', novo:false, dias:[
+      {d:'Seg 17/ago', novo:'Revisão pontos fracos identificados no simulado (Dir. Penal)', rev:'Revisão geral'},
+      {d:'Ter 18/ago', novo:'Revisão pontos fracos (LP + Literatura)', rev:'Revisão Dir. Penal'},
+      {d:'Qua 19/ago', novo:'Revisão pontos fracos (Normas PM + Leg.)', rev:'Revisão LP'},
+      {d:'Qui 20/ago', novo:'Revisão pontos fracos (Hist. + Mat. + Informática)', rev:'Revisão Normas PM'},
+      {d:'Sex 21/ago', novo:'Simulado final 80 questões + revisão de todos os erros', rev:'Revisão Hist. + Mat.'},
+      {d:'Sáb 22/ago', novo:'Revisão leve das anotações. Descanse. Sem novidades.', rev:'Revisão anotações'},
+      {d:'Dom 23/ago', novo:'🏆 DIA DA PROVA — CHQAOPM 2026. Bom desempenho!', rev:'—'},
+    ]},
+  ]
+};
+
+const SR_INTERVALS = [1, 7, 21];
+const MS_DAY = 86400000;
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let state = JSON.parse(localStorage.getItem('chqaopm2026_v2') || '{}');
+state.topicos      = state.topicos      || {};
+state.sessoes      = state.sessoes      || [];
+state.semanasAbert = state.semanasAbert || {};
+
+function salvar() { localStorage.setItem('chqaopm2026_v2', JSON.stringify(state)); }
+
+function topicoState(id) {
+  return state.topicos[id] || { status: 'nao-iniciado', horas: 0, revisoes: [], concluido_em: null };
+}
+
+function setTopicoStatus(id, novoStatus) {
+  const t = topicoState(id);
+  t.status = novoStatus;
+  if (novoStatus === 'concluido' && !t.concluido_em) {
+    t.concluido_em = Date.now();
+    t.revisoes = SR_INTERVALS.map(d => Date.now() + d * MS_DAY);
+  }
+  state.topicos[id] = t;
+  salvar();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════════════════════
+let timerInterval = null;
+let timerStart    = null;
+let timerTopicoId = null;
+let timerSegundos = 0;
+
+function iniciarTimer(id, nome) {
+  if (timerInterval) { if (!confirm('Há um timer ativo. Parar o anterior e iniciar este?')) return; pararTimer(); }
+  timerTopicoId = id;
+  timerStart    = Date.now();
+  timerSegundos = 0;
+  document.getElementById('timer-topic-name').textContent = nome;
+  document.getElementById('timer-bar').classList.add('active');
+  timerInterval = setInterval(() => {
+    timerSegundos = Math.floor((Date.now() - timerStart) / 1000);
+    const h = String(Math.floor(timerSegundos / 3600)).padStart(2,'0');
+    const m = String(Math.floor((timerSegundos % 3600) / 60)).padStart(2,'0');
+    const s = String(timerSegundos % 60).padStart(2,'0');
+    document.getElementById('timer-clock').textContent = h + ':' + m + ':' + s;
+  }, 1000);
+  setTopicoStatus(id, 'em-andamento');
+}
+
+function pararTimer() {
+  if (!timerInterval) return;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  const mins = Math.round(timerSegundos / 60);
+  if (mins > 0 && timerTopicoId) {
+    const t = topicoState(timerTopicoId);
+    t.horas = (t.horas || 0) + mins / 60;
+    state.topicos[timerTopicoId] = t;
+    state.sessoes.unshift({ id: timerTopicoId, nome: PLANO.topicos.find(x=>x.id===timerTopicoId)?.nome || timerTopicoId, mins, ts: Date.now() });
+    if (state.sessoes.length > 200) state.sessoes = state.sessoes.slice(0, 200);
+    salvar();
+    alert('✅ ' + mins + ' min registrados em "' + (PLANO.topicos.find(x=>x.id===timerTopicoId)?.nome.substring(0,40) || timerTopicoId) + '"');
+  }
+  document.getElementById('timer-bar').classList.remove('active');
+  timerTopicoId = null;
+  renderAll();
+}
+
+function cancelarTimer() {
+  if (!timerInterval) return;
+  if (!confirm('Cancelar timer sem salvar o tempo?')) return;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  document.getElementById('timer-bar').classList.remove('active');
+  timerTopicoId = null;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+// RENDER HELPERS
+// ═══════════════════════════════════════════════════════════
+function prioBadge(p) {
+  if (p==='essencial') return '<span class="badge essencial">🔴 ESSENCIAL</span>';
+  if (p==='alta')      return '<span class="badge alta">🟠 ALTA</span>';
+  if (p==='novo')      return '<span class="badge novo">⭐ NOVO 2026</span>';
+  return '<span class="badge media">MÉDIA</span>';
+}
+function tipoBadge(t) {
+  if (t==='profissional') return '<span class="badge prof">PROF 1,5pt</span>';
+  if (t==='geral')        return '<span class="badge geral">GERAL 0,5pt</span>';
+  return '<span class="badge novo">NOVO</span>';
+}
+function statusBadge(s) {
+  if (s==='concluido')    return '<span class="badge concluido">✓ Concluído</span>';
+  if (s==='em-andamento') return '<span class="badge andamento">▶ Em andamento</span>';
+  return '';
+}
+function fmtHoras(h) {
+  if (!h || h < 0.01) return '0min';
+  if (h < 1) return Math.round(h * 60) + 'min';
+  return h.toFixed(1) + 'h';
+}
+
+function renderTopicCard(t, extraClass='') {
+  const ts = topicoState(t.id);
+  const isConcluido = ts.status === 'concluido';
+  const isAndamento = ts.status === 'em-andamento';
+  const cls = isConcluido ? 'concluido' : isAndamento ? 'em-andamento' : '';
+  const horasStudied = ts.horas || 0;
+  const meta = PLANO.topicos.find(x=>x.id===t.id)?.horas || t.horas || 0;
+  const pct = Math.min(100, meta > 0 ? Math.round(horasStudied/meta*100) : 0);
+
+  let btns = '';
+  if (!isConcluido) {
+    if (!isAndamento) btns += '<button class="btn primary small" onclick="iniciarTimer(\''+t.id+'\',\''+t.nome.replace(/'/g,'')+'\')">▶ Timer</button>';
+    btns += '<button class="btn success small" onclick="marcarConcluido(\''+t.id+'\')">✓ Concluído</button>';
+    if (isAndamento) btns += '<button class="btn small" onclick="iniciarTimer(\''+t.id+'\',\''+t.nome.replace(/'/g,'')+'\')">▶ Timer</button>';
+  } else {
+    btns += '<button class="btn small" onclick="marcarPendente(\''+t.id+'\')">↺ Reabrir</button>';
+    btns += '<button class="btn revisao small" onclick="addRevisao(\''+t.id+'\')">🔁 Revisar agora</button>';
+  }
+
+  return `<div class="topic ${cls} ${extraClass}" id="topic-${t.id}">
+    <div class="topic-header">${prioBadge(t.prio)} ${tipoBadge(t.tipo)} ${statusBadge(ts.status)}</div>
+    <div class="topic-name">${t.nome}</div>
+    <div class="topic-meta">
+      <span>📚 ${t.disciplina}</span>
+      ${t.freq > 0 ? '<span>📊 '+t.freq+'/17 provas</span>' : '<span>⭐ Novo 2026</span>'}
+      <span>🎯 Meta: ${meta}h</span>
+      ${horasStudied > 0 ? '<span>⏱ Estudado: '+fmtHoras(horasStudied)+'</span>' : ''}
+    </div>
+    ${horasStudied > 0 ? '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+(isConcluido?'var(--success)':'var(--accent)')+'"></div></div>' : ''}
+    <div class="topic-actions">${btns}</div>
+  </div>`;
+}
+
+function marcarConcluido(id) { setTopicoStatus(id, 'concluido'); renderAll(); }
+function marcarPendente(id) {
+  const t = topicoState(id);
+  t.status = 'nao-iniciado'; t.concluido_em = null; t.revisoes = [];
+  state.topicos[id] = t; salvar(); renderAll();
+}
+function addRevisao(id) {
+  const t = topicoState(id);
+  t.revisoes = t.revisoes || [];
+  t.revisoes.push(Date.now() + MS_DAY);
+  state.topicos[id] = t; salvar(); renderAll();
+  alert('Revisão agendada para amanhã!');
+}
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+function renderDashboard() {
+  const hoje = Date.now();
+  const prova = new Date('2026-08-23').getTime();
+  const dias = Math.ceil((prova - hoje) / MS_DAY);
+  document.getElementById('stat-dias').textContent = dias > 0 ? dias : '🚨';
+  document.getElementById('subheader').textContent = 'CHQAOPM 2026 • Prova: 23/ago/2026 • ' + new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
+
+  const total = PLANO.topicos.length;
+  const concluidos = PLANO.topicos.filter(t => topicoState(t.id).status === 'concluido').length;
+  const totalHoras = PLANO.topicos.reduce((s,t) => s + (topicoState(t.id).horas || 0), 0);
+  const pct = Math.round(concluidos / total * 100);
+
+  document.getElementById('stat-concluidos').textContent = concluidos;
+  document.getElementById('stat-concluidos-sub').textContent = 'de ' + total + ' tópicos';
+  document.getElementById('stat-horas').textContent = totalHoras.toFixed(1) + 'h';
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stat-pct-sub').textContent = pct + '% do plano';
+
+  // Revisões pendentes
+  const revPend = PLANO.topicos.filter(t => {
+    const ts = topicoState(t.id);
+    return ts.revisoes && ts.revisoes.some(r => r <= hoje);
+  }).length;
+  const revCount = document.getElementById('rev-count');
+  if (revPend > 0) { revCount.textContent = revPend; revCount.style.display = 'inline'; }
+  else revCount.style.display = 'none';
+
+  // Warning
+  const warn = document.getElementById('dashboard-warning');
+  if (revPend > 0) {
+    warn.innerHTML = '<div class="warning-box">⚠️ <strong>' + revPend + ' tópico(s) pendentes de revisão</strong> — acesse a aba 🔁 Revisão.</div>';
+  } else if (dias <= 30) {
+    warn.innerHTML = '<div class="warning-box">🚨 <strong>Menos de 30 dias para a prova!</strong> Foco total em revisão e simulados.</div>';
+  } else warn.innerHTML = '';
+
+  // Disciplinas
+  const discs = {};
+  PLANO.topicos.forEach(t => {
+    if (!discs[t.disciplina]) discs[t.disciplina] = { total: 0, concluidos: 0, horas: 0, meta: 0 };
+    discs[t.disciplina].total++;
+    discs[t.disciplina].meta += t.horas || 0;
+    const ts = topicoState(t.id);
+    if (ts.status === 'concluido') discs[t.disciplina].concluidos++;
+    discs[t.disciplina].horas += ts.horas || 0;
+  });
+
+  let html = '';
+  Object.entries(discs).forEach(([nome, d]) => {
+    const p = Math.round(d.concluidos / d.total * 100);
+    const hp = Math.min(100, d.meta > 0 ? Math.round(d.horas / d.meta * 100) : 0);
+    html += `<div class="card" style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:13px;font-weight:500;">${nome}</span>
+        <span style="font-size:12px;color:var(--text-dim)">${d.concluidos}/${d.total} tópicos &bull; ${fmtHoras(d.horas)} estudadas</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:${p===100?'var(--success)':'var(--accent)'}"></div></div>
+    </div>`;
+  });
+  document.getElementById('dash-disciplinas').innerHTML = html || '<div class="empty">Nenhum progresso ainda.</div>';
+
+  // Próximas revisões
+  const proximas = PLANO.topicos.filter(t => {
+    const ts = topicoState(t.id);
+    return ts.revisoes && ts.revisoes.some(r => r > hoje && r <= hoje + 7 * MS_DAY);
+  });
+  if (proximas.length > 0) {
+    document.getElementById('dash-revisoes').innerHTML = proximas.slice(0,5).map(t => {
+      const ts = topicoState(t.id);
+      const prox = Math.min(...ts.revisoes.filter(r => r > hoje));
+      const d = Math.ceil((prox - hoje) / MS_DAY);
+      return `<div class="card" style="margin-bottom:6px;padding:9px 13px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <span style="font-size:12.5px;">${t.nome.substring(0,55)}...</span>
+        <span style="font-size:11px;color:var(--alta);white-space:nowrap;">em ${d} dia(s)</span>
+      </div>`;
+    }).join('');
+  } else {
+    document.getElementById('dash-revisoes').innerHTML = '<div class="empty" style="padding:14px">Nenhuma revisão nos próximos 7 dias.</div>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// FILA
+// ═══════════════════════════════════════════════════════════
+let filaFilter = 'todos';
+document.getElementById('filter-prio').querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('filter-prio').querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filaFilter = btn.dataset.filter;
+    renderFila();
+  });
+});
+
+function renderFila() {
+  let topicos = PLANO.topicos;
+  if (filaFilter === 'essencial') topicos = topicos.filter(t => t.prio === 'essencial');
+  else if (filaFilter === 'alta')    topicos = topicos.filter(t => t.prio === 'alta');
+  else if (filaFilter === 'novo')    topicos = topicos.filter(t => t.prio === 'novo');
+  else if (filaFilter === 'pendente') topicos = topicos.filter(t => topicoState(t.id).status !== 'concluido');
+
+  const pendentes = topicos.filter(t => topicoState(t.id).status !== 'concluido');
+  const countEl = document.getElementById('fila-count');
+  if (pendentes.length > 0) { countEl.textContent = pendentes.length; countEl.style.display = 'inline'; }
+  else countEl.style.display = 'none';
+
+  document.getElementById('fila-list').innerHTML = topicos.length
+    ? topicos.map(t => renderTopicCard(t)).join('')
+    : '<div class="empty">Nenhum tópico neste filtro.</div>';
+}
+
+// ═══════════════════════════════════════════════════════════
+// CRONOGRAMA
+// ═══════════════════════════════════════════════════════════
+function renderCronograma() {
+  const hoje = new Date();
+  let html = '';
+  PLANO.semanas.forEach(sem => {
+    const isAberta = state.semanasAbert[sem.n];
+    // detectar semana atual
+    const [d1str, d2str] = sem.periodo.split(' a ');
+    const parts = d2str.trim().split('/');
+    let semFim;
+    try {
+      semFim = new Date('2026-' + parts[1].padStart(2,'0') + '-' + parts[0].padStart(2,'0'));
+    } catch(e) { semFim = null; }
+    const atual = semFim && hoje <= semFim && sem.n >= 1;
+    html += `<div class="semana-card ${isAberta || atual ? 'aberta' : ''}" id="sem-${sem.n}">
+      <div class="semana-header" onclick="toggleSemana(${sem.n})">
+        <div>
+          <strong>Semana ${sem.n} ${atual ? '◀ SEMANA ATUAL' : ''}</strong>
+          <div class="periodo">${sem.periodo}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          ${sem.novo ? '<span class="fase-tag" style="background:rgba(236,72,153,0.2);color:var(--novo);">⭐ Novo 2026</span>' : ''}
+          <span class="fase-tag" style="background:rgba(255,255,255,0.08);color:var(--text-dim);">${sem.fase}</span>
+          <span style="color:var(--text-dim);font-size:14px;">${isAberta||atual?'▲':'▼'}</span>
+        </div>
+      </div>
+      <div class="semana-body">
+        ${sem.dias.map(dia => `
+          <div class="dia-bloco">
+            <div class="dia-data">${dia.d}</div>
+            <div class="dia-tarefa">📖 2h — ${dia.novo}</div>
+            <div class="dia-tarefa">🔁 1h — ${dia.rev}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('cronograma-content').innerHTML = html;
+}
+
+function toggleSemana(n) {
+  state.semanasAbert[n] = !state.semanasAbert[n];
+  salvar();
+  const card = document.getElementById('sem-' + n);
+  if (card) card.classList.toggle('aberta');
+}
+
+// ═══════════════════════════════════════════════════════════
+// REVISÃO ESPAÇADA
+// ═══════════════════════════════════════════════════════════
+function renderRevisao() {
+  const hoje = Date.now();
+  const hoje7 = hoje + 7 * MS_DAY;
+
+  const pendentes = PLANO.topicos.filter(t => {
+    const ts = topicoState(t.id);
+    return ts.revisoes && ts.revisoes.some(r => r <= hoje);
+  });
+  const proximas = PLANO.topicos.filter(t => {
+    const ts = topicoState(t.id);
+    return ts.revisoes && ts.revisoes.some(r => r > hoje && r <= hoje7);
+  });
+
+  const revBadge = document.getElementById('rev-count');
+  if (pendentes.length > 0) { revBadge.textContent = pendentes.length; revBadge.style.display = 'inline'; }
+  else revBadge.style.display = 'none';
+
+  document.getElementById('revisao-hoje').innerHTML = pendentes.length
+    ? pendentes.map(t => {
+        const ts = topicoState(t.id);
+        const vencidas = ts.revisoes.filter(r => r <= hoje).length;
+        return `<div class="topic revisao-pendente">
+          <div class="topic-header">${prioBadge(t.prio)} ${tipoBadge(t.tipo)}</div>
+          <div class="topic-name">${t.nome}</div>
+          <div class="topic-meta"><span>📚 ${t.disciplina}</span><span class="badge danger" style="font-size:10px;">${vencidas} revisão(ões) vencida(s)</span></div>
+          <div class="topic-actions">
+            <button class="btn revisao small" onclick="marcarRevisaoFeita('${t.id}')">✓ Revisão feita</button>
+            <button class="btn primary small" onclick="iniciarTimer('${t.id}','${t.nome.replace(/'/g,'')}')">▶ Timer</button>
+          </div>
+        </div>`;
+      }).join('')
+    : '<div class="empty">Nenhuma revisão pendente 🎉</div>';
+
+  document.getElementById('revisao-proximas').innerHTML = proximas.length
+    ? proximas.map(t => {
+        const ts = topicoState(t.id);
+        const prox = Math.min(...ts.revisoes.filter(r => r > hoje));
+        const d = Math.ceil((prox - hoje) / MS_DAY);
+        return `<div class="card" style="margin-bottom:7px;padding:10px 13px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:12.5px;font-weight:500;">${t.nome.substring(0,60)}</span>
+            <span style="font-size:11px;color:var(--alta);white-space:nowrap;">Em ${d} dia(s)</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">${t.disciplina}</div>
+        </div>`;
+      }).join('')
+    : '<div class="empty">Nenhuma revisão nos próximos 7 dias.</div>';
+}
+
+function marcarRevisaoFeita(id) {
+  const t = topicoState(id);
+  const hoje = Date.now();
+  t.revisoes = (t.revisoes || []).filter(r => r > hoje);
+  state.topicos[id] = t; salvar(); renderAll();
+}
+
+// ═══════════════════════════════════════════════════════════
+// INCIDÊNCIA
+// ═══════════════════════════════════════════════════════════
+const INCIDENCIA = [
+  { disc: 'Dir. Penal Comum', pt: '1,5pt', temas: [
+    { n: 'Crimes contra Patrimônio (Art. 155-183)', f: '12/17', p: 'essencial' },
+    { n: 'Crimes contra Admin. Pública (Art. 312-359H)', f: '11/17', p: 'essencial' },
+    { n: 'Teoria do Crime: tipicidade, tentativa (Art. 13-25)', f: '10/17', p: 'essencial' },
+    { n: 'Das Penas: aplicação, espécies (Art. 32-90)', f: '10/17', p: 'essencial' },
+    { n: 'Crimes contra Pessoa (Art. 121-154B)', f: '10/17', p: 'essencial' },
+    { n: 'Aplicação da Lei Penal + Princípios (Art. 1-12)', f: '8/17', p: 'alta' },
+  ]},
+  { disc: 'Dir. Penal Militar + DPPM', pt: '1,5pt', temas: [
+    { n: 'Teoria + Aplicação da Lei Penal Militar (Art. 1-47)', f: '12/17', p: 'essencial' },
+    { n: 'IPM — Polícia Judiciária Militar (Art. 7-28 CPPM)', f: '12/17', p: 'essencial' },
+    { n: 'Crimes contra Serviço e Dever Militar (Art. 187-212)', f: '8/17', p: 'alta' },
+    { n: 'Crimes contra Hierarquia e Autoridade (Art. 150-186)', f: '7/17', p: 'alta' },
+    { n: 'Pena militar, extinção da punibilidade', f: '6/17', p: 'alta' },
+    { n: 'Novos procedimentos — Edital CH 2026 ★', f: '—', p: 'novo' },
+  ]},
+  { disc: 'Dir. Constitucional + Dir. Administrativo', pt: '1,5pt', temas: [
+    { n: 'Tribunais Militares Estaduais (Art. 124-126) + Art. 144', f: '8/17', p: 'essencial' },
+    { n: 'Agentes Públicos, Regime Jurídico, Responsabilidade Civil', f: '9/17', p: 'essencial' },
+    { n: 'Direitos e Garantias Fundamentais (Art. 5-17 CF)', f: '7/17', p: 'alta' },
+    { n: 'Organização do Estado e dos Poderes', f: '7/17', p: 'alta' },
+    { n: 'Atos e Poderes Administrativos + princípios', f: '7/17', p: 'alta' },
+    { n: 'Constituição Estado SP — dispositivos PM', f: '6/17', p: 'alta' },
+  ]},
+  { disc: 'Normas PM + Leg. de Interesse', pt: '1,5pt', temas: [
+    { n: 'NORSOP (PM3-10220) e GESPOL', f: '9/17', p: 'alta' },
+    { n: 'RDPM — LC 893/01 (Regulamento Disciplinar)', f: '9/17', p: 'alta' },
+    { n: 'DL 667/69 + Lei 6.167/74 — Organização PMESP', f: '7/17', p: 'alta' },
+    { n: 'DL 260/70 — Inatividade + LC 1.224/13 Promoções', f: '6/17', p: 'alta' },
+    { n: 'COP PM — Diretriz PM3-001/02/25 🔄 (atualização, já estava no CH2023)', f: '—', p: 'alta' },
+    { n: 'SCIPM — Controle Interno ★ NOVO', f: '—', p: 'novo' },
+    { n: 'SCC — Sistema de Comando e Controle ★ NOVO', f: '—', p: 'novo' },
+    { n: 'Lei 14.751/2023 — RDPMM atualizado ★ NOVO', f: '—', p: 'novo' },
+    { n: 'Lei 18.442/2026 — nova leg. PMESP ★ NOVO', f: '—', p: 'novo' },
+  ]},
+  { disc: 'Legislação Complementar', pt: '1,5pt', temas: [
+    { n: 'Estatuto do Desarmamento — Lei 10.826/03', f: '9/17', p: 'alta' },
+    { n: 'Lei de Drogas — 11.343/06', f: '8/17', p: 'alta' },
+    { n: 'Maria da Penha — Lei 11.340/06', f: '8/17', p: 'alta' },
+    { n: 'ECA — Lei 8.069/90', f: '7/17', p: 'alta' },
+    { n: 'Abuso de Autoridade — Lei 13.869/19', f: '7/17', p: 'alta' },
+    { n: 'JECrim 9.099/95 + Tortura + Hediondos', f: '7/17', p: 'alta' },
+    { n: 'Improbidade Administrativa — Lei 8.429/92', f: '7/17', p: 'alta' },
+  ]},
+  { disc: 'Língua Portuguesa + Literatura', pt: '0,5pt', temas: [
+    { n: 'Fonologia e Ortografia Oficial', f: '15/17', p: 'essencial' },
+    { n: 'Interpretação e Tipologia Textual', f: '13/17', p: 'essencial' },
+    { n: 'Morfologia e Formação de Palavras', f: '13/17', p: 'essencial' },
+    { n: 'Literatura Brasileira e Portuguesa ⚠️', f: '13/17', p: 'essencial' },
+    { n: 'Concordância, Regência, Crase, Sintaxe', f: '8/17', p: 'alta' },
+    { n: 'Figuras de Linguagem e Estilística', f: '8/17', p: 'alta' },
+  ]},
+  { disc: 'Matemática', pt: '0,5pt', temas: [
+    { n: 'Estatística: média, moda, mediana, variância, desvio padrão (1.4.5)', f: '13/17', p: 'essencial' },
+    { n: 'Geometria Plana: áreas, perímetros, semelhança, Pitágoras (1.4.10)', f: '12/17', p: 'essencial' },
+    { n: 'Análise Combinatória e Probabilidade (1.4.3-1.4.4)', f: '10/17', p: 'alta' },
+    { n: 'Lógica Proposicional: proposições, tabelas-verdade, De Morgan, lógica 1ª ordem, diagramas (1.4.6-1.4.9)', f: '8/17', p: 'alta' },
+    { n: 'Porcentagem, razão e proporção (1.4.1) — ⚠️ JUROS NÃO ESTÁ NO EDITAL', f: '8/17', p: 'alta' },
+    { n: 'Equações do 1º/2º graus e sistemas lineares (1.4.2)', f: '7/17', p: 'alta' },
+    { n: 'Progressões Aritméticas e Geométricas — PA e PG (1.4.11)', f: '4/17', p: 'media' },
+    { n: 'Teoria dos Conjuntos — operações, cardinalidade (1.4.12)', f: '3/17', p: 'media' },
+  ]},
+  { disc: 'Informática — Novo 2026', pt: '0,5pt', temas: [
+    { n: 'Windows 10/11: interface, arquivos, configurações (item 1.5 CH2026)', f: '—', p: 'novo' },
+    { n: 'Word 2016: edição, formatação, tabelas, mala direta', f: '—', p: 'novo' },
+    { n: 'Excel 2016: planilhas, fórmulas, funções, gráficos', f: '—', p: 'novo' },
+    { n: 'PowerPoint 2016: slides, apresentações', f: '—', p: 'novo' },
+    { n: 'Google Workspace: Drive, Gmail, Docs, Meet', f: '—', p: 'novo' },
+    { n: 'Microsoft Teams: reuniões, canais, arquivos', f: '—', p: 'novo' },
+    { n: 'Internet: navegadores, buscas, e-mail, nuvem', f: '—', p: 'novo' },
+    { n: 'Segurança digital: vírus, phishing, senhas, backup', f: '—', p: 'novo' },
+  ]},
+  { disc: 'Hist. do Brasil + Atualidades', pt: '0,5pt', temas: [
+    { n: 'Era Vargas (1930-1945)', f: '14/17', p: 'essencial' },
+    { n: 'Redemocratização (1985–), Planos econômicos, CF/88', f: '10/17', p: 'alta' },
+    { n: '1ª República (1889-1930)', f: '8/17', p: 'alta' },
+    { n: 'Regime Militar (1964-1985)', f: '8/17', p: 'alta' },
+    { n: 'Atualidades: Segurança Pública + fatos 2025/2026', f: '13/17', p: 'essencial' },
+  ]},
+];
+
+function renderIncidencia() {
+  document.getElementById('incidencia-content').innerHTML = INCIDENCIA.map(d => `
+    <div class="disc-block">
+      <div class="disc-header">
+        <div class="disc-name">${d.disc}</div>
+        <div class="disc-stats">${d.pt}/questão</div>
+      </div>
+      ${d.temas.map(t => `
+        <div class="tema-row">
+          ${prioBadge(t.p)}
+          <span class="tema-name">${t.n}</span>
+          <span class="tema-meta">${t.f}</span>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TÓPICOS
+// ═══════════════════════════════════════════════════════════
+let topTipoFilter = 'todos';
+let topStatusFilter = 'todos';
+
+document.getElementById('filter-tipo').querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('filter-tipo').querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); topTipoFilter = btn.dataset.filter; renderTopicos();
+  });
+});
+document.getElementById('filter-status').querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('filter-status').querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); topStatusFilter = btn.dataset.filter; renderTopicos();
+  });
+});
+
+function renderTopicos() {
+  let topicos = PLANO.topicos;
+  if (topTipoFilter !== 'todos') topicos = topicos.filter(t => t.tipo === topTipoFilter);
+  if (topStatusFilter !== 'todos') topicos = topicos.filter(t => topicoState(t.id).status === topStatusFilter);
+  document.getElementById('topicos-list').innerHTML = topicos.length
+    ? topicos.map(t => renderTopicCard(t)).join('')
+    : '<div class="empty">Nenhum tópico neste filtro.</div>';
+}
+
+// ═══════════════════════════════════════════════════════════
+// HISTÓRICO
+// ═══════════════════════════════════════════════════════════
+function renderHistorico() {
+  const totalMins = state.sessoes.reduce((s, x) => s + (x.mins || 0), 0);
+  const totalSess = state.sessoes.length;
+  const porTopico = {};
+  state.sessoes.forEach(s => { porTopico[s.id] = (porTopico[s.id] || 0) + s.mins; });
+  const topTop = Object.entries(porTopico).sort((a,b)=>b[1]-a[1]).slice(0,3);
+
+  document.getElementById('historico-stats').innerHTML = `
+    Sessões registradas: <strong>${totalSess}</strong><br>
+    Total de tempo: <strong>${Math.floor(totalMins/60)}h ${totalMins%60}min</strong><br>
+    ${topTop.length ? 'Mais estudado: <strong>' + (PLANO.topicos.find(t=>t.id===topTop[0][0])?.nome?.substring(0,40) || topTop[0][0]) + '</strong> (' + Math.floor(topTop[0][1]/60) + 'h ' + topTop[0][1]%60 + 'min)' : ''}
+  `;
+
+  document.getElementById('historico-list').innerHTML = state.sessoes.slice(0, 50).map(s => {
+    const dt = new Date(s.ts);
+    const dtStr = dt.toLocaleDateString('pt-BR') + ' ' + dt.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+    return `<div class="session-row">
+      <span>${s.nome?.substring(0,50) || s.id}...</span>
+      <div style="text-align:right;">
+        <div style="font-weight:600;">${s.mins}min</div>
+        <div class="when">${dtStr}</div>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">Nenhuma sessão registrada.</div>';
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════
+function populateManualSelect() {
+  const sel = document.getElementById('manual-topico');
+  sel.innerHTML = PLANO.topicos.map(t => `<option value="${t.id}">${t.nome.substring(0,60)}</option>`).join('');
+}
+
+function registrarManual() {
+  const id   = document.getElementById('manual-topico').value;
+  const mins = parseInt(document.getElementById('manual-minutos').value);
+  if (!id || !mins || mins < 1) { alert('Selecione um tópico e informe os minutos.'); return; }
+  const t = topicoState(id);
+  t.horas = (t.horas || 0) + mins / 60;
+  state.topicos[id] = t;
+  const topico = PLANO.topicos.find(x => x.id === id);
+  state.sessoes.unshift({ id, nome: topico?.nome || id, mins, ts: Date.now() });
+  salvar();
+  document.getElementById('manual-minutos').value = '';
+  alert('✅ ' + mins + ' min registrados!');
+  renderAll();
+}
+
+function exportar() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'chqaopm2026_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+
+function importar(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!confirm('Isso irá SUBSTITUIR todo seu progresso atual. Confirmar?')) return;
+      state = imported;
+      salvar();
+      renderAll();
+      alert('✅ Dados importados com sucesso!');
+    } catch(err) { alert('Erro ao importar: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+function resetarTudo() {
+  if (!confirm('Apagar TODO o progresso? Esta ação não pode ser desfeita!')) return;
+  if (!confirm('Tem certeza? Todos os dados serão perdidos.')) return;
+  state = { topicos: {}, sessoes: {}, semanasAbert: {} };
+  salvar(); renderAll();
+  alert('Progresso resetado.');
+}
+
+// ═══════════════════════════════════════════════════════════
+// RANKING COMPLETO — todos os temas do edital CH 2026
+// ═══════════════════════════════════════════════════════════
+const RANKING_DATA = [
+  { disc:'Língua Portuguesa', pt:'0,5pt', cor:'#f472b6', temas:[
+    { n:'Fonologia e Ortografia Oficial', f:15, extra:'Acento, hífen, novo acordo ortográfico'},
+    { n:'Interpretação e Tipologia Textual', f:13, extra:'Coesão, coerência, gêneros textuais'},
+    { n:'Morfologia e Formação de Palavras', f:13, extra:'Todas as classes gramaticais'},
+    { n:'Literatura Brasileira e Portuguesa', f:13, extra:'Machado, Clarice, Camões, Fernando Pessoa...'},
+    { n:'Concordância, Regência, Crase e Sintaxe', f:8, extra:'Período composto, coordenação, subordinação'},
+    { n:'Figuras de Linguagem, Estilística e Semântica', f:8, extra:''},
+  ]},
+  { disc:'História do Brasil', pt:'0,5pt', cor:'#fb923c', temas:[
+    { n:'Era Vargas (1930-1945)', f:14, extra:'Rev. 30, Estado Novo, consolidação industrial'},
+    { n:'Redemocratização (1985–): Nova República, CF/88', f:10, extra:'Planos econômicos, Collor, FHC, Lula'},
+    { n:'1ª República (1889-1930)', f:8, extra:'Café-com-leite, Tenentismo, oligarquias'},
+    { n:'Regime Militar (1964-1985)', f:8, extra:'AI-5, milagre econômico, abertura política'},
+    { n:'Período Colonial + Imperial', f:3, extra:'Base para questões comparativas'},
+  ]},
+  { disc:'Matemática + Lógica', pt:'0,5pt', cor:'#34d399', temas:[
+    { n:'Estatística: média, moda, mediana, variância, desvio padrão (1.4.5)', f:13, extra:''},
+    { n:'Geometria Plana: áreas, perímetros, semelhança, Pitágoras (1.4.10)', f:12, extra:''},
+    { n:'Análise Combinatória e Probabilidade (1.4.3-1.4.4)', f:10, extra:'Arranjo, combinação, permutação, Bayes'},
+    { n:'Lógica Proposicional: tabelas-verdade, De Morgan, diagramas (1.4.6-1.4.9)', f:8, extra:'Proposições, conectivos, lógica de 1ª ordem'},
+    { n:'Porcentagem, razão e proporção (1.4.1)', f:8, extra:'AVISO: JUROS NÃO ESTÁ NO EDITAL CH 2026'},
+    { n:'Equações 1º/2º graus e sistemas lineares (1.4.2)', f:7, extra:''},
+    { n:'Progressões Aritméticas e Geométricas — PA e PG (1.4.11)', f:4, extra:''},
+    { n:'Teoria dos Conjuntos — operações, cardinalidade (1.4.12)', f:3, extra:''},
+  ]},
+  { disc:'Atualidades', pt:'0,5pt', cor:'#60a5fa', temas:[
+    { n:'Segurança Pública: panorama nacional e SP 2025/2026', f:13, extra:'Políticas, indicadores, fatos recentes'},
+    { n:'Política e economia brasileira 2025/2026', f:9, extra:'Conjuntura, reformas'},
+    { n:'Ciência, tecnologia e meio ambiente', f:6, extra:'IA, energias renováveis'},
+    { n:'Saúde pública e fatos globais', f:4, extra:''},
+  ]},
+  { disc:'Informática — Novo 2026', pt:'0,5pt', cor:'#818cf8', temas:[
+    { n:'Windows 10/11: interface, arquivos, configurações (1.5.1)', f:0, extra:'NOVO CH2026 — nunca cobrado antes'},
+    { n:'Word 2016: edição, formatação, tabelas, mala direta (1.5.2)', f:0, extra:'NOVO CH2026'},
+    { n:'Excel 2016: planilhas, fórmulas, funções, gráficos (1.5.3)', f:0, extra:'NOVO CH2026'},
+    { n:'PowerPoint 2016: slides, layouts, transições (1.5.4)', f:0, extra:'NOVO CH2026'},
+    { n:'Google Workspace: Drive, Gmail, Docs, Meet (1.5.5)', f:0, extra:'NOVO CH2026'},
+    { n:'Microsoft Teams: reuniões, canais, arquivos (1.5.6)', f:0, extra:'NOVO CH2026'},
+    { n:'Internet: navegadores, buscas, e-mail, nuvem (1.5.7)', f:0, extra:'NOVO CH2026'},
+    { n:'Segurança digital: vírus, phishing, senhas, backup (1.5.8)', f:0, extra:'NOVO CH2026'},
+  ]},
+  { disc:'Dir. Penal Comum', pt:'1,5pt', cor:'#c084fc', temas:[
+    { n:'Crimes contra o Patrimônio (Art. 155-183 CP)', f:12, extra:'Furto, roubo, extorsão, receptação, estelionato'},
+    { n:'Crimes contra Admin. Pública (Art. 312-359H CP)', f:11, extra:'Peculato, corrupção, concussão, prevaricação'},
+    { n:'Teoria do Crime: tipicidade, tentativa (Art. 13-25 CP)', f:10, extra:'Iter criminis, concurso de pessoas'},
+    { n:'Das Penas: espécies, aplicação (Art. 32-90 CP)', f:10, extra:'Substituição, sursis, livramento condicional'},
+    { n:'Crimes contra a Pessoa (Art. 121-154B CP)', f:10, extra:'Homicídio, lesão, sequestro, ameaça, stalking'},
+    { n:'Aplicação da Lei Penal + Princípios (Art. 1-12 CP)', f:8, extra:'Legalidade, anterioridade, retroatividade'},
+    { n:'Crimes contra Dignidade Sexual (2.2.1.10)', f:0, extra:'NOVO ESCOPO CH2026 — estupro, importunação'},
+    { n:'Crimes contra Estado Democrático (2.2.1.12)', f:0, extra:'NOVO ESCOPO CH2026 — Lei 14.197/21'},
+  ]},
+  { disc:'Dir. Penal Militar + DPPM', pt:'1,5pt', cor:'#a78bfa', temas:[
+    { n:'Teoria + Aplicação da Lei Penal Militar (Art. 1-47 CPM)', f:12, extra:''},
+    { n:'IPM — Polícia Judiciária Militar (Art. 7-28 CPPM)', f:12, extra:''},
+    { n:'Crimes contra Serviço e Dever Militar (Art. 187-212 CPM)', f:8, extra:'Deserção, insubordinação, desrespeito'},
+    { n:'Crimes contra Hierarquia e Autoridade (Art. 150-186 CPM)', f:7, extra:''},
+    { n:'Pena militar, extinção da punibilidade (CPM)', f:6, extra:''},
+    { n:'DPPM: prisão, provas, nulidades (itens 2.3.2.5-10)', f:0, extra:'NOVO ESCOPO CH2026'},
+    { n:'Lei 14.751/2023 — atualização RDPMM', f:0, extra:'NOVO CH2026 — Dec.-Lei 1.002/69'},
+  ]},
+  { disc:'Dir. Administrativo + Constitucional', pt:'1,5pt', cor:'#38bdf8', temas:[
+    { n:'Agentes Públicos, Regime Jurídico, Responsabilidade Civil', f:9, extra:''},
+    { n:'Tribunais Militares Estaduais (Art. 124-126) + Art. 144 CF', f:8, extra:''},
+    { n:'Atos Administrativos + Poderes Administrativos', f:7, extra:'Atributos, vícios, extinção'},
+    { n:'Princípios da Adm. Pública (LIMPE + implícitos)', f:7, extra:''},
+    { n:'Direitos e Garantias Fundamentais (Art. 5-17 CF)', f:7, extra:'Remédios constitucionais, inviolabilidades'},
+    { n:'Organização do Estado e dos Poderes (Art. 18-135 CF)', f:7, extra:''},
+    { n:'Controle da Administração', f:6, extra:'Administrativo, judicial, legislativo'},
+    { n:'Constituição Estado SP — dispositivos PM', f:6, extra:''},
+    { n:'Servidores Públicos (Art. 37-41 CF)', f:6, extra:'Estabilidade, concurso, remuneração'},
+    { n:'Princípios Fundamentais (Art. 1-4 CF)', f:5, extra:''},
+    { n:'Licitações — noções básicas', f:4, extra:''},
+    { n:'Lei 18.442/2026 — nova lei PMESP', f:0, extra:'NOVO CH2026'},
+  ]},
+  { disc:'Leg. Complementar', pt:'1,5pt', cor:'#2dd4bf', temas:[
+    { n:'Estatuto do Desarmamento — Lei 10.826/03 + Dec. 11.615/23', f:9, extra:''},
+    { n:'Lei de Drogas — 11.343/06 + posição STF', f:8, extra:'Descriminalização porte pessoal'},
+    { n:'Maria da Penha — Lei 11.340/06', f:8, extra:'Proteção, medidas protetivas, procedimentos'},
+    { n:'ECA — Lei 8.069/90', f:7, extra:'Direitos, infrações, medidas socioeducativas'},
+    { n:'Abuso de Autoridade — Lei 13.869/19', f:7, extra:''},
+    { n:'JECrim 9.099/95 + Tortura 9.455/97 + Hediondos 8.072/90', f:7, extra:''},
+    { n:'Improbidade Administrativa — Lei 8.429/92', f:7, extra:''},
+    { n:'Organização Criminosa — Lei 12.850/13', f:4, extra:''},
+    { n:'Lavagem de Capitais — Lei 9.613/98', f:3, extra:''},
+  ]},
+  { disc:'Leg. de Interesse PM + Normas Adm.', pt:'1,5pt', cor:'#4ade80', temas:[
+    { n:'NORSOP (PM3-10220) e GESPOL', f:9, extra:'Doutrina, planejamento, ordens de operações'},
+    { n:'RDPM — LC 893/01 (Regulamento Disciplinar PMESP)', f:9, extra:'Hierarquia, deveres, proibições, transgressões'},
+    { n:'DL 667/69 + Lei 6.167/74 — Organização PMESP', f:7, extra:''},
+    { n:'DL 260/70 — Inatividade + LC 1.224/13 Promoções', f:6, extra:''},
+    { n:'Vizinhança Solidária (2.7.2)', f:3, extra:'Continua no CH2026'},
+    { n:'Atividade Delegada (2.7.4)', f:3, extra:'Continua no CH2026'},
+    { n:'Reintegração de Posse (2.7.5)', f:2, extra:'Continua no CH2026'},
+    { n:'NI SSP-57/15 (2.7.6)', f:2, extra:'Continua no CH2026'},
+    { n:'COP PM — Diretriz PM3-001/02/25 (atualização)', f:0, extra:'ATUALIZADO — já estava no CH2023 como PM3-1/02/22'},
+    { n:'SCIPM — Controle Interno da PMESP (2.7.22)', f:0, extra:'NOVO CH2026'},
+    { n:'SCC — Sistema Comando e Controle PM-001/02/23 (2.7.21)', f:0, extra:'NOVO CH2026'},
+  ]},
+];
+
+function freqColor(f) {
+  if (f >= 12) return { bg:'rgba(239,68,68,0.18)', border:'#ef4444', label:'🔴', text:'#fca5a5' };
+  if (f >= 9)  return { bg:'rgba(249,115,22,0.18)', border:'#f97316', label:'🟠', text:'#fdba74' };
+  if (f >= 6)  return { bg:'rgba(234,179,8,0.18)', border:'#eab308', label:'🟡', text:'#fde047' };
+  if (f >= 2)  return { bg:'rgba(34,197,94,0.18)', border:'#22c55e', label:'🟢', text:'#86efac' };
+  return { bg:'rgba(107,114,128,0.15)', border:'#4b5563', label:'⚫', text:'#9ca3af' };
+}
+
+function renderRanking() {
+  const html = RANKING_DATA.map(function(disc) {
+    const sorted = disc.temas.slice().sort(function(a,b){ return b.f - a.f; });
+    let rows = sorted.map(function(t) {
+      const c = freqColor(t.f);
+      const fStr = t.f > 0 ? t.f + '/17' : (t.extra && t.extra.indexOf('NOVO') >= 0 ? 'NOVO' : '—');
+      return '<div class="tema-row" style="background:' + c.bg + ';border-left:3px solid ' + c.border + ';padding:7px 10px;border-radius:4px;margin-bottom:4px;border-bottom:none;">'
+        + '<span style="font-size:13px;margin-right:5px;">' + c.label + '</span>'
+        + '<span class="tema-name" style="color:' + c.text + ';">' + t.n
+        + (t.extra ? '<br><span style="font-size:10px;opacity:0.65;">' + t.extra + '</span>' : '')
+        + '</span>'
+        + '<span class="tema-meta" style="color:' + c.text + ';font-weight:700;">' + fStr + '</span>'
+        + '</div>';
+    }).join('');
+    return '<div class="disc-block" style="margin-bottom:14px;">'
+      + '<div class="disc-header">'
+      + '<div class="disc-name" style="color:' + (disc.cor || 'var(--text)') + ';">' + disc.disc + '</div>'
+      + '<div class="disc-stats">' + disc.pt + '/questão</div>'
+      + '</div>' + rows + '</div>';
+  }).join('');
+  document.getElementById('ranking-content').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+function getHoje() {
+  const hoje = new Date();
+  const inicio = new Date(PLANO.data_inicio);
+  const diffDias = Math.floor((hoje - inicio) / 86400000);
+  if (diffDias < 0 || diffDias >= 105) return null;
+  const semIdx = Math.floor(diffDias / 7);
+  const diaIdx = diffDias % 7;
+  if (semIdx >= PLANO.semanas.length) return null;
+  const sem = PLANO.semanas[semIdx];
+  const dia = sem.dias[diaIdx];
+  return { sem: sem.n, periodo: sem.periodo, fase: sem.fase, dia };
+}
+
+function renderHoje() {
+  const info = getHoje();
+  const el = document.getElementById('hoje-card');
+  if (!el) return;
+  if (!info) { el.innerHTML = ''; return; }
+  const diasRestantes = Math.ceil((new Date('2026-08-23') - new Date()) / 86400000);
+  el.innerHTML = '<div style="background:rgba(59,130,246,0.12);border:1px solid var(--accent);border-radius:10px;padding:14px 16px;margin-bottom:14px;">'
+    + '<div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">📅 HOJE — Semana ' + info.sem + ' • ' + info.dia.d + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
+    + '<div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px;">'
+    + '<div style="font-size:10px;color:var(--text-dim);font-weight:700;margin-bottom:5px;">📖 2H — CONTEÚDO NOVO</div>'
+    + '<div style="font-size:13px;font-weight:500;line-height:1.4;">' + info.dia.novo + '</div></div>'
+    + '<div style="background:rgba(139,92,246,0.08);border-radius:8px;padding:10px 12px;">'
+    + '<div style="font-size:10px;color:var(--revisao);font-weight:700;margin-bottom:5px;">🔁 1H — REVISÃO</div>'
+    + '<div style="font-size:13px;font-weight:500;line-height:1.4;">' + info.dia.rev + '</div></div></div>'
+    + '<div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
+    + '<span style="font-size:11px;color:var(--text-dim);">Fase: <strong style="color:var(--text)">' + info.fase + '</strong></span>'
+    + '<span style="font-size:11px;color:var(--text-dim);">•</span>'
+    + '<span style="font-size:11px;color:var(--alta);font-weight:600;">' + diasRestantes + ' dias para a prova</span>'
+    + '</div></div>';
+}
+
+function renderAll() {
+  renderHoje();
+  renderDashboard();
+  renderFila();
+  renderCronograma();
+  renderRevisao();
+  renderIncidencia();
+  renderRanking();
+  renderTopicos();
+  renderHistorico();
+  populateManualSelect();
+}
+
+renderAll();
+</script>
+</body>
+</html>
