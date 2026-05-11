@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ranking de Matérias — CHQAOPM 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:14px}
+
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);color:#fff;padding:24px 20px 20px}
+.header h1{font-size:18px;font-weight:700}
+.header p{font-size:12px;color:#a8b2d8;margin-top:6px;line-height:1.6}
+
+.legenda{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.correcao{background:#fef3c7;border-left:4px solid #f59e0b;padding:10px 14px;font-size:12px;line-height:1.6;margin:14px 14px 0}
+.correcao strong{color:#92400e}
+
+.section-header{background:#1a1a2e;color:#fff;padding:10px 14px;font-size:13px;font-weight:700;margin-top:16px;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+.section-header .tipo{font-size:10px;background:rgba(255,255,255,.15);padding:2px 7px;border-radius:10px;font-weight:400}
+
+.disc{background:#fff;border-radius:0;border-bottom:1px solid #e8eaf0;overflow:hidden}
+.disc-header{padding:10px 14px;background:#f8f9fb;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;user-select:none;border-left:4px solid #e8eaf0}
+.disc-header:hover{background:#f0f2f5}
+.disc-header.open{background:#eff6ff}
+.disc-title{font-size:13px;font-weight:700;flex:1}
+.disc-stats{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.disc-top-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap}
+.disc-arrow{font-size:11px;color:#888;transition:transform .2s}
+.disc-header.open .disc-arrow{transform:rotate(180deg)}
+
+.disc-body{display:none;padding:0 0 4px}
+.disc-header.open + .disc-body{display:block}
+
+.topic-row{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:1px solid #f5f5f5;position:relative}
+.topic-row:last-child{border-bottom:none}
+.color-bar{width:4px;border-radius:2px;flex-shrink:0;align-self:stretch;min-height:20px}
+.topic-content{flex:1;min-width:0}
+.topic-name{font-size:12.5px;font-weight:600;line-height:1.4;margin-bottom:2px}
+.topic-detail{font-size:11px;color:#666;line-height:1.4}
+.topic-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.freq-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap}
+.novo-tag{font-size:9px;font-weight:700;background:#fce7f3;color:#9d174d;border:1px solid #f9a8d4;padding:1px 5px;border-radius:6px}
+
+/* CORES */
+.c1{background:#dc2626}  /* vermelho - 12-17 */
+.c2{background:#ea580c}  /* laranja - 9-11 */
+.c3{background:#ca8a04}  /* amarelo - 6-8 */
+.c4{background:#16a34a}  /* verde - 2-5 */
+.c5{background:#6b7280}  /* cinza - 0-1 / novo */
+
+.b1{background:#fee2e2;color:#991b1b}
+.b2{background:#ffedd5;color:#9a3412}
+.b3{background:#fef9c3;color:#854d0e}
+.b4{background:#dcfce7;color:#14532d}
+.b5{background:#f3f4f6;color:#4b5563}
+
+.row-1{background:#fff5f5}
+.row-2{background:#fff8f5}
+.row-3{background:#fffef0}
+.row-4{background:#f0fdf4}
+.row-5{background:#fafafa}
+
+.counter{background:#0f3460;color:#e2b96f;font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px}
+
+.top-mat{font-size:10px;color:#888;font-weight:400;margin-left:4px}
+
+/* ALERTA */
+.alert-box{background:#fee2e2;border-left:4px solid #dc2626;padding:10px 14px;margin:14px 14px 0;font-size:12px;border-radius:0 6px 6px 0;line-height:1.6}
+.alert-box strong{color:#991b1b}
+
+@media(max-width:600px){
+  .header{padding:16px 14px}
+  .header h1{font-size:15px}
+  .disc-title{font-size:12.5px}
+  .topic-name{font-size:12px}
+  .topic-right{display:none}
+  .section-header{font-size:12px;padding:8px 12px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎯 Ranking de Matérias — CHQAOPM 2026 (Edital CH)</h1>
+  <p>Todos os temas do conteúdo programático ordenados por frequência histórica (17 provas 2008–2023)<br>
+  Clique em cada disciplina para expandir · Prova: 23/ago/2026 · Banca: VUNESP</p>
+  <div class="legenda">
+    <div class="leg-item"><div class="leg-dot" style="background:#dc2626"></div>🔴 Vermelho — cai quase sempre (12-15/17)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#ea580c"></div>🟠 Laranja — cai frequentemente (9-11/17)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#ca8a04"></div>🟡 Amarelo — cai às vezes (6-8/17)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#16a34a"></div>🟢 Verde — cai raramente (2-5/17)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#6b7280"></div>⚫ Cinza — nunca caiu / novo no edital</div>
+  </div>
+</div>
+
+<div class="correcao">
+  <strong>⚠️ Correção importante:</strong> Vizinhança Solidária, Atividade Delegada, Reintegração de Posse e NI SSP-57/15
+  continuam no Edital CH 2026 (itens 2.7.2, 2.7.4, 2.7.5 e 2.7.6). O que saiu de fato: <strong>I-23-PM, I-38-PM e LC 1.224/13</strong>.
+  Peço desculpas pelo erro na resposta anterior.
+</div>
+
+<!-- ═══════════════════════ CONHECIMENTOS GERAIS ═══════════════════════ -->
+<div class="section-header">📚 CONHECIMENTOS GERAIS <span class="tipo">40 questões · 0,5pt cada · total 20pts</span></div>
+
+<!-- LÍNGUA PORTUGUESA -->
+<div class="disc">
+  <div class="disc-header open" onclick="toggle(this)" style="border-left-color:#dc2626">
+    <span class="disc-title">🔤 Língua Portuguesa</span>
+    <div class="disc-stats"><span class="disc-top-badge b1">até 15/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Fonologia, Ortografia e Acentuação Gráfica</div><div class="topic-detail">1.3.2–1.3.4 · Divisão silábica, encontros vocálicos/consonantais, ortografia oficial, acentos</div></div><div class="topic-right"><span class="freq-badge b1">15/17 🏆</span></div></div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Morfologia e Formação de Palavras</div><div class="topic-detail">1.3.5 · Classes gramaticais: substantivo, adjetivo, artigo, numeral, pronome, verbo, advérbio, preposição, conjunção, interjeição</div></div><div class="topic-right"><span class="freq-badge b1">13/17</span></div></div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Interpretação de Textos</div><div class="topic-detail">1.3.14 · Leitura e análise de textos, tipologia textual, coesão e coerência</div></div><div class="topic-right"><span class="freq-badge b1">13/17</span></div></div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Literatura Brasileira e Portuguesa</div><div class="topic-detail">1.3.15 · Escolas literárias, obras obrigatórias: Camões, Alencar, Machado (Quincas Borba), Mário de Andrade, Drummond, Graciliano, Guimarães Rosa, Clarice Lispector (A Hora da Estrela), Eça, Álvares de Azevedo</div></div><div class="topic-right"><span class="freq-badge b1">13/17</span></div></div>
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">Sintaxe — Frase, Oração e Período</div><div class="topic-detail">1.3.6.1–1.3.6.4 · Termos essenciais e integrantes, coordenação e subordinação, período composto</div></div><div class="topic-right"><span class="freq-badge b2">10/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Concordância Nominal e Verbal</div><div class="topic-detail">1.3.8 · Casos gerais e especiais de concordância</div></div><div class="topic-right"><span class="freq-badge b3">8/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Regência Nominal e Verbal</div><div class="topic-detail">1.3.9 · Verbos de regência variável, preposições</div></div><div class="topic-right"><span class="freq-badge b3">8/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Figuras de Linguagem e Estilística</div><div class="topic-detail">1.3.13 · Metáfora, metonímia, hipérbole, eufemismo, antítese, paradoxo, ironia e outros</div></div><div class="topic-right"><span class="freq-badge b3">8/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Crase</div><div class="topic-detail">1.3.10 · Regras de uso, casos proibidos e facultativos</div></div><div class="topic-right"><span class="freq-badge b4">5/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Organização do Texto — Narração, Dissertação, Descrição</div><div class="topic-detail">1.3.12 · Discurso direto/indireto, argumentação, sequenciação temporal e espacial</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Pontuação</div><div class="topic-detail">1.3.7 · Uso de vírgula, ponto, ponto e vírgula, dois pontos</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Conectivos — "que" e "se" (função e valor)</div><div class="topic-detail">1.3.11 · Função sintática e valores lógico-semânticos</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Variedades da Língua — Registro Culto e Coloquial</div><div class="topic-detail">1.3.1 · Regionalismos, variação linguística</div></div><div class="topic-right"><span class="freq-badge b4">2/17</span></div></div>
+  </div>
+</div>
+
+<!-- HISTÓRIA DO BRASIL -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#dc2626">
+    <span class="disc-title">🇧🇷 História do Brasil</span>
+    <div class="disc-stats"><span class="disc-top-badge b1">até 14/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Era Vargas (1930–1945)</div><div class="topic-detail">1.1.5 · Gov. Provisório, Constitucional, Estado Novo · Rev. de 1932, DIP, indústrias de base, 2ª Guerra</div></div><div class="topic-right"><span class="freq-badge b1">14/17 🏆</span></div></div>
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">Redemocratização — Sarney à Bolsonaro</div><div class="topic-detail">1.1.8–1.1.10 · Sarney/Plano Cruzado, CF/88, Collor, FHC, Lula, Dilma, Temer, Bolsonaro</div></div><div class="topic-right"><span class="freq-badge b2">10/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">1ª República (1889–1930)</div><div class="topic-detail">1.1.4 · Const. 1891, República da Espada, Oligárquica, Tenentismo, Rev. 1930</div></div><div class="topic-right"><span class="freq-badge b3">8/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Regime Militar (1964–1985)</div><div class="topic-detail">1.1.7 · Castelo Branco a Figueiredo, eleição Tancredo</div></div><div class="topic-right"><span class="freq-badge b3">8/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">República Populista (1945–1964)</div><div class="topic-detail">1.1.6 · Const. 1946, Gaspar Dutra, Vargas, JK, Jânio, João Goulart</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Segundo Reinado (1840–1889)</div><div class="topic-detail">1.1.3 · Golpe da Maioridade, expansão cafeeira, Guerra do Paraguai, questões religiosa/militar/social</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Mudanças no Brasil 1950–1980</div><div class="topic-detail">1.1.9 · População, economia, indicadores sociais</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Primeiro Reinado e Regência (1822–1840)</div><div class="topic-detail">1.1.1–1.1.2 · Const. 1824, Confederação do Equador, abdicação Pedro I, rebeliões regenciais</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+  </div>
+</div>
+
+<!-- MATEMÁTICA + LÓGICA -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#dc2626">
+    <span class="disc-title">🔢 Matemática + Raciocínio Lógico</span>
+    <div class="disc-stats"><span class="disc-top-badge b1">até 13/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="alert-box">⚠️ <strong>Atenção: "Juros" NÃO está no edital.</strong> O item 1.4.1 menciona apenas <em>porcentagem</em>. Não há juros simples, compostos, razão nem proporção. Remova do seu material.</div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Estatística — Medidas Estatísticas</div><div class="topic-detail">1.4.3 · Média, moda, mediana, variância, desvio padrão, representação gráfica</div></div><div class="topic-right"><span class="freq-badge b1">13/17 🏆</span></div></div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Geometria Plana</div><div class="topic-detail">1.4.2 · Ângulos e polígonos, congruência de triângulos, proporção, circunferência, cálculo de áreas, Pitágoras</div></div><div class="topic-right"><span class="freq-badge b1">12/17</span></div></div>
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">Análise Combinatória e Probabilidade</div><div class="topic-detail">1.4.5 + 1.4.10 · Princípios de contagem, permutação, arranjo, combinação, probabilidade simples e composta</div></div><div class="topic-right"><span class="freq-badge b2">10/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Aritmética, Álgebra e Porcentagem</div><div class="topic-detail">1.4.1 · Números reais, equações e inequações de 1º grau, polinômios, porcentagem (sem juros!)</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Sequências Numéricas — PA e PG</div><div class="topic-detail">1.4.4 · Progressão Aritmética, Progressão Geométrica, termo geral, soma dos termos</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Lógica Proposicional e Estruturas Lógicas</div><div class="topic-detail">1.4.6–1.4.9 · Proposições simples e compostas, tabelas-verdade, equivalências, Leis de Morgan, diagramas lógicos, lógica de 1ª ordem, analogias e inferências <span class="novo-tag">ESCOPO AMPLIADO</span></div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Raciocínio Lógico — Problemas Aritméticos e Geométricos</div><div class="topic-detail">1.4.12 · Aplicação de lógica em problemas numéricos e geométricos</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Operações com Conjuntos</div><div class="topic-detail">1.4.11 · União, intersecção, diferença, complementar, diagramas de Venn</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+  </div>
+</div>
+
+<!-- ATUALIDADES -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#dc2626">
+    <span class="disc-title">📰 Atualidades</span>
+    <div class="disc-stats"><span class="disc-top-badge b1">13/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Segurança Pública e Ordem Pública</div><div class="topic-detail">1.6.1 · Fatos e acontecimentos a partir de 01/jan/2025 relacionados à segurança e ordem pública · Inclui políticas públicas, operações PM, estatísticas de criminalidade, legislação recente</div></div><div class="topic-right"><span class="freq-badge b1">13/17</span></div></div>
+  </div>
+</div>
+
+<!-- HISTÓRIA DA PM -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#ca8a04">
+    <span class="disc-title">🚔 História da Polícia Militar</span>
+    <div class="disc-stats"><span class="disc-top-badge b3">6/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Marcos Históricos da PMESP</div><div class="topic-detail">1.2.1 · Fundação (1831), Guerras (Farrapos, Paraguai), Revolução de 1932, Rev. de 1964, COVID-19</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Missão Francesa, Guarda Civil e Símbolos PM</div><div class="topic-detail">1.2.3–1.2.6 · Missão Francesa e ensino, unificação Força Pública/Guarda Civil, Canção PM, Brasão, Símbolo</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Fatos por Período (Regencial, Império, República…)</div><div class="topic-detail">1.2.7 · Período Regencial, Império, República, Era Vargas, Democracia, Ditadura, Redemocratização</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+  </div>
+</div>
+
+<!-- INFORMÁTICA -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#6b7280">
+    <span class="disc-title">💻 Informática <span class="top-mat">★ NOVO NO CHQAOPM</span></span>
+    <div class="disc-stats"><span class="disc-top-badge b5">NUNCA CAIU</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">MS-Windows 10</div><div class="topic-detail">1.5.1 · Pastas, arquivos, atalhos, área de trabalho, transferência, menus, programas</div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">MS-Word 2016</div><div class="topic-detail">1.5.2 · Edição, formatação, cabeçalhos, tabelas, índices, campos predefinidos</div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">MS-Excel 2016</div><div class="topic-detail">1.5.3 · Planilhas, fórmulas, funções, macros, gráficos, classificação de dados</div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">MS-PowerPoint 2016</div><div class="topic-detail">1.5.4 · Slides, animações, transições, botões de ação, formatação</div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">E-mail, Internet e Navegação</div><div class="topic-detail">1.5.5–1.5.6 · Correio eletrônico, URL, links, busca, impressão de páginas</div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Google Workspace e Microsoft Teams</div><div class="topic-detail">1.5.7 · Gmail, Drive, Docs, Planilhas, Meet, Chat, Formulários · Teams: chats, chamadas, Word/Excel/PPT colaborativo</div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CONHECIMENTOS PROFISSIONAIS ═══════════════════════ -->
+<div class="section-header">⚖️ CONHECIMENTOS PROFISSIONAIS <span class="tipo">40 questões · 1,5pt cada · total 60pts</span></div>
+
+<!-- DIREITO PENAL + PROCESSUAL PENAL -->
+<div class="disc">
+  <div class="disc-header open" onclick="toggle(this)" style="border-left-color:#dc2626">
+    <span class="disc-title">⚖️ Direito Penal e Processual Penal (Comum)</span>
+    <div class="disc-stats"><span class="disc-top-badge b1">até 12/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Crimes contra o Patrimônio</div><div class="topic-detail">2.2.1.9 · Art. 155-183 CP · Furto, roubo, extorsão, receptação, estelionato, apropriação indébita</div></div><div class="topic-right"><span class="freq-badge b1">12/17 🏆</span></div></div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Crimes contra a Administração Pública</div><div class="topic-detail">2.2.1.11 · Art. 312-359H CP · Peculato, corrupção, concussão, prevaricação, resistência, desobediência</div></div><div class="topic-right"><span class="freq-badge b1">11/17</span></div></div>
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">Teoria do Crime — Tipicidade, Antijuridicidade, Culpabilidade</div><div class="topic-detail">2.2.1.2 · Art. 13-25 CP · Tentativa, consumação, excludentes de ilicitude, imputabilidade</div></div><div class="topic-right"><span class="freq-badge b2">10/17</span></div></div>
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">Das Penas — Espécies, Aplicação e Extinção</div><div class="topic-detail">2.2.1.5 · Art. 32-90 CP · Reclusão/detenção, penas alternativas, sursis, livramento condicional · + 2.2.1.7 Extinção da punibilidade art. 107-120</div></div><div class="topic-right"><span class="freq-badge b2">10/17</span></div></div>
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">Crimes contra a Pessoa</div><div class="topic-detail">2.2.1.8 · Art. 121-154B CP · Homicídio, lesão corporal, ameaça, sequestro, stalking</div></div><div class="topic-right"><span class="freq-badge b2">10/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Inquérito Policial</div><div class="topic-detail">2.2.2.1 · Art. 4-23 CPP · Instauração, peças, prazo, arquivamento, autoridade policial</div></div><div class="topic-right"><span class="freq-badge b3">8/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Prisão, Medidas Cautelares e Liberdade Provisória</div><div class="topic-detail">2.2.2.4 · Art. 282-350 CPP · Flagrante, preventiva, temporária, medidas alternativas, habeas corpus</div></div><div class="topic-right"><span class="freq-badge b3">8/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">JECrim — Juizados Especiais Criminais</div><div class="topic-detail">2.2.2.5 · Lei 9.099/95 · Infrações de menor potencial, transação penal, suspensão condicional do processo</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Ação Penal — Espécies e Exercício</div><div class="topic-detail">2.2.2.2 · Art. 24-62 CPP · Ação penal pública/privada, condições de procedibilidade</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Provas no Processo Penal</div><div class="topic-detail">2.2.2.3 · Art. 155-250 CPP · Ônus, proibição de provas, confissão, testemunho, reconhecimento</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Aplicação da Lei Penal</div><div class="topic-detail">2.2.1.1 · Art. 1-12 CP · Princípio da legalidade, tempo e lugar do crime, extraterritorialidade</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Crimes contra a Dignidade Sexual</div><div class="topic-detail">2.2.1.10 · Art. 213-234B CP · Estupro, importunação sexual, assédio, favorecimento à prostituição <span class="novo-tag">NOVO ITEM 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">~1/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Crimes contra o Estado Democrático de Direito</div><div class="topic-detail">2.2.1.12 · Art. 359I-359T CP · Golpe de Estado, abolição do Estado democrático, atentado a soberania <span class="novo-tag">NOVO ITEM 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+  </div>
+</div>
+
+<!-- DIREITO PENAL MILITAR + DPP MILITAR -->
+<div class="disc">
+  <div class="disc-header open" onclick="toggle(this)" style="border-left-color:#dc2626">
+    <span class="disc-title">🎖️ Direito Penal Militar e Processual Penal Militar</span>
+    <div class="disc-stats"><span class="disc-top-badge b1">até 12/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Teoria e Aplicação da Lei Penal Militar</div><div class="topic-detail">2.3.1.1–2.3.1.2 · Art. 1-47 CPM · Princípios, aplicação, crime militar, imputabilidade, concurso de pessoas</div></div><div class="topic-right"><span class="freq-badge b1">12/17 🏆</span></div></div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Polícia Judiciária Militar e IPM</div><div class="topic-detail">2.3.2.1–2.3.2.2 · Art. 7-28 CPPM · Atribuições PJM, instauração e condução do IPM, relatório</div></div><div class="topic-right"><span class="freq-badge b1">12/17 🏆</span></div></div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Crimes contra Autoridade e Disciplina Militar</div><div class="topic-detail">2.3.1.3 · Art. 149-182 CPM · Desrespeito, insubordinação, motim, violência contra superior/inferior</div></div><div class="topic-right"><span class="freq-badge b1">12/17</span></div></div>
+    <div class="topic-row row-1"><div class="color-bar c1"></div><div class="topic-content"><div class="topic-name">Crimes contra o Serviço e Dever Militar</div><div class="topic-detail">2.3.1.4 · Art. 183-203 CPM · Deserção, abandono de posto, violação de dever militar</div></div><div class="topic-right"><span class="freq-badge b1">12/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Leis Especiais aplicáveis ao DPM</div><div class="topic-detail">2.3.1.7 · Abuso autoridade, desarmamento, ECA, hediondos, drogas, idoso, tortura, trânsito, Maria da Penha, lavagem de dinheiro, etc.</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Ação Penal Militar — Exercício e Competência</div><div class="topic-detail">2.3.2.3 · Art. 29-33 CPPM · Titularidade, Ministério Público Militar, Justiça Militar Estadual</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Medidas Preventivas e Assecuratórias</div><div class="topic-detail">2.3.2.4 · Art. 170-276 CPPM · Busca e apreensão, sequestro de bens, restituição</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Crimes Impropriamente / Propriamente Militares</div><div class="topic-detail">2.3.1.5–2.3.1.6 · Distinção, aplicação da lei, concurso de crimes</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">RI-35-PM e Bol G PM 167/1996 (Deserção)</div><div class="topic-detail">2.3.2.9 · Procedimentos disciplinares e de deserção</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Prisão, Cautelares e Liberdade — DPPM (expandido)</div><div class="topic-detail">2.3.2.5 · Prisão flagrante, preventiva, temporária, audiência de custódia, menagem, prisão especial — ritos do CPPM <span class="novo-tag">NOVO ESCOPO 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Provas, Nulidades e Procedimentos CPPM</div><div class="topic-detail">2.3.2.6–2.3.2.8 · Provas no processo militar, prazos, nulidades, procedimentos, leg. especial <span class="novo-tag">NOVO ESCOPO 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Portaria CORREGPM — Procedimentos de Deserção</div><div class="topic-detail">2.3.2.10 · Portaria CORREGPM-1/310/16 <span class="novo-tag">NOVO ESCOPO 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">~1/17 ★</span></div></div>
+  </div>
+</div>
+
+<!-- DIREITO ADMINISTRATIVO -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#ea580c">
+    <span class="disc-title">🏛️ Direito Administrativo</span>
+    <div class="disc-stats"><span class="disc-top-badge b2">até 9/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">Agentes Públicos e Responsabilidade Civil</div><div class="topic-detail">2.4.6 · Agentes políticos, servidores estatutários/temporários, provimento, vacância, estabilidade, responsabilidade penal/civil/administrativa</div></div><div class="topic-right"><span class="freq-badge b2">9/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Atos Administrativos</div><div class="topic-detail">2.4.4 · Requisitos (competência, finalidade, forma, motivo, objeto), mérito, atributos, classificação, anulação, revogação, cassação</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Poderes Administrativos</div><div class="topic-detail">2.4.5 · Poder regulamentar, hierárquico, disciplinar, poder de polícia — atributos, discricionariedade, autoexecutoriedade</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Princípios e Regime Jurídico-Administrativo</div><div class="topic-detail">2.4.1–2.4.2 · LIMPE, interesse público primário/secundário, princípios expressos e implícitos</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Organização da Administração Pública</div><div class="topic-detail">2.4.3 · Órgãos, autarquias, fundações, empresas públicas, SEM, agências reguladoras/executivas, consórcios</div></div><div class="topic-right"><span class="freq-badge b4">5/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Processo Administrativo</div><div class="topic-detail">2.4.10 · Princípios, impedimento/suspeição, atos processuais, recurso, revisão, coisa julgada administrativa</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Licitações e Contratos Administrativos</div><div class="topic-detail">2.4.7 · Princípios, dispensa, inexigibilidade, modalidades, procedimentos</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Bens Públicos e Intervenção na Propriedade</div><div class="topic-detail">2.4.8–2.4.9 · Classificação, afetação/desafetação, limitação, servidão, tombamento, desapropriação</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+  </div>
+</div>
+
+<!-- DIREITO CONSTITUCIONAL -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#ea580c">
+    <span class="disc-title">📜 Direito Constitucional</span>
+    <div class="disc-stats"><span class="disc-top-badge b2">até 8/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Tribunais Militares Estaduais + Segurança Pública</div><div class="topic-detail">2.1.1.5–2.1.1.6 · Art. 124-126 CF (Justiça Militar Estadual) + Art. 144 CF (PM, PC, GCM, PF)</div></div><div class="topic-right"><span class="freq-badge b3">8/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Direitos e Deveres Individuais e Coletivos</div><div class="topic-detail">2.1.1.2 · Art. 5-11 CF · Remédios constitucionais, inviolabilidades, liberdades, garantias processuais</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Militares Federais e Estaduais</div><div class="topic-detail">2.1.1.4 · Art. 42 e 142 CF · Estabilidade, direitos, remuneração, carreira dos militares</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Administração Pública — CF</div><div class="topic-detail">2.1.1.3 · Art. 37-41 CF · Princípios constitucionais, concurso, estabilidade, remuneração</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Constituição do Estado de SP — Dispositivos sobre PM</div><div class="topic-detail">2.1.2 · Art. 79A-82 (Justiça Militar SP), 111-116 (Adm. Pública SP), Art. 138 (Militares SP), 139-143 (Segurança Pública SP)</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Princípios Fundamentais da CF</div><div class="topic-detail">2.1.1.1 · Art. 1-4 CF · Soberania, cidadania, dignidade, valores sociais do trabalho, pluralismo político</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+  </div>
+</div>
+
+<!-- LEGISLAÇÃO COMPLEMENTAR -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#ea580c">
+    <span class="disc-title">📋 Legislação Complementar</span>
+    <div class="disc-stats"><span class="disc-top-badge b2">até 9/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">Estatuto do Desarmamento — Lei 10.826/03 + Dec. 9.847/19</div><div class="topic-detail">2.5.9 · Posse, porte, registro, comércio, crimes, apreensão, Sistema Nacional de Armas</div></div><div class="topic-right"><span class="freq-badge b2">9/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">ECA — Lei 8.069/90</div><div class="topic-detail">2.5.4 · Art. 1-4, 103-128 (atos infracionais, medidas socioeducativas), 228-244B (crimes contra criança)</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Improbidade Administrativa — Lei 8.429/92</div><div class="topic-detail">2.5.5 · Atos de improbidade, sanções, sujeitos ativos e passivos, processo administrativo</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Tortura — Lei 9.455/97</div><div class="topic-detail">2.5.6 · Definição, sujeitos, penas, circunstâncias agravantes</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Abuso de Autoridade — Lei 13.869/19</div><div class="topic-detail">2.5.8 · Crimes, penas, excludentes, procedimento</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Lei de Acesso à Informação — Lei 12.527/11</div><div class="topic-detail">2.5.7 · Acesso a informações públicas, transparência, restrições, recursos</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">DUDH, Convenção Americana DH e Código ONU</div><div class="topic-detail">2.5.1–2.5.3 · Declaração Universal 1948, Pacto São José da Costa Rica 1969, Código de Conduta ONU 1979</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+  </div>
+</div>
+
+<!-- LEGISLAÇÃO DE INTERESSE POLICIAL-MILITAR -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#ea580c">
+    <span class="disc-title">🏅 Legislação de Interesse Policial-Militar</span>
+    <div class="disc-stats"><span class="disc-top-badge b2">até 9/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">RDPM — LC 893/01 (Regulamento Disciplinar)</div><div class="topic-detail">2.6.7 · Deveres, transgressões, sanções disciplinares, procedimentos, recursos</div></div><div class="topic-right"><span class="freq-badge b2">9/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">DL 667/69 + R-200 (Dec. 88.777/83)</div><div class="topic-detail">2.6.1–2.6.2 · Reorganização das PMs, competências, estrutura, missão constitucional</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Lei 616/74 — Organização Básica PMESP</div><div class="topic-detail">2.6.5 · Estrutura, quadros, funções, hierarquia</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">DL 260/70 — Inatividade PMESP</div><div class="topic-detail">2.6.4 · Reserva, reforma, pensão, transferência para inatividade</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">LC 1.150/11 — Regras de Inatividade e Promoção</div><div class="topic-detail">2.6.9 · Condições especiais de inatividade e promoções dos policiais militares</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Dec. 55.588/10 — Tratamento Nominal de Transexuais</div><div class="topic-detail">2.6.8 · Nome social de transexuais e travestis nos órgãos públicos de SP</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Lei 14.751/23 — Lei Orgânica Nacional das PMs</div><div class="topic-detail">2.6.3 · Organização básica, missão, direitos e deveres dos policiais militares em âmbito nacional <span class="novo-tag">NOVO 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Lei 18.442/26 — Efetivo, Regime Jurídico e Promoções</div><div class="topic-detail">2.6.10 · Nova lei sobre efetivo, regime jurídico e regras gerais de promoção dos militares de SP <span class="novo-tag">NOVO 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Dec. 68.155/2023 — Acesso à Informação SP</div><div class="topic-detail">2.6.11 · Regulamentação estadual da LAI (Lei 12.527/11) no âmbito do Estado de São Paulo <span class="novo-tag">NOVO 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+  </div>
+</div>
+
+<!-- NORMAS ADMINISTRATIVAS PM -->
+<div class="disc">
+  <div class="disc-header" onclick="toggle(this)" style="border-left-color:#ea580c">
+    <span class="disc-title">📁 Normas Administrativas de Interesse PM (2.7)</span>
+    <div class="disc-stats"><span class="disc-top-badge b2">até 9/17</span><span class="disc-arrow">▾</span></div>
+  </div>
+  <div class="disc-body">
+    <div class="topic-row row-2"><div class="color-bar c2"></div><div class="topic-content"><div class="topic-name">NORSOP — Diretriz PM3-001/02/20</div><div class="topic-detail">2.7.13 · Sistema Operacional de Policiamento PM — planejamento, execução, avaliação do policiamento</div></div><div class="topic-right"><span class="freq-badge b2">9/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">GESPOL — Sistema de Gestão PM (3ª ed. 2022)</div><div class="topic-detail">2.7.20 · Gestão da Polícia Militar do Estado de São Paulo — processos, metas, indicadores</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">I-16-PM — Processo Administrativo da PM</div><div class="topic-detail">2.7.26 · Instruções para o processo administrativo — IPM, sindicância, procedimentos</div></div><div class="topic-right"><span class="freq-badge b3">7/17</span></div></div>
+    <div class="topic-row row-3"><div class="color-bar c3"></div><div class="topic-content"><div class="topic-name">Busca Domiciliar — OS PM3-002/02/18</div><div class="topic-detail">2.7.10 · Procedimentos, requisitos legais, auto de busca, apreensão</div></div><div class="topic-right"><span class="freq-badge b3">6/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Vizinhança Solidária — Diretriz PM3-002/02/13</div><div class="topic-detail">2.7.2 · Programa comunitário de prevenção — objetivos, funcionamento, parceiros</div></div><div class="topic-right"><span class="freq-badge b4">5/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Atividade Delegada — Diretriz PM3-002/02/14</div><div class="topic-detail">2.7.4 · Policiamento por convênio com municípios, responsabilidades, procedimentos</div></div><div class="topic-right"><span class="freq-badge b4">5/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Manual de Fundamentos — Polícia Ostensiva e Preservação da OP</div><div class="topic-detail">2.7.11 · PMESP 2020 · Fundamentos doutrinários, missão PM, conceitos de ostensividade</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">NI SSP-57/15 — Atendimento e Registro de Ocorrências</div><div class="topic-detail">2.7.6 · Sistemática de atendimento, BOPM, classificação de ocorrências</div></div><div class="topic-right"><span class="freq-badge b4">4/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Reintegração de Posse — Diretriz PM3-009/02/14</div><div class="topic-detail">2.7.5 · Atuação policial-militar em ações de reintegração de posse</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Armas Portáteis — NI PM4-001/1.2/18</div><div class="topic-detail">2.7.9 · Utilização, procedimentos, responsabilidades</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Colete Balístico — NI PM4-001/1.2/17</div><div class="topic-detail">2.7.8 · Procedimentos em disparos contra colete ou viatura PM</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">I-40-PM — Ocorrências com Policial Militar como Autor</div><div class="topic-detail">2.7.30 · Atendimento de requisições envolvendo PM como autor de infração penal</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">I-43-PM — Requisições de Apresentação de PM</div><div class="topic-detail">2.7.31 · Procedimentos para atendimento de requisições de apresentação de policiais militares</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">R-5-PM — Regulamento de Uniformes</div><div class="topic-detail">2.7.32 · Tipos de uniforme, uso correto, circunstâncias de utilização</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">ICC — Instruções Continuadas de Comando</div><div class="topic-detail">2.7.33 · nº 189, 191, 197, 209, 218, 220, 225-227, 230, 234, 239-240, 244-245, 250, 253, 300, 309, 321, 344, 347, 350, 356, 345, 402, 405</div></div><div class="topic-right"><span class="freq-badge b4">3/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Regras de Substituição Temporária de Função</div><div class="topic-detail">2.7.3 · Bol G PM 139/2014 · Regras para substituição temporária de função de oficiais</div></div><div class="topic-right"><span class="freq-badge b4">2/17</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">COP PM — Diretriz PM3-001/02/25 🔄</div><div class="topic-detail">2.7.23 · Câmeras Operacionais Portáteis — versão atualizada (substituiu PM3-1/02/22 do CH2023)</div></div><div class="topic-right"><span class="freq-badge b5">1/17 🔄</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Portaria PM4-001/1.2/24 — Material Bélico 🔄</div><div class="topic-detail">2.7.14 · Propriedade e porte de material bélico na PM — versão atualizada (substituiu portaria de 2020)</div></div><div class="topic-right"><span class="freq-badge b5">1/17 🔄</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">SCC — Diretriz PM-001/02/23</div><div class="topic-detail">2.7.21 · Sistema de Comando e Controle da PMESP — estrutura e funcionamento <span class="novo-tag">NOVO 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">SCIPM — Diretriz PM3-003/02/23</div><div class="topic-detail">2.7.22 · Sistema de Controle Interno da PM — auditoria, controladoria interna <span class="novo-tag">NOVO 2026</span></div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Portaria PM1-7/02/23 — Regime de Trabalho</div><div class="topic-detail">2.7.1 · Regras de regime de trabalho dos policiais militares de São Paulo</div></div><div class="topic-right"><span class="freq-badge b5">0/17 ★</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">AIN — NI PM3-002/03/20</div><div class="topic-detail">2.7.15 · Armas de Incapacitação Neuromuscular — uso, procedimentos, restrições</div></div><div class="topic-right"><span class="freq-badge b5">1/17</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Mídias Sociais — Diretriz PM3-006/02/21</div><div class="topic-detail">2.7.19 · Uso de redes sociais e aplicativos mensageiros por policiais militares</div></div><div class="topic-right"><span class="freq-badge b5">0/17</span></div></div>
+    <div class="topic-row row-5"><div class="color-bar c5"></div><div class="topic-content"><div class="topic-name">Demais Normas PM (2.7.7, 2.7.16, 2.7.17, 2.7.18, 2.7.12)</div><div class="topic-detail">Apoio Psicossocial (DP-1/511/16) · Perturbação de sossego · Violência doméstica PM · DEJEM · PAAPM</div></div><div class="topic-right"><span class="freq-badge b5">0-1/17</span></div></div>
+    <div class="topic-row row-4"><div class="color-bar c4"></div><div class="topic-content"><div class="topic-name">Instruções PM (I-2, I-15, I-21, I-24, I-36)</div><div class="topic-detail">2.7.24–2.7.29 · Movimentação PM, transportes, continências, avaliação desempenho, afastamentos</div></div><div class="topic-right"><span class="freq-badge b4">2/17</span></div></div>
+  </div>
+</div>
+
+<div style="background:#1a1a2e;color:#a8b2d8;font-size:11px;padding:14px 16px;text-align:center;margin-top:16px">
+  CHQAOPM 2026 · Edital publicado Bol G PM 85, 08/mai/2026 · Análise: 17 provas históricas 2008–2023 · Banca VUNESP
+</div>
+
+<script>
+function toggle(el){
+  el.classList.toggle('open');
+}
+// Abrir primeiro da lista de profissionais por padrão quando clicar na seção
+</script>
+</body>
+</html>
